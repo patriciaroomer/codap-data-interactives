@@ -1,7 +1,7 @@
 {
   "en-us": {
     "DG.plugin.sonify.loading": "Loading the plugin...",
-    "DG.plugin.sonify.playToggle": "Play",
+    "DG.plugin.sonify.playToggle": "Play/Pause",
     "DG.plugin.sonify.playTitle": "Enable sounds",
     "DG.plugin.sonify.loopToggle": "Loop",
     "DG.plugin.sonify.loopTitle": "Enable playback looping",
@@ -22,7 +22,8 @@
     "DG.plugin.sonify.connectModeTitle": "Select collection to connect cases by",
     "DG.plugin.sonify.createGraphLabel": "create graph",
     "DG.plugin.sonify.createGraphTitle": "create a graph of the current selections in CODAP",
-
+    "DG.plugin.sonify.resetTitle": "Reset",
+    "DG.plugin.sonify.resetTooltip": "Reset the playback position to the beginning",
     "DG.plugin.sonify.noDatasetMessage": "Select a dataset, pitch and time and click Play",
     "DG.plugin.sonify.playingMessage": "Playing sounds",
     "DG.plugin.sonify.stoppingMessage": "Stopping sounds",

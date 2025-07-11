@@ -93,6 +93,15 @@ body {
   min-width: 3em;
 }
 
+.controller-container > label[for="play-pause-button"] {
+  margin-right: 5px;
+}
+
+/* Add 12px space between play, reset, and loop controls */
+.controller-area > .controller-container:not(:last-child) {
+  margin-right: 12px;
+}
+
 .mapper-container {
   margin-bottom: 1em;
   padding: 0.25em 0;

@@ -72,8 +72,8 @@ const app = new Vue({
     name: "Sonify",
     version: packageInfo.version,
     dim: {
-      width: 285,
-      height: 385,
+      width: 325,
+      height: 425,
     },
     loading: true,
     // state managed by CODAP
@@ -130,7 +130,7 @@ const app = new Vue({
 
     synchronized: false,
 
-    playToggle: null,
+    // Remove all playToggle-related logic and references
     playing: false,
 
     speedSlider: null,
@@ -153,20 +153,123 @@ const app = new Vue({
   methods: {
     setupUI() {
       this.setUserMessage("DG.plugin.sonify.noDatasetMessage");
-      this.playToggle = new Nexus.Toggle("#play-toggle", {
-        size: [40, 20],
-        state: false,
+      // Add play/pause button using NexusUI
+      this.playPauseButton = new Nexus.Button("#play-pause-button", {
+        size: [25, 25],
+        mode: "toggle",
+        state: false
       });
-
-      this.playToggle.on("change", (v) => {
-        if (v) {
+      // Override render to add SVG play/pause icon
+      const playPath = "M8 5v14l11-7z"; // Play triangle
+      const pausePath = "M6 4h4v16H6V4zm8 0h4v16h-4V4z"; // Pause bars
+      const button = this.playPauseButton;
+      // Add icon element if not present
+      if (!button.iconElement) {
+        button.iconElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        button.element.appendChild(button.iconElement);
+        // Ensure clicking the icon triggers the button
+        button.iconElement.style.pointerEvents = 'auto';
+        button.iconElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          button.interactionTarget.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}));
+          button.interactionTarget.dispatchEvent(new MouseEvent('mouseup', {bubbles: true, cancelable: true}));
+        });
+      }
+      button.render = function() {
+        // Call original render
+        Nexus.Button.prototype.render.call(this);
+        // Set icon path and color
+        if (this.state) {
+          this.iconElement.setAttribute("d", pausePath);
+        } else {
+          this.iconElement.setAttribute("d", playPath);
+        }
+        this.iconElement.setAttribute("fill", this.state ? this.colors.fill : this.colors.dark);
+        // Center the icon perfectly in the pad
+        const iconSize = 16; // SVG path is designed for 24x24, but we want 16x16 for better centering
+        const centerX = this.width / 2 - iconSize / 2;
+        const centerY = this.height / 2 - iconSize / 2;
+        this.iconElement.setAttribute("transform", `translate(${centerX}, ${centerY}) scale(${iconSize/24})`);
+        // Set pad outline to NexusUI accent color
+        this.pad.setAttribute("stroke", this.colors.accent);
+      };
+      // Initial render
+      this.playPauseButton.render();
+      // Add play/pause logic
+      this.playPauseButton.on("change", (isPlaying) => {
+        if (isPlaying) {
           this.setUserMessage("DG.plugin.sonify.playingMessage");
           this.play();
         } else {
           this.setUserMessage("DG.plugin.sonify.stoppingMessage");
-          this.resetPlay();
+          this.resetPlay(false);
         }
       });
+      // Ensure button state reflects playback status if stopped elsewhere
+      this.$watch('playing', (newVal) => {
+        if (this.playPauseButton.state !== newVal) {
+          this.playPauseButton.state = newVal;
+        }
+      });
+
+      // Add reset button using NexusUI, matching play button size and style
+      this.resetButton = new Nexus.Button("#reset-button", {
+        size: [25, 25],
+        mode: "button",
+        state: false
+      });
+      // Use the provided SVG path for the reset icon
+      const resetPath = "M106.2,22.2c1.78,2.21,3.43,4.55,5.06,7.46c5.99,10.64,8.52,22.73,7.49,34.54c-1.01,11.54-5.43,22.83-13.37,32.27 c-2.85,3.39-5.91,6.38-9.13,8.97c-11.11,8.93-24.28,13.34-37.41,13.22c-13.13-0.13-26.21-4.78-37.14-13.98 c-3.19-2.68-6.18-5.73-8.91-9.13C6.38,87.59,2.26,78.26,0.71,68.41c-1.53-9.67-0.59-19.83,3.07-29.66 c3.49-9.35,8.82-17.68,15.78-24.21C26.18,8.33,34.29,3.76,43.68,1.48c2.94-0.71,5.94-1.18,8.99-1.37c3.06-0.2,6.19-0.13,9.4,0.22 c2.01,0.22,3.46,2.03,3.24,4.04c-0.22,2.01-2.03,3.46-4.04,3.24c-2.78-0.31-5.49-0.37-8.14-0.2c-2.65,0.17-5.23,0.57-7.73,1.17 c-8.11,1.96-15.1,5.91-20.84,11.29C18.43,25.63,13.72,33,10.62,41.3c-3.21,8.61-4.04,17.51-2.7,25.96 c1.36,8.59,4.96,16.74,10.55,23.7c2.47,3.07,5.12,5.78,7.91,8.13c9.59,8.07,21.03,12.15,32.5,12.26c11.47,0.11,23-3.76,32.76-11.61 c2.9-2.33,5.62-4.98,8.13-7.97c6.92-8.22,10.77-18.09,11.66-28.2c0.91-10.37-1.32-20.99-6.57-30.33c-1.59-2.82-3.21-5.07-5.01-7.24 l-0.53,14.7c-0.07,2.02-1.76,3.6-3.78,3.52c-2.02-0.07-3.6-1.76-3.52-3.78l0.85-23.42c0.07-2.02,1.76-3.6,3.78-3.52 c0.13,0,0.25,0.02,0.37,0.03l0,0l22.7,3.19c2,0.28,3.4,2.12,3.12,4.13c-0.28,2-2.12,3.4-4.13,3.12L106.2,22.2L106.2,22.2z";
+      const resetButton = this.resetButton;
+      if (!resetButton.iconElement) {
+        resetButton.iconElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        resetButton.element.appendChild(resetButton.iconElement);
+        // Tooltip for accessibility
+        resetButton.element.setAttribute("title", this.l.tr("DG.plugin.sonify.resetTooltip"));
+        // Ensure clicking the icon triggers the button
+        resetButton.iconElement.style.pointerEvents = 'auto';
+        resetButton.iconElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetButton.interactionTarget.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}));
+          resetButton.interactionTarget.dispatchEvent(new MouseEvent('mouseup', {bubbles: true, cancelable: true}));
+        });
+      }
+      resetButton.render = function() {
+        Nexus.Button.prototype.render.call(this);
+        this.iconElement.setAttribute("d", resetPath);
+        this.iconElement.setAttribute("fill", "#000");
+        this.iconElement.setAttribute("stroke", "#000");
+        this.iconElement.setAttribute("stroke-width", "3");
+        // Center and scale the icon to fit 16x16 area (original viewBox is 122.88x118.66)
+        const iconSize = 16;
+        const scaleX = iconSize / 122.88;
+        const scaleY = iconSize / 118.66;
+        const centerX = this.width / 2 - iconSize / 2;
+        const centerY = this.height / 2 - iconSize / 2;
+        this.iconElement.setAttribute("transform", `translate(${centerX}, ${centerY}) scale(${scaleX},${scaleY})`);
+        // Set pad outline to NexusUI accent color
+        this.pad.setAttribute("stroke", this.colors.accent);
+      };
+      this.resetButton.render();
+      // Add click event handler for reset button
+      this.resetButton.on("change", () => {
+        this.resetPlay(true);
+      });
+
+      // this.playToggle = new Nexus.Toggle("#play-toggle", {
+      //   size: [40, 20],
+      //   state: false,
+      // });
+
+      // this.playToggle.on("change", (v) => {
+      //   if (v) {
+      //     this.setUserMessage("DG.plugin.sonify.playingMessage");
+      //     this.play();
+      //   } else {
+      //     this.setUserMessage("DG.plugin.sonify.stoppingMessage");
+      //     this.resetPlay();
+      //   }
+      // });
 
       this.loopToggle = new Nexus.Toggle("#loop-toggle", {
         size: [40, 20],
@@ -217,6 +320,9 @@ const app = new Vue({
           }
         }
       });
+      // Undo: Make the entire button area clickable
+      // (Restore default: only the pad is clickable)
+      // this.playPauseButton.interactionTarget = this.playPauseButton.element;
     },
     setUserMessage(msgKey, ...args) {
       this.userMessage = localeManager.tr(msgKey, args);
@@ -702,16 +808,23 @@ const app = new Vue({
      *   * the UI Play toggle is stopped
      *   * the phase and tracking global are at their minimum value
      */
-    resetPlay() {
-      if (this.playToggle.state !== PLAY_TOGGLE_IDLE)
-        this.playToggle.state = PLAY_TOGGLE_IDLE;
+    resetPlay(isTrueReset = false) {
       this.stop();
-      this.phase = 0;
-      let timeAdj = this.state.timeAttrIsDate ? 1000 : 1;
-      let trackerMin = this.timeAttrRange
-        ? this.timeAttrRange.min / timeAdj
-        : 0;
-      helper.setGlobal(trackingGlobalName, trackerMin);
+      if (isTrueReset) {
+        this.phase = 0;
+        let timeAdj = this.state.timeAttrIsDate ? 1000 : 1;
+        let trackerMin = this.timeAttrRange
+          ? this.timeAttrRange.min / timeAdj
+          : 0;
+        helper.setGlobal(trackingGlobalName, trackerMin);
+      } else {
+        // Store current phase for resume
+        try {
+          this.phase = csound.RequestChannel("phase") || 0;
+        } catch (ex) {
+          this.phase = 0;
+        }
+      }
     },
     triggerNotes(phase) {
       const { playbackSpeed, loop, selectionMode } = this.state;
@@ -731,7 +844,8 @@ const app = new Vue({
         );
       } else {
         this.cycleEndTimerId = setTimeout(() => {
-          this.resetPlay();
+          this.phase = 0; // Reset phase to zero at end of playback
+          this.resetPlay(true);
         }, remainingPlaybackTime * 1000);
       }
 
@@ -830,15 +944,15 @@ const app = new Vue({
     },
     play() {
       if (!this.csoundReady) {
-        if (this.playToggle.state === PLAY_TOGGLE_PLAYING)
-          this.playToggle.state = PLAY_TOGGLE_IDLE;
+        // if (this.playToggle.state === PLAY_TOGGLE_PLAYING)
+        //   this.playToggle.state = PLAY_TOGGLE_IDLE;
         this.setUserMessage("DG.plugin.sonify.notReadyMessage");
         return null;
       }
 
       if (!this.state.pitchAttribute || !this.state.timeAttribute) {
-        if (this.playToggle.state === PLAY_TOGGLE_PLAYING)
-          this.playToggle.state = PLAY_TOGGLE_IDLE;
+        // if (this.playToggle.state === PLAY_TOGGLE_PLAYING)
+        //   this.playToggle.state = PLAY_TOGGLE_IDLE;
         this.setUserMessage("DG.plugin.sonify.missingPitchOrTimeMessage");
         return null;
       }
@@ -909,7 +1023,7 @@ const app = new Vue({
             this.contexts = helper.getContexts();
           });
         } else if (operation === "updateAttributes") {
-          this.resetPlay();
+          this.resetPlay(true);
           this.onGetData();
         } else {
           if (operation === "selectCases") {

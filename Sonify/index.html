@@ -10,9 +10,13 @@
     <div id="app" v-on:click="onBackgroundSelect">
       <div class="main-heading">
         <div class="controller-area">
-          <div class="controller-container" v-bind:title="tr('DG.plugin.sonify.playTitle')">
-            <label for="play-toggle" >{{tr("DG.plugin.sonify.playToggle")}}</label>
-            <span id="play-toggle"></span>
+          <div class="controller-container" v-bind:title="tr('DG.plugin.sonify.playToggle')">
+            <label for="play-pause-button">{{tr("DG.plugin.sonify.playToggle")}}</label>
+            <span id="play-pause-button"></span>
+          </div>
+          <div class="controller-container" v-bind:title="tr('DG.plugin.sonify.resetTitle')">
+            <label for="reset-button">{{tr("DG.plugin.sonify.resetTitle")}}</label>
+            <span id="reset-button"></span>
           </div>
           <div class="controller-container" v-bind:title="tr('DG.plugin.sonify.loopTitle')">
             <label for="loop-toggle">{{tr("DG.plugin.sonify.loopToggle")}}</label>
