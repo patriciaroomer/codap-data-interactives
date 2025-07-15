@@ -56,8 +56,8 @@ const minDur = 0.02;
 const maxDur = 0.5;
 // const durRange = maxDur - minDur;
 
-const minPitchMIDI = 55;
-const maxPitchMIDI = 90;
+const minPitchMIDI = 48;
+const maxPitchMIDI = 96;
 // const pitchMIDIRange = maxPitchMIDI - minPitchMIDI;
 
 const FOCUS_MODE = "Focus";
