@@ -98,6 +98,7 @@ const app = new Vue({
       connectByCollIds: null,
       playbackSpeed: 0.5,
       loop: false,
+      smoothSound: false,
       selectionMode: FOCUS_MODE,
     },
     data: null,
@@ -135,6 +136,7 @@ const app = new Vue({
 
     speedSlider: null,
     loopToggle: null,
+    smoothSoundToggle: null,
     userMessage: null,
     timerId: null,
     phase: 0,
@@ -298,6 +300,23 @@ const app = new Vue({
               this.resetPlay();
             }, remainingPlaybackTime);
           }
+        }
+      });
+
+      this.smoothSoundToggle = new Nexus.Toggle("#smooth-sound-toggle", {
+        size: [40, 20],
+        state: false,
+      });
+
+      this.smoothSoundToggle.on("change", (v) => {
+        this.state.smoothSound = v;
+        // Toggle controls selectionMode: OFF = FOCUS_MODE, ON = CONNECT_MODE
+        this.state.selectionMode = v ? CONNECT_MODE : FOCUS_MODE;
+        // Re-select cases when selection mode changes
+        this.onSelectionModeSelectedByUI();
+        // Reset playback when toggle changes during playback
+        if (this.playing) {
+          this.resetPlay(true);
         }
       });
 
@@ -536,24 +555,6 @@ const app = new Vue({
         this.play();
       }
     },
-    onConnectByCollectionSelectedByUI() {
-      this.setUserMessage(
-        this.state.focusedCollection
-          ? "DG.plugin.sonify.connectByMessage"
-          : "DG.plugin.sonify.disconnectMessage",
-      );
-
-      if (this.state.focusedCollection === UNSELECT_VALUE) {
-        this.state.selectionMode = FOCUS_MODE;
-      } else {
-        this.state.selectionMode = CONNECT_MODE;
-        const context = helper.data[this.state.focusedContext];
-        const collection = context?.[this.state.focusedCollection];
-        this.state.connectByCollIds = collection?.map((c) => c.id);
-      }
-
-      this.onSelectionModeSelectedByUI();
-    },
 
     checkIfGlobal(attr) {
       return this.globals.some((g) => g.name === attr);
@@ -600,6 +601,21 @@ const app = new Vue({
 
         // Do not show the "connect by" dropdown UI if there are not hierarchies / collections.
         this.connectByAvailable = !!this.collections?.length;
+        
+        // Auto-select second to last collection when connectByAvailable is true
+        if (this.connectByAvailable) {
+          // Set the focused collection to the second to last collection (parent above leaf)
+          const collectionIndex = Math.max(0, this.collections.length - 2);
+          this.state.focusedCollection = this.collections[collectionIndex];
+          // Populate connectByCollIds with the selected collection's case IDs
+          const context = helper.data[this.state.focusedContext];
+          const collection = context?.[this.state.focusedCollection];
+          this.state.connectByCollIds = collection?.map((c) => c.id);
+        } else {
+          // Clear selection when no collections are available
+          this.state.focusedCollection = "";
+          this.state.connectByCollIds = null;
+        }
       }
     },
     onGetGlobals() {
@@ -863,10 +879,11 @@ const app = new Vue({
           (res, v) => ((res[v.id] = v), res),
           {},
         );
-        this.state.connectByCollIds.forEach((id) => {
-          const timeArrayForGroup = this.timeArray.filter(
-            (v) => v.parent === id,
-          );
+        
+        // Handle flat datasets where connectByCollIds is null or empty
+        if (!this.state.connectByCollIds || this.state.connectByCollIds.length === 0) {
+          // For flat datasets, treat all cases as one continuous group
+          const timeArrayForGroup = this.timeArray.slice().sort((a, b) => a.val - b.val);
 
           for (let i = 0; i < timeArrayForGroup.length - 1; i++) {
             const startTime = (timeArrayForGroup[i].val - phase) / gkfreq;
@@ -876,22 +893,50 @@ const app = new Vue({
               pitchArrayById[timeArrayForGroup[i].id]?.val ?? 0.5;
             const endPitch =
               pitchArrayById[timeArrayForGroup[i + 1].id]?.val ?? 0.5;
-            // const loudness = 0.5;
 
             const unmute = timeArrayForGroup[i].selected ? 1 : 0;
 
-            // The last event of the group should not "hold" the note
-            // as there might be other groups (voices) that would play
-            // past the endTime, resulting in an incorrectly held note.
+            // Use a numeric group ID for flat datasets (CSound requires numeric IDs)
+            const groupId = 1;
             const hold = i === timeArrayForGroup.length - 2 ? timeDelta : -1;
 
+            const csoundEvent = `i 4.${groupId} ${startTime} ${hold} ${unmute} ${startPitch} ${endPitch} ${timeDelta}`;
+
             if (![startTime, timeDelta, startPitch, endPitch].some(isNaN)) {
-              csound.Event(
-                `i 4.${id} ${startTime} ${hold} ${unmute} ${startPitch} ${endPitch} ${timeDelta}`,
-              );
+              csound.Event(csoundEvent);
             }
           }
-        });
+        } else {
+          // Handle hierarchical datasets with collection groups
+          this.state.connectByCollIds.forEach((id) => {
+            const timeArrayForGroup = this.timeArray.filter(
+              (v) => v.parent === id,
+            );
+
+            for (let i = 0; i < timeArrayForGroup.length - 1; i++) {
+              const startTime = (timeArrayForGroup[i].val - phase) / gkfreq;
+              const endTime = (timeArrayForGroup[i + 1].val - phase) / gkfreq;
+              const timeDelta = endTime - startTime;
+              const startPitch =
+                pitchArrayById[timeArrayForGroup[i].id]?.val ?? 0.5;
+              const endPitch =
+                pitchArrayById[timeArrayForGroup[i + 1].id]?.val ?? 0.5;
+
+              const unmute = timeArrayForGroup[i].selected ? 1 : 0;
+
+              // The last event of the group should not "hold" the note
+              // as there might be other groups (voices) that would play
+              // past the endTime, resulting in an incorrectly held note.
+              const hold = i === timeArrayForGroup.length - 2 ? timeDelta : -1;
+
+              if (![startTime, timeDelta, startPitch, endPitch].some(isNaN)) {
+                csound.Event(
+                  `i 4.${id} ${startTime} ${hold} ${unmute} ${startPitch} ${endPitch} ${timeDelta}`,
+                );
+              }
+            }
+          });
+        }
       } else {
         this.timeArray.forEach((d, i) => {
           const pitch = pitchTimeArrayLengthsMatch
@@ -989,6 +1034,9 @@ const app = new Vue({
       }
       if (this.state.loop != null) {
         this.loopToggle.state = this.state.loop;
+      }
+      if (this.state.smoothSound != null) {
+        this.smoothSoundToggle.state = this.state.smoothSound;
       }
       helper
         .queryAllData()
