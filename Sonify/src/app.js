@@ -440,7 +440,6 @@ const app = new Vue({
         let cyclePos = 0;
         try {
           cyclePos = csound.RequestChannel("phase") || 0;
-          console.log("UpdateTracker - phase from CSound:", cyclePos);
         } catch (ex) {
           console.warn("CSound phase undefined. Assuming 0.");
         }
@@ -462,26 +461,22 @@ const app = new Vue({
         
         // Handle selection-scoped playback: map CSound phase to selection range
         if (this.isSelectionScoped && this.selectedTimeRange) {
-          const selectionPhaseRange = this.calculateSelectionPhaseRange();
-          if (selectionPhaseRange && selectionPhaseRange.isValid) {
-            // Map CSound phase (0-1) to selection phase range
-            const selectionPhase = selectionPhaseRange.startPhase + 
-              (cyclePos * (selectionPhaseRange.endPhase - selectionPhaseRange.startPhase));
-            
-            // Convert selection phase back to data time
-            dataTime = scale(
-              selectionPhase / modeAdj,
-              this.timeAttrRange.max / timeAdj,
-              this.timeAttrRange.min / timeAdj,
-            );
-          } else {
-            // Fallback to normal behavior if selection phase calculation fails
-            dataTime = scale(
-              cyclePos / modeAdj,
-              this.timeAttrRange.max / timeAdj,
-              this.timeAttrRange.min / timeAdj,
-            );
-          }
+          // In selection-scoped mode, the CSound phase starts at the selection start phase
+          // and represents the current position in the overall dataset timeline
+          // So we can use it directly to calculate the data time
+          dataTime = scale(
+            cyclePos / modeAdj,
+            this.timeAttrRange.max / timeAdj,
+            this.timeAttrRange.min / timeAdj,
+          );
+          
+          // Debug: Log tracker calculation for selection-scoped mode
+          console.log("Selection-scoped tracker:", {
+            cyclePos,
+            dataTime,
+            timeAdj,
+            modeAdj
+          });
         } else {
           // Normal behavior: map CSound phase to entire dataset range
           dataTime = scale(
@@ -1525,9 +1520,8 @@ const app = new Vue({
         const selectionPhaseRange = this.calculateSelectionPhaseRange();
         if (selectionPhaseRange && selectionPhaseRange.isValid) {
           // Calculate remaining time within selection range
-          const selectionPhaseSpan = selectionPhaseRange.endPhase - selectionPhaseRange.startPhase;
-          const currentSelectionPhase = selectionPhaseRange.startPhase + (currentPhase * selectionPhaseSpan);
-          const remainingTime = (selectionPhaseRange.endPhase - currentSelectionPhase) / gkfreq;
+          // currentPhase already represents the actual position in the dataset timeline
+          const remainingTime = (selectionPhaseRange.endPhase - currentPhase) / gkfreq;
           return {
             remainingTime: remainingTime,
             restartPhase: selectionPhaseRange.startPhase
