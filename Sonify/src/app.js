@@ -204,7 +204,11 @@ const app = new Vue({
           this.play();
         } else {
           this.setUserMessage("DG.plugin.sonify.stoppingMessage");
-          this.resetPlay(false);
+          // Only reset play if we're actually playing (user clicked pause)
+          // Don't reset if playback ended naturally (playing is already false)
+          if (this.playing) {
+            this.resetPlay(false);
+          }
         }
       });
       // Ensure button state reflects playback status if stopped elsewhere
@@ -435,6 +439,7 @@ const app = new Vue({
         let cyclePos = 0;
         try {
           cyclePos = csound.RequestChannel("phase") || 0;
+          console.log("UpdateTracker - phase from CSound:", cyclePos);
         } catch (ex) {
           console.warn("CSound phase undefined. Assuming 0.");
         }
@@ -825,9 +830,14 @@ const app = new Vue({
      *   * the phase and tracking global are at their minimum value
      */
     resetPlay(isTrueReset = false) {
+      console.log("=== RESETPLAY CALLED ===");
+      console.log("isTrueReset:", isTrueReset);
+      console.log("Phase before reset:", this.phase);
+      
       this.stop();
       if (isTrueReset) {
         this.phase = 0;
+        console.log("True reset - phase set to 0");
         let timeAdj = this.state.timeAttrIsDate ? 1000 : 1;
         let trackerMin = this.timeAttrRange
           ? this.timeAttrRange.min / timeAdj
@@ -836,11 +846,15 @@ const app = new Vue({
       } else {
         // Store current phase for resume
         try {
-          this.phase = csound.RequestChannel("phase") || 0;
+          const oldPhase = csound.RequestChannel("phase") || 0;
+          this.phase = oldPhase;
+          console.log("Resume mode - phase read from CSound:", oldPhase);
         } catch (ex) {
           this.phase = 0;
+          console.log("Resume mode - exception, phase set to 0");
         }
       }
+      console.log("Phase after reset:", this.phase);
     },
     triggerNotes(phase) {
       const { playbackSpeed, loop, selectionMode } = this.state;
@@ -860,8 +874,10 @@ const app = new Vue({
         );
       } else {
         this.cycleEndTimerId = setTimeout(() => {
-          this.phase = 0; // Reset phase to zero at end of playback
+          console.log("=== NATURAL PLAYBACK END ===");
+          console.log("Phase before reset:", this.phase);
           this.resetPlay(true);
+          console.log("Phase after reset:", this.phase);
         }, remainingPlaybackTime * 1000);
       }
 
@@ -969,14 +985,28 @@ const app = new Vue({
       }
     },
     setupSound() {
+      console.log("=== SETUPSOUND CALLED ===");
+      console.log("Phase at start:", this.phase);
+      
       this.stop();
 
       return csound.PlayCsd(this.selectedCsd).then(() => {
+        console.log("CSound started, setting up...");
         this.playing = true;
         this.startTime = Date.now();
         csound.SetChannel("playbackSpeed", this.state.playbackSpeed);
         csound.SetChannel("click", this.state.loop ? 1 : 0); // Loop is now also mapped to click on/off.
+        
+        // Ensure phase channel is properly initialized before starting
+        try {
+          csound.SetChannel("phase", this.phase);
+          console.log("Set phase channel to:", this.phase);
+        } catch (ex) {
+          console.warn("Could not set initial phase channel:", ex);
+        }
+        
         csound.Event(`i1 0 -1 ${this.phase}`);
+        console.log("Started MASTER instrument with phase:", this.phase);
 
         this.timerId = setInterval(() => {
           this.updateTracker();
@@ -988,6 +1018,11 @@ const app = new Vue({
       });
     },
     play() {
+      console.log("=== PLAY CALLED ===");
+      console.log("Current phase:", this.phase);
+      console.log("Playing state:", this.playing);
+      console.log("Button state:", this.playPauseButton.state);
+      
       if (!this.csoundReady) {
         // if (this.playToggle.state === PLAY_TOGGLE_PLAYING)
         //   this.playToggle.state = PLAY_TOGGLE_IDLE;
@@ -1013,10 +1048,15 @@ const app = new Vue({
         return null;
       }
 
+      console.log("=== STOP CALLED ===");
+      console.log("Playing state before stop:", this.playing);
+      
       this.timerId && clearInterval(this.timerId);
       csound.Stop();
       csound.Csound.reset(); // Ensure the playback position, etc. are reset.
       this.playing = false;
+
+      console.log("Playing state after stop:", this.playing);
 
       this.cycleEndTimerId && clearTimeout(this.cycleEndTimerId);
       this.cycleEndTimerId = null;
