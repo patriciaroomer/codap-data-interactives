@@ -28,6 +28,10 @@
               id="speed-slider"
             ></span>
           </div>
+          <div class="controller-container" v-bind:title="tr('DG.plugin.sonify.smoothSoundTitle')">
+            <label for="smooth-sound-toggle">{{tr("DG.plugin.sonify.smoothSoundToggle")}}</label>
+            <span id="smooth-sound-toggle"></span>
+          </div>
         </div>
         <div class="message-area" v-bind:title="tr('DG.plugin.sonify.messageArea')">{{userMessage}}</div>
       </div>
@@ -128,26 +132,7 @@
           -->
         </div>
 
-        <hr />
 
-        <div
-          class="mapper-container"
-          v-on:click="onBackgroundSelect"
-          v-if="connectByAvailable"
-        >
-          <label v-bind:title="tr('DG.plugin.sonify.connectModeTitle')">
-            {{tr('DG.plugin.sonify.connectModeLabel')}}
-            <select
-              v-model="state.focusedCollection"
-              v-on:change="onConnectByCollectionSelectedByUI"
-              class="drop-area"
-              id="connectByCollDropArea"
-            >
-              <option selected value="NULL">-----</option>
-              <option v-for="collection in collections">{{collection}}</option>
-            </select>
-          </label>
-        </div>
 
         <div class="mapper-container">
           <button :disabled="!isPlayable" v-bind:title="tr('DG.plugin.sonify.createGraphTitle')" v-on:click="createGraph">
