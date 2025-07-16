@@ -125,6 +125,9 @@ const app = new Vue({
     stereoAttrRange: null,
     stereoArray: [],
 
+    selectedTimeRange: null,
+    isSelectionScoped: false,
+
     csdFiles: ["Sonify.csd"],
     selectedCsd: null,
     csoundReady: false,
@@ -289,19 +292,17 @@ const app = new Vue({
 
         if (this.playing) {
           const phase = csound.RequestChannel("phase");
-          let gkfreq = expcurve(this.state.playbackSpeed, 50);
-          gkfreq = expcurve(gkfreq, 50);
-          gkfreq = scale(gkfreq, 5, 0.05);
-          const remainingPlaybackTime = ((1 - phase) / gkfreq) * 1000;
+          const loopTiming = this.calculateLoopTiming(phase);
+          const remainingPlaybackTime = loopTiming.remainingTime * 1000;
 
           if (this.state.loop) {
             this.cycleEndTimerId = setTimeout(
-              () => this.triggerNotes(0),
+              () => this.triggerNotes(loopTiming.restartPhase),
               remainingPlaybackTime,
             );
           } else {
             this.cycleEndTimerId = setTimeout(() => {
-              this.resetPlay();
+              this.resetPlay(true);
             }, remainingPlaybackTime);
           }
         }
@@ -443,6 +444,7 @@ const app = new Vue({
         } catch (ex) {
           console.warn("CSound phase undefined. Assuming 0.");
         }
+        
         // For obscure reasons CODAP Time is measured in seconds,
         // not milliseconds. Normally this adjustment is automatic.
         // In order for the sonification tracker to align with the
@@ -456,11 +458,39 @@ const app = new Vue({
             ? 1
             : (this.timeAttrRange.len - 1) / this.timeAttrRange.len;
 
-        const dataTime = scale(
-          cyclePos / modeAdj,
-          this.timeAttrRange.max / timeAdj,
-          this.timeAttrRange.min / timeAdj,
-        );
+        let dataTime;
+        
+        // Handle selection-scoped playback: map CSound phase to selection range
+        if (this.isSelectionScoped && this.selectedTimeRange) {
+          const selectionPhaseRange = this.calculateSelectionPhaseRange();
+          if (selectionPhaseRange && selectionPhaseRange.isValid) {
+            // Map CSound phase (0-1) to selection phase range
+            const selectionPhase = selectionPhaseRange.startPhase + 
+              (cyclePos * (selectionPhaseRange.endPhase - selectionPhaseRange.startPhase));
+            
+            // Convert selection phase back to data time
+            dataTime = scale(
+              selectionPhase / modeAdj,
+              this.timeAttrRange.max / timeAdj,
+              this.timeAttrRange.min / timeAdj,
+            );
+          } else {
+            // Fallback to normal behavior if selection phase calculation fails
+            dataTime = scale(
+              cyclePos / modeAdj,
+              this.timeAttrRange.max / timeAdj,
+              this.timeAttrRange.min / timeAdj,
+            );
+          }
+        } else {
+          // Normal behavior: map CSound phase to entire dataset range
+          dataTime = scale(
+            cyclePos / modeAdj,
+            this.timeAttrRange.max / timeAdj,
+            this.timeAttrRange.min / timeAdj,
+          );
+        }
+        
         helper.setGlobal(trackingGlobalName, dataTime);
       }
     },
@@ -740,7 +770,13 @@ const app = new Vue({
             items.forEach((c) => (idItemMap[c.id].sel = true));
             this.timeArray = Object.values(idItemMap);
           } else {
-            this.timeArray = items.map((c) => ({ id: c.id, val: 0 }));
+            // FOCUS_MODE: Include selection information for consistency
+            const selectedItemIdsSet = new Set(items.map((item) => item.id));
+            this.timeArray = items.map((c) => ({ 
+              id: c.id, 
+              val: 0, 
+              selected: selectedItemIdsSet.has(c.id) 
+            }));
           }
         } else {
           if (this.checkIfGlobal(timeAttribute)) {
@@ -758,7 +794,13 @@ const app = new Vue({
               items.forEach((c) => (idItemMap[c.id].sel = true));
               this.timeArray = Object.values(idItemMap);
             } else {
-              this.timeArray = items.map((c) => ({ id: c.id, val: value }));
+              // FOCUS_MODE: Include selection information for consistency
+              const selectedItemIdsSet = new Set(items.map((item) => item.id));
+              this.timeArray = items.map((c) => ({ 
+                id: c.id, 
+                val: value, 
+                selected: selectedItemIdsSet.has(c.id) 
+              }));
             }
           } else {
             if (selectionMode === CONTRAST_MODE) {
@@ -791,6 +833,8 @@ const app = new Vue({
                 return { id: c.id, val: value, parent, selected };
               });
             } else {
+              // FOCUS_MODE: Include selection information for consistency
+              const selectedItemIdsSet = new Set(items.map((item) => item.id));
               this.timeArray = items.map((c) => {
                 let value = timeAttrIsDate
                   ? Date.parse(c.values[timeAttribute])
@@ -799,7 +843,8 @@ const app = new Vue({
                   ? NaN
                   : ((value - this.timeAttrRange.min) / range) *
                     ((this.timeAttrRange.len - 1) / this.timeAttrRange.len);
-                return { id: c.id, val: value };
+                const selected = selectedItemIdsSet.has(c.id);
+                return { id: c.id, val: value, selected };
               });
             }
           }
@@ -813,6 +858,12 @@ const app = new Vue({
           ? allItems
           : items,
       });
+
+      // Calculate and store selection bounds after timeArray is populated
+      this.selectedTimeRange = this.getSelectedTimeRange();
+      
+      // Update selection scoped flag based on whether we have selected cases
+      this.isSelectionScoped = this.hasSelectedCases() && this.selectedTimeRange !== null;
 
       if (this.playing) {
         this.phase = csound.RequestChannel("phase");
@@ -833,16 +884,41 @@ const app = new Vue({
       console.log("=== RESETPLAY CALLED ===");
       console.log("isTrueReset:", isTrueReset);
       console.log("Phase before reset:", this.phase);
+      console.log("Selection scoped:", this.isSelectionScoped);
       
       this.stop();
       if (isTrueReset) {
-        this.phase = 0;
-        console.log("True reset - phase set to 0");
+        // For selection-scoped playback, reset to selection start instead of 0
+        if (this.isSelectionScoped && this.selectedTimeRange) {
+          const selectionPhaseRange = this.calculateSelectionPhaseRange();
+          if (selectionPhaseRange && selectionPhaseRange.isValid) {
+            this.phase = selectionPhaseRange.startPhase;
+            console.log("True reset - selection-scoped phase set to:", this.phase);
+          } else {
+            this.phase = 0;
+            console.log("True reset - fallback to phase 0");
+          }
+        } else {
+          this.phase = 0;
+          console.log("True reset - phase set to 0");
+        }
+        
+        // Update tracker to reflect the reset position
         let timeAdj = this.state.timeAttrIsDate ? 1000 : 1;
-        let trackerMin = this.timeAttrRange
-          ? this.timeAttrRange.min / timeAdj
-          : 0;
-        helper.setGlobal(trackingGlobalName, trackerMin);
+        let trackerValue;
+        
+        if (this.isSelectionScoped && this.selectedTimeRange) {
+          // Set tracker to selection start time
+          trackerValue = this.selectedTimeRange.min / timeAdj;
+        } else {
+          // Set tracker to dataset start time
+          trackerValue = this.timeAttrRange
+            ? this.timeAttrRange.min / timeAdj
+            : 0;
+        }
+        
+        helper.setGlobal(trackingGlobalName, trackerValue);
+        console.log("Tracker set to:", trackerValue);
       } else {
         // Store current phase for resume
         try {
@@ -865,11 +941,14 @@ const app = new Vue({
       gkfreq = expcurve(gkfreq, 50);
       gkfreq = scale(gkfreq, 5, 0.05);
 
-      const remainingPlaybackTime = (1 - phase) / gkfreq;
+      // Handle selection-scoped playback timing
+      const loopTiming = this.calculateLoopTiming(phase);
+      const remainingPlaybackTime = loopTiming.remainingTime;
+      const loopRestartPhase = loopTiming.restartPhase;
 
       if (loop) {
         this.cycleEndTimerId = setTimeout(
-          () => this.triggerNotes(0),
+          () => this.triggerNotes(loopRestartPhase),
           remainingPlaybackTime * 1000,
         );
       } else {
@@ -899,7 +978,21 @@ const app = new Vue({
         // Handle flat datasets where connectByCollIds is null or empty
         if (!this.state.connectByCollIds || this.state.connectByCollIds.length === 0) {
           // For flat datasets, treat all cases as one continuous group
-          const timeArrayForGroup = this.timeArray.slice().sort((a, b) => a.val - b.val);
+          let timeArrayForGroup = this.timeArray.slice().sort((a, b) => a.val - b.val);
+          
+                      // For selection-scoped playback, we need to handle non-contiguous selections properly
+            if (this.isSelectionScoped) {
+              // Keep all cases in temporal sequence but create silent gaps for unselected cases
+              // This maintains accurate timing while creating silence for unselected regions
+              timeArrayForGroup = timeArrayForGroup.filter(item => 
+                this.shouldIncludeInSelectionScope(item)
+              );
+            }
+
+          // Skip if insufficient cases for continuous playback
+          if (timeArrayForGroup.length < 2) {
+            return;
+          }
 
           for (let i = 0; i < timeArrayForGroup.length - 1; i++) {
             const startTime = (timeArrayForGroup[i].val - phase) / gkfreq;
@@ -910,7 +1003,9 @@ const app = new Vue({
             const endPitch =
               pitchArrayById[timeArrayForGroup[i + 1].id]?.val ?? 0.5;
 
-            const unmute = timeArrayForGroup[i].selected ? 1 : 0;
+            // Use unmute to create silent gaps for unselected cases
+            // This ensures continuous playback while maintaining selection highlighting
+            const unmute = this.getUnmuteValue(timeArrayForGroup[i]);
 
             // Use a numeric group ID for flat datasets (CSound requires numeric IDs)
             const groupId = 1;
@@ -925,9 +1020,23 @@ const app = new Vue({
         } else {
           // Handle hierarchical datasets with collection groups
           this.state.connectByCollIds.forEach((id) => {
-            const timeArrayForGroup = this.timeArray.filter(
+            let timeArrayForGroup = this.timeArray.filter(
               (v) => v.parent === id,
             );
+            
+                          // For selection-scoped playback, handle non-contiguous selections properly
+              if (this.isSelectionScoped) {
+                // Keep all cases in temporal sequence but create silent gaps for unselected cases
+                // This maintains accurate timing while creating silence for unselected regions
+                timeArrayForGroup = timeArrayForGroup.filter(item => 
+                  this.shouldIncludeInSelectionScope(item)
+                );
+              }
+
+            // Skip if insufficient cases for continuous playback
+            if (timeArrayForGroup.length < 2) {
+              return;
+            }
 
             for (let i = 0; i < timeArrayForGroup.length - 1; i++) {
               const startTime = (timeArrayForGroup[i].val - phase) / gkfreq;
@@ -938,7 +1047,9 @@ const app = new Vue({
               const endPitch =
                 pitchArrayById[timeArrayForGroup[i + 1].id]?.val ?? 0.5;
 
-              const unmute = timeArrayForGroup[i].selected ? 1 : 0;
+                              // Use unmute to create silent gaps for unselected cases
+                // This ensures continuous playback while maintaining selection highlighting
+                const unmute = this.getUnmuteValue(timeArrayForGroup[i]);
 
               // The last event of the group should not "hold" the note
               // as there might be other groups (voices) that would play
@@ -965,7 +1076,13 @@ const app = new Vue({
           const loudness = 0.5;
           const duration = 0.2;
 
-          if (d.val >= phase && ![d.val, pitch].some(isNaN)) {
+          // For selection-scoped playback, only trigger notes for selected cases
+          // This creates silent gaps for unselected cases while maintaining accurate timing
+          const shouldTrigger = this.isSelectionScoped 
+            ? (d.selected && d.val >= phase) 
+            : (d.val >= phase);
+
+          if (shouldTrigger && ![d.val, pitch].some(isNaN)) {
             if (selectionMode === CONTRAST_MODE) {
               const instr = d.sel ? 3 : 2;
               csound.Event(
@@ -997,23 +1114,33 @@ const app = new Vue({
         csound.SetChannel("playbackSpeed", this.state.playbackSpeed);
         csound.SetChannel("click", this.state.loop ? 1 : 0); // Loop is now also mapped to click on/off.
         
+        // Determine initial phase - use selection start if selection is active
+        let initialPhase = this.phase;
+        if (this.isSelectionScoped && this.selectedTimeRange) {
+          const selectionPhaseRange = this.calculateSelectionPhaseRange();
+          if (selectionPhaseRange && selectionPhaseRange.isValid) {
+            initialPhase = selectionPhaseRange.startPhase;
+            console.log("Using selection start phase:", initialPhase);
+          }
+        }
+        
         // Ensure phase channel is properly initialized before starting
         try {
-          csound.SetChannel("phase", this.phase);
-          console.log("Set phase channel to:", this.phase);
+          csound.SetChannel("phase", initialPhase);
+          console.log("Set phase channel to:", initialPhase);
         } catch (ex) {
           console.warn("Could not set initial phase channel:", ex);
         }
         
-        csound.Event(`i1 0 -1 ${this.phase}`);
-        console.log("Started MASTER instrument with phase:", this.phase);
+        csound.Event(`i1 0 -1 ${initialPhase}`);
+        console.log("Started MASTER instrument with phase:", initialPhase);
 
         this.timerId = setInterval(() => {
           this.updateTracker();
         }, 33); // 30 FPS
 
         if (this.timeArray.length !== 0) {
-          this.triggerNotes(this.phase);
+          this.triggerNotes(initialPhase);
         }
       });
     },
@@ -1035,6 +1162,39 @@ const app = new Vue({
         //   this.playToggle.state = PLAY_TOGGLE_IDLE;
         this.setUserMessage("DG.plugin.sonify.missingPitchOrTimeMessage");
         return null;
+      }
+
+      // Determine if playback should be selection-scoped and initialize phase accordingly
+      const shouldUseSelectionScope = this.hasSelectedCases() && this.selectedTimeRange !== null;
+      
+      if (shouldUseSelectionScope && !this.isSelectionScoped) {
+        // Transitioning from full-dataset to selection-scoped playback
+        console.log("Transitioning to selection-scoped playback");
+        this.isSelectionScoped = true;
+        
+        // Reset phase to selection start for new selection-scoped playback
+        const selectionPhaseRange = this.calculateSelectionPhaseRange();
+        if (selectionPhaseRange && selectionPhaseRange.isValid) {
+          this.phase = selectionPhaseRange.startPhase;
+          console.log("Reset phase to selection start:", this.phase);
+        }
+      } else if (!shouldUseSelectionScope && this.isSelectionScoped) {
+        // Transitioning from selection-scoped to full-dataset playback
+        console.log("Transitioning to full-dataset playback");
+        this.isSelectionScoped = false;
+        
+        // Reset phase to beginning for full-dataset playback
+        this.phase = 0;
+        console.log("Reset phase to dataset start:", this.phase);
+      } else if (shouldUseSelectionScope && this.isSelectionScoped) {
+        // Continuing selection-scoped playback - ensure we start at selection start if phase is 0
+        if (this.phase === 0) {
+          const selectionPhaseRange = this.calculateSelectionPhaseRange();
+          if (selectionPhaseRange && selectionPhaseRange.isValid) {
+            this.phase = selectionPhaseRange.startPhase;
+            console.log("Starting selection-scoped playback at selection start:", this.phase);
+          }
+        }
       }
 
       if (CSOUND_AUDIO_CONTEXT.state !== "running") {
@@ -1186,6 +1346,292 @@ const app = new Vue({
       let isStrict = [CONTRAST_MODE].includes(this.state.selectionMode);
       return await helper.getSelectedItems(context, !isStrict);
     },
+
+    /**
+     * Calculate min/max time values among selected cases using this.timeArray
+     * @returns {Object|null} Object with min and max time values, or null if no selection
+     */
+    getSelectedCaseBounds() {
+      if (!this.timeArray || this.timeArray.length === 0) {
+        return null;
+      }
+
+      // Filter for selected cases (check for 'selected' property or 'sel' property)
+      let selectedCases = this.timeArray.filter(item => 
+        item.selected === true || item.sel === true
+      );
+
+      // Handle edge case: if no cases are explicitly selected, 
+      // treat all cases as selected in non-strict modes
+      if (selectedCases.length === 0) {
+        const isStrict = [CONTRAST_MODE].includes(this.state.selectionMode);
+        if (!isStrict) {
+          selectedCases = this.timeArray;
+        } else {
+          return null;
+        }
+      }
+
+      // Find min and max time values among selected cases
+      const timeValues = selectedCases
+        .map(item => item.val)
+        .filter(val => !isNaN(val));
+
+      if (timeValues.length === 0) {
+        return null;
+      }
+
+      const min = Math.min(...timeValues);
+      const max = Math.max(...timeValues);
+
+      return {
+        min: min,
+        max: max,
+        count: selectedCases.length,
+        // Edge case flags for easier handling
+        isSingleCase: selectedCases.length === 1,
+        isAllCases: selectedCases.length === this.timeArray.length,
+        isNoExplicitSelection: selectedCases === this.timeArray
+      };
+    },
+
+    /**
+     * Check if any cases are currently selected
+     * @returns {boolean} True if any cases are selected
+     */
+    hasSelectedCases() {
+      if (!this.timeArray || this.timeArray.length === 0) {
+        return false;
+      }
+
+      const selectedCount = this.timeArray.filter(item => 
+        item.selected === true || item.sel === true
+      ).length;
+
+      // Handle edge case: if no cases are explicitly selected, 
+      // check if we should treat all cases as selected (depends on selection mode)
+      if (selectedCount === 0) {
+        // In non-strict modes, no selection means all are selected
+        const isStrict = [CONTRAST_MODE].includes(this.state.selectionMode);
+        return !isStrict;
+      }
+
+      return selectedCount > 0;
+    },
+
+    /**
+     * Get time range for selected cases
+     * @returns {Object|null} Object with min, max, and range properties, or null if no selection
+     */
+    getSelectedTimeRange() {
+      const bounds = this.getSelectedCaseBounds();
+      if (!bounds) {
+        return null;
+      }
+
+      return {
+        min: bounds.min,
+        max: bounds.max,
+        range: bounds.max - bounds.min,
+        count: bounds.count
+      };
+    },
+
+    /**
+     * Convert a time value to its corresponding phase value (0-1)
+     * @param {number} timeValue - Normalized time value (0-1) from timeArray
+     * @returns {number} Phase value (0-1)
+     */
+    calculatePhaseForTimeValue(timeValue) {
+      if (isNaN(timeValue) || timeValue < 0 || timeValue > 1) {
+        return 0;
+      }
+
+      // Account for time attribute scaling (date vs numeric)
+      const timeAdj = this.state.timeAttrIsDate ? 1000 : 1;
+      
+      // Account for selection mode compression
+      const modeAdj = this.state.selectionMode === CONNECT_MODE
+        ? 1
+        : (this.timeAttrRange?.len - 1) / this.timeAttrRange?.len || 1;
+
+      // Convert normalized time value to phase
+      return timeValue * modeAdj;
+    },
+
+    /**
+     * Calculate start and end phases for the current selection
+     * @returns {Object|null} Object with startPhase and endPhase, or null if no selection
+     */
+    calculateSelectionPhaseRange() {
+      const selectedTimeRange = this.getSelectedTimeRange();
+      if (!selectedTimeRange) {
+        return null;
+      }
+
+      // Handle edge case where selection is at dataset boundaries
+      const startPhase = this.calculatePhaseForTimeValue(selectedTimeRange.min);
+      const endPhase = this.calculatePhaseForTimeValue(selectedTimeRange.max);
+
+      // Ensure valid phase range
+      const validStartPhase = Math.max(0, Math.min(1, startPhase));
+      const validEndPhase = Math.max(0, Math.min(1, endPhase));
+
+      return {
+        startPhase: validStartPhase,
+        endPhase: validEndPhase,
+        range: validEndPhase - validStartPhase,
+        isValid: validEndPhase > validStartPhase
+      };
+    },
+
+    /**
+     * Calculate the duration of selection-scoped playback in seconds
+     * @returns {number} Duration in seconds, or 0 if no selection
+     */
+    calculateSelectionPlaybackDuration() {
+      if (!this.isSelectionScoped || !this.selectedTimeRange) {
+        return 0;
+      }
+
+      const selectionPhaseRange = this.calculateSelectionPhaseRange();
+      if (!selectionPhaseRange || !selectionPhaseRange.isValid) {
+        return 0;
+      }
+
+      // Calculate duration based on selection phase span and playback speed
+      const selectionPhaseSpan = selectionPhaseRange.endPhase - selectionPhaseRange.startPhase;
+      
+      // Convert playback speed to frequency
+      let gkfreq = expcurve(this.state.playbackSpeed, 50);
+      gkfreq = expcurve(gkfreq, 50);
+      gkfreq = scale(gkfreq, 5, 0.05);
+
+      // Duration = phase span / frequency
+      return selectionPhaseSpan / gkfreq;
+    },
+
+    /**
+     * Calculate loop timing parameters for current playback state
+     * @param {number} currentPhase - Current CSound phase
+     * @returns {Object} Object with remainingTime and restartPhase
+     */
+    calculateLoopTiming(currentPhase) {
+      let gkfreq = expcurve(this.state.playbackSpeed, 50);
+      gkfreq = expcurve(gkfreq, 50);
+      gkfreq = scale(gkfreq, 5, 0.05);
+
+      if (this.isSelectionScoped && this.selectedTimeRange) {
+        const selectionPhaseRange = this.calculateSelectionPhaseRange();
+        if (selectionPhaseRange && selectionPhaseRange.isValid) {
+          // Calculate remaining time within selection range
+          const selectionPhaseSpan = selectionPhaseRange.endPhase - selectionPhaseRange.startPhase;
+          const currentSelectionPhase = selectionPhaseRange.startPhase + (currentPhase * selectionPhaseSpan);
+          const remainingTime = (selectionPhaseRange.endPhase - currentSelectionPhase) / gkfreq;
+          return {
+            remainingTime: remainingTime,
+            restartPhase: selectionPhaseRange.startPhase
+          };
+        }
+      }
+      
+      // Normal behavior: use full dataset range
+      return {
+        remainingTime: (1 - currentPhase) / gkfreq,
+        restartPhase: 0
+      };
+    },
+
+    /**
+     * Analyze the current selection pattern for non-contiguous gaps
+     * @returns {Object} Analysis of selection patterns and gaps
+     */
+    analyzeSelectionPattern() {
+      if (!this.timeArray || this.timeArray.length === 0) {
+        return { hasSelection: false, isContiguous: true, gaps: [] };
+      }
+
+      // Sort by time value to analyze temporal sequence
+      const sortedTimeArray = this.timeArray.slice().sort((a, b) => a.val - b.val);
+      const selectedCases = sortedTimeArray.filter(item => item.selected);
+      
+      if (selectedCases.length === 0) {
+        return { hasSelection: false, isContiguous: true, gaps: [] };
+      }
+
+      if (selectedCases.length === 1) {
+        return { hasSelection: true, isContiguous: true, gaps: [], singleCase: true };
+      }
+
+      // Analyze gaps between selected cases
+      const gaps = [];
+      let isContiguous = true;
+      
+      for (let i = 0; i < selectedCases.length - 1; i++) {
+        const currentCase = selectedCases[i];
+        const nextCase = selectedCases[i + 1];
+        
+        // Find cases between current and next selected case
+        const casesBetween = sortedTimeArray.filter(item => 
+          item.val > currentCase.val && 
+          item.val < nextCase.val && 
+          !item.selected
+        );
+        
+        if (casesBetween.length > 0) {
+          isContiguous = false;
+          gaps.push({
+            startTime: currentCase.val,
+            endTime: nextCase.val,
+            gapSize: casesBetween.length,
+            unselectedCases: casesBetween.map(c => c.id)
+          });
+        }
+      }
+
+      return {
+        hasSelection: true,
+        isContiguous,
+        gaps,
+        totalSelected: selectedCases.length,
+        totalCases: sortedTimeArray.length,
+        selectionRatio: selectedCases.length / sortedTimeArray.length
+      };
+    },
+
+    /**
+     * Determine if a case should be included in selection-scoped note generation
+     * @param {Object} caseItem - Case item with val, selected, and other properties
+     * @returns {boolean} True if case should be included in note generation
+     */
+    shouldIncludeInSelectionScope(caseItem) {
+      if (!this.isSelectionScoped || !this.selectedTimeRange) {
+        return true; // Include all cases when not in selection-scoped mode
+      }
+
+      // Include selected cases and unselected cases within selection time range
+      // This maintains temporal accuracy while creating silent gaps for unselected cases
+      return caseItem.selected || (
+        caseItem.val >= this.selectedTimeRange.min && 
+        caseItem.val <= this.selectedTimeRange.max
+      );
+    },
+
+    /**
+     * Get the appropriate unmute value for a case in selection-scoped playback
+     * @param {Object} caseItem - Case item with selected property
+     * @returns {number} 1 for audible, 0 for silent
+     */
+    getUnmuteValue(caseItem) {
+      // In selection-scoped mode, only selected cases should be audible
+      // In normal mode, all cases should be audible
+      if (this.isSelectionScoped) {
+        return caseItem.selected ? 1 : 0;
+      }
+      return 1;
+    },
+
+
   },
   async mounted() {
     this.setupDrag();
