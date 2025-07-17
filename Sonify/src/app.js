@@ -146,6 +146,7 @@ const app = new Vue({
     cycleEndTimerId: null,
     selectionModes: [FOCUS_MODE, CONNECT_MODE],
     l: localeManager,
+    trackerInitialized: false,
   },
   watch: {
     state: {
@@ -439,6 +440,7 @@ const app = new Vue({
      * the current score.
      */
     updateTracker() {
+      if (!this.trackerInitialized) return;
       if (this.timeAttrRange) {
         let cyclePos = 0;
         try {
@@ -1132,6 +1134,7 @@ const app = new Vue({
       }
     },
     setupSound() {
+      this.trackerInitialized = true;
       console.log("=== SETUPSOUND CALLED ===");
       console.log("Phase at start:", this.phase);
       
@@ -1178,6 +1181,7 @@ const app = new Vue({
       });
     },
     play() {
+      this.trackerInitialized = true;
       console.log("=== PLAY CALLED ===");
       console.log("Current phase:", this.phase);
       console.log("Playing state:", this.playing);
@@ -1669,6 +1673,7 @@ const app = new Vue({
     this.setupDrag();
     this.setupUI();
 
+    this.trackerInitialized = false;
     let state = await helper.init(this.name, this.dim, this.version);
     if (state && Object.keys(state).length) {
       this.restoreSavedState(state);
@@ -1676,8 +1681,10 @@ const app = new Vue({
       this.onGetData();
     }
 
-    await helper.guaranteeGlobal(trackingGlobalName);
+  await helper.guaranteeGlobal(trackingGlobalName);
     this.updateTracker();
+    // Set sonificationTracker to -999999 after all state/data is loaded
+    helper.setGlobal(trackingGlobalName, -999999);
 
     helper.on("*", this.handleCODAPNotice);
 
