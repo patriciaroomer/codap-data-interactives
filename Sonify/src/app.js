@@ -871,11 +871,7 @@ const app = new Vue({
       // Update selection scoped flag based on whether we have selected cases
       this.isSelectionScoped = this.hasSelectedCases() && this.selectedTimeRange !== null;
 
-      if (this.playing) {
-        this.phase = csound.RequestChannel("phase");
-        this.stopNotes();
-        this.play();
-      }
+      this.resetPlay(true); // Full reset when selection changes
     },
     stopNotes() {
       csound.Event("e");
