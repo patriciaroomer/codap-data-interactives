@@ -73,7 +73,7 @@ const app = new Vue({
     version: packageInfo.version,
     dim: {
       width: 325,
-      height: 425,
+      height: 340,
     },
     loading: true,
     // state managed by CODAP
