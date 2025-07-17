@@ -884,6 +884,24 @@ const app = new Vue({
       console.log("Phase before reset:", this.phase);
       console.log("Selection scoped:", this.isSelectionScoped);
       
+      // For pause/resume, read the phase BEFORE stopping CSound
+      let resumePhase = 0;
+      if (!isTrueReset && this.playing) {
+        try {
+          resumePhase = csound.RequestChannel("phase") || 0;
+          console.log("Resume mode - phase read BEFORE stop:", resumePhase);
+          
+          // Validate the phase is reasonable (between 0 and 1)
+          if (resumePhase < 0 || resumePhase > 1) {
+            console.warn("Invalid phase from CSound, resetting to 0:", resumePhase);
+            resumePhase = 0;
+          }
+        } catch (ex) {
+          resumePhase = 0;
+          console.log("Resume mode - exception reading phase, using 0");
+        }
+      }
+      
       this.stop();
       if (isTrueReset) {
         // For selection-scoped playback, reset to selection start instead of 0
@@ -918,20 +936,20 @@ const app = new Vue({
         helper.setGlobal(trackingGlobalName, trackerValue);
         console.log("Tracker set to:", trackerValue);
       } else {
-        // Store current phase for resume
-        try {
-          const oldPhase = csound.RequestChannel("phase") || 0;
-          this.phase = oldPhase;
-          console.log("Resume mode - phase read from CSound:", oldPhase);
-        } catch (ex) {
-          this.phase = 0;
-          console.log("Resume mode - exception, phase set to 0");
-        }
+        // Store current phase for resume (already read before stopping CSound)
+        this.phase = resumePhase;
+        console.log("Resume mode - using phase read before stop:", resumePhase);
       }
       console.log("Phase after reset:", this.phase);
     },
     
     restartCSoundMaster(phase) {
+      // Only restart if we're currently playing (not paused)
+      if (!this.playing) {
+        console.log("Skipping CSound MASTER restart - not playing");
+        return;
+      }
+      
       // Stop current MASTER
       csound.Event("i-1 0 0");
       
@@ -1126,14 +1144,17 @@ const app = new Vue({
         csound.SetChannel("playbackSpeed", this.state.playbackSpeed);
         csound.SetChannel("click", this.state.loop ? 1 : 0); // Loop is now also mapped to click on/off.
         
-        // Determine initial phase - use selection start if selection is active
+        // Determine initial phase - use selection start only when starting fresh, not resuming
         let initialPhase = this.phase;
-        if (this.isSelectionScoped && this.selectedTimeRange) {
+        if (this.isSelectionScoped && this.selectedTimeRange && this.phase === 0) {
+          // Only override with selection start if we're starting from the beginning (phase === 0)
           const selectionPhaseRange = this.calculateSelectionPhaseRange();
           if (selectionPhaseRange && selectionPhaseRange.isValid) {
             initialPhase = selectionPhaseRange.startPhase;
-            console.log("Using selection start phase:", initialPhase);
+            console.log("Using selection start phase for fresh start:", initialPhase);
           }
+        } else {
+          console.log("Using saved phase for resume:", initialPhase);
         }
         
         // Ensure phase channel is properly initialized before starting
