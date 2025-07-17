@@ -323,9 +323,13 @@ const app = new Vue({
         this.state.selectionMode = v ? CONNECT_MODE : FOCUS_MODE;
         // Re-select cases when selection mode changes
         this.onSelectionModeSelectedByUI();
-        // Reset playback when toggle changes during playback
+                // Continue playback with new mode instead of resetting
         if (this.playing) {
-          this.resetPlay(true);
+          this.resetPlay(false); // Preserve current position
+          // Use Vue's $nextTick to simulate button press
+          this.$nextTick(() => {
+            this.playPauseButton.state = true; // This should trigger the button's event handler
+          });
         }
       });
 
@@ -343,6 +347,10 @@ const app = new Vue({
 
           if (this.playing) {
             this.resetPlay(false);
+            // Use Vue's $nextTick to simulate button press
+            this.$nextTick(() => {
+              this.playPauseButton.state = true; // This should trigger the button's event handler
+            });
           }
         }
       });
