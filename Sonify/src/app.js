@@ -297,7 +297,10 @@ const app = new Vue({
 
           if (this.state.loop) {
             this.cycleEndTimerId = setTimeout(
-              () => this.triggerNotes(loopTiming.restartPhase),
+              () => {
+                this.restartCSoundMaster(loopTiming.restartPhase);
+                this.triggerNotes(loopTiming.restartPhase);
+              },
               remainingPlaybackTime,
             );
           } else {
@@ -927,6 +930,17 @@ const app = new Vue({
       }
       console.log("Phase after reset:", this.phase);
     },
+    
+    restartCSoundMaster(phase) {
+      // Stop current MASTER
+      csound.Event("i-1 0 0");
+      
+      // Start new MASTER with specified phase
+      csound.Event(`i1 0 -1 ${phase}`);
+      
+      console.log("Restarted CSound MASTER with phase:", phase);
+    },
+    
     triggerNotes(phase) {
       const { playbackSpeed, loop, selectionMode } = this.state;
       const pitchTimeArrayLengthsMatch =
@@ -943,7 +957,10 @@ const app = new Vue({
 
       if (loop) {
         this.cycleEndTimerId = setTimeout(
-          () => this.triggerNotes(loopRestartPhase),
+          () => {
+            this.restartCSoundMaster(loopRestartPhase);
+            this.triggerNotes(loopRestartPhase);
+          },
           remainingPlaybackTime * 1000,
         );
       } else {
