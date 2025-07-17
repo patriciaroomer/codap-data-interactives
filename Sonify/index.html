@@ -54,44 +54,6 @@
           </label>
         </div>
 
-        <div class="mapper-container" v-on:click="onBackgroundSelect">
-          <label v-bind:title="tr('DG.plugin.sonify.pitchSelectTitle')" >
-            {{tr("DG.plugin.sonify.pitchSelectLabel")}}
-            <select
-              v-model="state.pitchAttribute"
-              v-on:change="onPitchAttributeSelectedByUI"
-              class="drop-area"
-              id="pitchAttrDropArea"
-            >
-              <option selected value="NULL">-----</option>
-              <option v-for="attribute in attributes">{{attribute}}</option>
-              <option v-if="globals.length" disabled>──────────</option>
-              <option
-                v-if="globals.length"
-                v-for="global in globals.map(g => g.name)"
-              >
-                {{global}}
-              </option>
-            </select>
-          </label>
-
-          <!--
-          <div>
-            <label
-              v-bind:title="tr('DG.plugin.sonify.dateTimePitchTitle')"
-            >
-              <input
-                type="checkbox"
-                v-model="state.pitchAttrIsDate"
-                disabled
-                v-on:change="onPitchAttributeSelectedByUI"
-              />
-              {{tr('DG.plugin.sonify.dateTimeLabel')}}
-            </label>
-          </div>
-          -->
-        </div>
-
         <div class="mapper-container">
           <label
             v-bind:title="tr('DG.plugin.sonify.timeSelectTitle')"
@@ -114,7 +76,7 @@
               </option>
             </select>
           </label>
-
+          <div style="font-size: 0.9em; color: #474747;">(x-axis)</div>
           <!--
           <div>
             <label
@@ -132,7 +94,43 @@
           -->
         </div>
 
-
+        <div class="mapper-container" v-on:click="onBackgroundSelect">
+          <label v-bind:title="tr('DG.plugin.sonify.pitchSelectTitle')" >
+            {{tr("DG.plugin.sonify.pitchSelectLabel")}}
+            <select
+              v-model="state.pitchAttribute"
+              v-on:change="onPitchAttributeSelectedByUI"
+              class="drop-area"
+              id="pitchAttrDropArea"
+            >
+              <option selected value="NULL">-----</option>
+              <option v-for="attribute in attributes">{{attribute}}</option>
+              <option v-if="globals.length" disabled>──────────</option>
+              <option
+                v-if="globals.length"
+                v-for="global in globals.map(g => g.name)"
+              >
+                {{global}}
+              </option>
+            </select>
+          </label>
+          <div style="font-size: 0.9em; color: #474747; margin-top: 0;">(y-axis)</div>
+          <!--
+          <div>
+            <label
+              v-bind:title="tr('DG.plugin.sonify.dateTimePitchTitle')"
+            >
+              <input
+                type="checkbox"
+                v-model="state.pitchAttrIsDate"
+                disabled
+                v-on:change="onPitchAttributeSelectedByUI"
+              />
+              {{tr('DG.plugin.sonify.dateTimeLabel')}}
+            </label>
+          </div>
+          -->
+        </div>
 
         <div class="mapper-container">
           <button :disabled="!isPlayable" v-bind:title="tr('DG.plugin.sonify.createGraphTitle')" v-on:click="createGraph">
