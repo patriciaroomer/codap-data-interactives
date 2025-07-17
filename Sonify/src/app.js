@@ -342,9 +342,7 @@ const app = new Vue({
           csound.SetChannel("playbackSpeed", this.state.playbackSpeed);
 
           if (this.playing) {
-            this.phase = csound.RequestChannel("phase");
-            this.stopNotes();
-            this.play();
+            this.resetPlay(false);
           }
         }
       });
