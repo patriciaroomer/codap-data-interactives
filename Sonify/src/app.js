@@ -54,6 +54,7 @@ const kAttributeMappedProperties = [
 const trackingGlobalName = "sonificationTracker";
 const minDur = 0.02;
 const maxDur = 0.5;
+const defaultNoteDuration = 0.2;
 // const durRange = maxDur - minDur;
 
 const minPitchMIDI = 48;
@@ -1110,7 +1111,7 @@ const app = new Vue({
           // let stereo = this.stereoArray.length === this.timeArray.length ? this.stereoArray[i].val : 0.5;
 
           const loudness = 0.5;
-          const duration = 0.2;
+          const duration = defaultNoteDuration;
 
           // For selection-scoped playback, only trigger notes for selected cases
           // This creates silent gaps for unselected cases while maintaining accurate timing
@@ -1567,7 +1568,9 @@ const app = new Vue({
         if (selectionPhaseRange && selectionPhaseRange.isValid) {
           // Calculate remaining time within selection range
           // currentPhase already represents the actual position in the dataset timeline
-          const remainingTime = (selectionPhaseRange.endPhase - currentPhase) / gkfreq;
+          // Add extra time for the last note to complete (note duration = 0.2 seconds)
+          const noteDuration = defaultNoteDuration;
+          const remainingTime = (selectionPhaseRange.endPhase - currentPhase) / gkfreq + noteDuration * 1.5;
           return {
             remainingTime: remainingTime,
             restartPhase: selectionPhaseRange.startPhase
@@ -1576,8 +1579,10 @@ const app = new Vue({
       }
       
       // Normal behavior: use full dataset range
+      // Add extra time for the last note to complete (note duration = 0.2 seconds)
+      const noteDuration = defaultNoteDuration;
       return {
-        remainingTime: (1 - currentPhase) / gkfreq,
+        remainingTime: (1 - currentPhase) / gkfreq + noteDuration * 1.5,
         restartPhase: 0
       };
     },
