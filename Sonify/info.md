@@ -18,4 +18,10 @@ This plugin creates melodies from data.
 7. You can make the melodic pattern play faster or slower by dragging the “Speed” slider to the left (slower) or to the right (faster).
 8. You can hear a smooth sound (sliding between data points) by turning on the “Smooth Sound” toggle.
 9. For the Pitch attribute, the higher the pitch, the higher the value.
-10. If you have more than one time series on the graph, you may want to [color points on a graph by attribute values](https://codap.concord.org/how-to/color-points-on-a-graph-by-attribute-values/).
+
+## Things to Consider
+
+- If you have more than one time series on the graph, you may want to [color points on a graph by attribute values](https://codap.concord.org/how-to/color-points-on-a-graph-by-attribute-values/).
+- If you manually change the graph axes, this will not affect the sonification. The creation of the sounds is defined by the selection of the Time and Pitch attributes in the plugin itself.
+- If you use the sonification plugin to make more than one graph it is best practice to only show the graph that currently matches the attributes chosen for the Time and Pitch in the plugin.
+
