@@ -1360,11 +1360,10 @@ const app = new Vue({
                   type: "Plotted Value"
                 }
               );
-              helper.addAdornment(
+              helper.updateGraph(
                 graphId,
                 {
-                  isVisible: true,
-                  type: "Connecting Lines"
+                  showConnectingLines: true
                 }
               );
             } else {

@@ -893,6 +893,14 @@ export default class CodapPluginHelper {
     });
   }
 
+  async updateGraph(graphID, values) {
+    return this.codapInterface.sendRequest({
+      action: "update",
+      resource: `component[${graphID}]`,
+      values,
+    });
+  }
+
   async selectSelf() {
     if (this.pluginID) {
       return this.codapInterface.sendRequest({
