@@ -885,6 +885,14 @@ export default class CodapPluginHelper {
     });
   }
 
+  async addAdornment(graphID, adornment) {
+    return this.codapInterface.sendRequest({
+      action: "create",
+      resource: `component[${graphID}].adornment`,
+      values: adornment,
+    });
+  }
+
   async selectSelf() {
     if (this.pluginID) {
       return this.codapInterface.sendRequest({
