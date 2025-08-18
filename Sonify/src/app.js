@@ -1352,20 +1352,7 @@ const app = new Vue({
             if (result.success) {
               let graphId = result.values.id;
               console.log(`created graph: graph id: ${graphId}`);
-              helper.addAdornment(
-                graphId,
-                {
-                  expression: trackingGlobalName,
-                  isVisible: true,
-                  type: "Plotted Value"
-                }
-              );
-              helper.updateGraph(
-                graphId,
-                {
-                  showConnectingLines: true
-                }
-              );
+              helper.addAdornments(graphId, trackingGlobalName);
             } else {
               console.warn(
                 `create graph failure: ${

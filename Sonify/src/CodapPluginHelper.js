@@ -901,6 +901,76 @@ export default class CodapPluginHelper {
     });
   }
 
+  async verifyV3Adornments(graphId, expression) {
+    let plottedValueCreated = false;
+    let connectingLinesCreated = false;
+
+    try {
+      const listRes = await this.codapInterface.sendRequest({
+        action: "get",
+        resource: `component[${graphId}].adornmentList`
+      });
+      if (listRes.success && Array.isArray(listRes.values)) {
+        const found = listRes.values.some(a =>
+          (a.type === "Plotted Value" || a.adornmentKey === "plottedValue") &&
+          (!expression || a.expression === expression)
+        );
+        if (found) plottedValueCreated = true;
+      }
+    } catch (error) {
+      console.warn(`Failed to get adornment list for graph ${graphId}`, error);
+    }
+
+    try {
+      const compRes = await this.codapInterface.sendRequest({
+        action: "get",
+        resource: `component[${graphId}]`
+      });
+      if (compRes.success && compRes.values.showConnectingLines === true) {
+        connectingLinesCreated = true;
+      }
+    } catch (error) {
+      console.warn(`Failed to get properties for graph ${graphId}`, error);
+    }
+  
+    return plottedValueCreated && connectingLinesCreated;
+  }
+  
+  async addAdornments(graphId, expression) {
+    // Try CODAP Plugin API v3.
+    try {
+      await this.addAdornment(graphId, {
+        type: "Plotted Value",
+        expression,
+        isVisible: true
+      });
+      await this.updateGraph(graphId, { showConnectingLines: true });
+    } catch (error) {
+      console.warn(`Failed to add adornments to graph ${graphId}`, error);
+    }
+
+    const ok = await this.verifyV3Adornments(graphId, expression);
+    if (ok) return true;
+  
+    // Fall back to CODAP Plugin API v2.
+    this.annotateDocument((doc) => {
+      const graph = doc.components.find(c => c.id === graphId);
+      const storage = graph.componentStorage.plotModels[0].plotModelStorage;
+      if (storage) {
+        storage.adornments = storage.adornments || {};
+        storage.adornments.plottedValue = {
+          isVisible: true,
+          adornmentKey: "plottedValue",
+          expression
+        };
+        storage.adornments.connectingLine = { isVisible: true };
+      }
+      return doc;
+    });
+
+    return true;
+  }
+
   async selectSelf() {
     if (this.pluginID) {
       return this.codapInterface.sendRequest({
