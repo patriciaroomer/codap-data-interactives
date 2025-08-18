@@ -1352,22 +1352,7 @@ const app = new Vue({
             if (result.success) {
               let graphId = result.values.id;
               console.log(`created graph: graph id: ${graphId}`);
-              helper.annotateDocument((doc) => {
-                let graph = doc.components.find(
-                  (component) => component.id === graphId,
-                );
-                let componentStorage = graph.componentStorage;
-                let adornments =
-                  componentStorage.plotModels[0].plotModelStorage.adornments;
-                adornments.plottedValue = {
-                  isVisible: true,
-                  adornmentKey: "plottedValue",
-                  expression: trackingGlobalName,
-                };
-                adornments.connectingLine = { isVisible: true };
-
-                return doc;
-              });
+              helper.setupGraphAdornments(graphId, trackingGlobalName);
             } else {
               console.warn(
                 `create graph failure: ${
