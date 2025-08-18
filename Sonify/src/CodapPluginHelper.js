@@ -54,9 +54,11 @@ export default class CodapPluginHelper {
     this.caseTimerDuration = 1000;
 
     // The documentAnnotator is used to create graphs in CODAP.
-    // The normal CODAP API does not have sufficient control of graph
+    // The normal v2 CODAP API does not have sufficient control of graph
     // configuration to configure adornments, so we use the Document API
     this.documentAnnotator = null;
+
+    this.codapVersion = undefined;
   }
 
   async init(name, dimensions = { width: 200, height: 100 }, version) {
@@ -122,6 +124,7 @@ export default class CodapPluginHelper {
         .then((result) => {
           if (result.success) {
             this.pluginID = result.values.id;
+            this.codapVersion = result.values.codapVersion;
             return Promise.resolve(this.pluginID);
           } else return Promise.reject("Plugin id fetch failed");
         });
@@ -900,75 +903,33 @@ export default class CodapPluginHelper {
       values,
     });
   }
-
-  async verifyV3Adornments(graphId, expression) {
-    let plottedValueCreated = false;
-    let connectingLinesCreated = false;
-
-    try {
-      const listRes = await this.codapInterface.sendRequest({
-        action: "get",
-        resource: `component[${graphId}].adornmentList`
-      });
-      if (listRes.success && Array.isArray(listRes.values)) {
-        const found = listRes.values.some(a =>
-          (a.type === "Plotted Value" || a.adornmentKey === "plottedValue") &&
-          (!expression || a.expression === expression)
-        );
-        if (found) plottedValueCreated = true;
-      }
-    } catch (error) {
-      console.warn(`Failed to get adornment list for graph ${graphId}`, error);
-    }
-
-    try {
-      const compRes = await this.codapInterface.sendRequest({
-        action: "get",
-        resource: `component[${graphId}]`
-      });
-      if (compRes.success && compRes.values.showConnectingLines === true) {
-        connectingLinesCreated = true;
-      }
-    } catch (error) {
-      console.warn(`Failed to get properties for graph ${graphId}`, error);
-    }
   
-    return plottedValueCreated && connectingLinesCreated;
-  }
-  
-  async addAdornments(graphId, expression) {
-    // Try CODAP Plugin API v3.
-    try {
+  async setupGraphAdornments(graphId, expression) {
+    // Use CODAP Plugin API v3 if available.
+    if (this.codapVersion && this.codapVersion.startsWith("3.")) {
       await this.addAdornment(graphId, {
         type: "Plotted Value",
         expression,
         isVisible: true
       });
       await this.updateGraph(graphId, { showConnectingLines: true });
-    } catch (error) {
-      console.warn(`Failed to add adornments to graph ${graphId}`, error);
+    } else {
+      // Fall back to CODAP Plugin API v2.
+      this.annotateDocument((doc) => {
+        const graph = doc.components.find(c => c.id === graphId);
+        const storage = graph.componentStorage.plotModels[0].plotModelStorage;
+        if (storage) {
+          storage.adornments = storage.adornments || {};
+          storage.adornments.plottedValue = {
+            isVisible: true,
+            adornmentKey: "plottedValue",
+            expression
+          };
+          storage.adornments.connectingLine = { isVisible: true };
+        }
+        return doc;
+      });
     }
-
-    const ok = await this.verifyV3Adornments(graphId, expression);
-    if (ok) return true;
-  
-    // Fall back to CODAP Plugin API v2.
-    this.annotateDocument((doc) => {
-      const graph = doc.components.find(c => c.id === graphId);
-      const storage = graph.componentStorage.plotModels[0].plotModelStorage;
-      if (storage) {
-        storage.adornments = storage.adornments || {};
-        storage.adornments.plottedValue = {
-          isVisible: true,
-          adornmentKey: "plottedValue",
-          expression
-        };
-        storage.adornments.connectingLine = { isVisible: true };
-      }
-      return doc;
-    });
-
-    return true;
   }
 
   async selectSelf() {

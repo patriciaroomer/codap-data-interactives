@@ -1352,7 +1352,7 @@ const app = new Vue({
             if (result.success) {
               let graphId = result.values.id;
               console.log(`created graph: graph id: ${graphId}`);
-              helper.addAdornments(graphId, trackingGlobalName);
+              helper.setupGraphAdornments(graphId, trackingGlobalName);
             } else {
               console.warn(
                 `create graph failure: ${
