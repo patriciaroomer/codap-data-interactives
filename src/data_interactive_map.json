@@ -280,16 +280,18 @@
       ]
     },
     {
-      "title": "Normal Distribution Sampler",
-      "description": "A way to generate a sample data set from a normal distribution.",
-      "width": 400,
-      "height": 300,
-      "path": "/Sampler/Sampler.html",
-      "visible": true,
-      "aegis": "CODAP",
+      "title": "Norma",
+      "description": "Generate a sample data set from a normal distribution.",
+      "title-string": "Norma",
+      "width": 333,
+      "height": 333,
+      "path": "/eepsmedia/plugins/norma/index.html",
+      "visible": "true",
+      "isStandard": "false",
       "categories": [
         "Utilities",
-        "Generators"
+        "Generators",
+        "Partners"
       ]
     },
     {
