@@ -36,6 +36,7 @@ These plugins have `"visible": "true"` (or no explicit visible property) and app
 |**Fatal Encounters**|Explore data from the Fatal Encounters website; a database created to document people in the Unit...|Portals|/FatalEncounters/|GitHub Pages|codap-data-interactives|None|Static JavaScript|
 |**Floyd's of Fargo**|Make big money running your own car insurance business!|Partners|/FloydsFargo/index.html|GitHub Pages|codap-data-interactives|None|Static JavaScript|
 |**geiger**|Find the radioactive speck without taking a lethal dose|Partners|/data-science-worlds/geiger/geiger.html|GitHub Pages|codap-data-interactives|None|Static JavaScript|
+|**Importer**|Imports CSV files, URLs, and Google Sheets into CODAP datasets. Handles large datasets with downsampling options.|Internal|/Importer/index.html|CODAP V2 Build|codap-data-interactives|Fetches Google Sheets API key from https://codap.concord.org/releases/.gapikey|Static JavaScript|
 |**Lunar Lander**|You and your friends land spacecrafts, then rate your landings.|Partners|/LunarLander/index.html|GitHub Pages|codap-data-interactives|None|Static JavaScript|
 |**Markov**|Play Rock, Paper, Scissors with the evil Dr. Markov to save the dog.|Partners|/Markov/index.html|GitHub Pages|codap-data-interactives|None|Static JavaScript|
 |**Microdata Portal**|Investigate populations from the US census at the individual level.|Partners, Portals|/sdlc/plugin/index.html|CODAP V2 Build|codap-data-interactives|AWS S3 (formerly MySQL)|Static JavaScript|
