@@ -54,6 +54,7 @@ function echoPlugins() {
 }
 
 function buildPlugins() {
+  FAILED_PLUGINS=""
   for plugin in "$@"; do
     PLUGIN_BUILD_DIR=build
     PLUGIN_NAME=$(basename $plugin)
@@ -66,7 +67,14 @@ function buildPlugins() {
     else
       ( cd $plugin && npm ci && npm run build && cp -r $PLUGIN_BUILD_DIR "$BUILD_DIR/$PLUGIN_NAME" )
     fi
+    if [ $? -ne 0 ] ; then
+      echo "${PROGNAME}: ERROR - Failed to build $plugin" 1>&2
+      FAILED_PLUGINS="$FAILED_PLUGINS $plugin"
+    fi
   done
+  if [ -n "$FAILED_PLUGINS" ] ; then
+    echo "${PROGNAME}: ERROR - The following plugins failed to build:$FAILED_PLUGINS" 1>&2
+  fi
 }
 
 function copyStaticPlugins() {
