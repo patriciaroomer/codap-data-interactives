@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="../Common/js/iframe-phone.js" language="javascript"></script>
+  <script src="../Common/js/CodapInterface.js"></script>
+  <title>Import a dataset</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <h4>Local (File)</h4>
+  <div class="fileContainer">
+    <label for="fileUploader"></label>
+    <input type="file" id="fileUploader" accept=".csv">
+  </div>
+  <div>
+    <button id="fileButton">Upload</button>
+  </div>
+
+  <h4>Remote (URL)</h4>
+  <div>
+    <label for="urlUploader">Insert URL</label>
+    <input type="url" id="urlUploader">
+  </div>
+  <div>
+    <button id="urlButton">Submit</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script type="module" src="./js/CaseTable.js"></script>
+  <script type="module" src="./js/CSVImporter.js"></script>
+  <script type="module" src="./js/HuggingFaceImporter.js"></script>
+  <script type="module" src="./js/Main.js"></script>
+</body>
+</html>
