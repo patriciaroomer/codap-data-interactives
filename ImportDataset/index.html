@@ -10,16 +10,6 @@
 
 <body>
 
-  <h4>Local (File)</h4>
-  <div class="fileContainer">
-    <label for="fileUploader"></label>
-    <input type="file" id="fileUploader" accept=".csv">
-  </div>
-  <div>
-    <button id="fileButton">Upload</button>
-  </div>
-
-  <h4>Remote (URL)</h4>
   <div>
     <label for="urlUploader">Insert URL</label>
     <input type="url" id="urlUploader">
@@ -29,9 +19,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script type="module" src="./js/CaseTable.js"></script>
-  <script type="module" src="./js/CSVImporter.js"></script>
-  <script type="module" src="./js/HuggingFaceImporter.js"></script>
+  <script type="module" src="./js/codap/CODAPConnect.js"></script>
+  <script type="module" src="./js/codap/CaseTable.js"></script>
+
+  <script type="module" src="./js/importers/Importer.js"></script>
+  <script type="module" src="./js/importers/HuggingFaceImporter.js"></script>
+  <script type="module" src="./js/importers/OECDImporter.js"></script>
+
   <script type="module" src="./js/Main.js"></script>
 </body>
 </html>

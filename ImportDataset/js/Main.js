@@ -1,6 +1,6 @@
-import CODAPConnect from './CODAPConnect.js';
-import CSVImporter from "./CSVImporter.js";
-import HuggingFaceImporter from './HuggingFaceImporter.js';
+import CODAPConnect from './codap/CODAPConnect.js';
+import HuggingFaceImporter from './importers/HuggingFaceImporter.js';
+import OECDImporter from './importers/OECDImporter.js';
 
 const title = 'Import a dataset';
 const version = 'v0.1';
@@ -38,8 +38,8 @@ function main() {
 
     createDefaultDataContext(() => {
       createFrame(() => {
-        new CSVImporter();
         new HuggingFaceImporter();
+        new OECDImporter();
       });
     })
   })
