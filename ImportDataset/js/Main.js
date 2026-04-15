@@ -3,6 +3,7 @@ import HuggingFaceImporter from './importers/HuggingFaceImporter.js';
 import OECDImporter from './importers/OECDImporter.js';
 import WorldBankImporter from './importers/WorldBankImporter.js';
 import DataPublicImporter from './importers/DataPublicImporter.js';
+import KaggleImporter from './importers/KaggleImporter.js';
 
 const title = 'Import a dataset';
 const version = 'v0.1';
@@ -34,6 +35,8 @@ function createDefaultDataContext(callback) {
 }
 
 function main() {
+  testServer();
+
   new CODAPConnect();
 
   CODAPConnect.sendRequest({ action: "get", resource: "document" }, () => {
@@ -41,12 +44,19 @@ function main() {
     createDefaultDataContext(() => {
       createFrame(() => {
         new HuggingFaceImporter();
+        new KaggleImporter();
         new OECDImporter();
         new WorldBankImporter();
         new DataPublicImporter();
       });
     })
   })
+}
+
+async function testServer() {
+  const response = await fetch("http://localhost:3000/api/hello");
+  const data = await response.json();
+  console.log(data.message);
 }
 
 main();

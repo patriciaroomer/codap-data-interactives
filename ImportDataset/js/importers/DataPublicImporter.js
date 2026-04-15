@@ -18,14 +18,15 @@ export default class DataPublicImporter extends Importer {
   }
 
   constructApiCall() {
-    return `${this.host}/en/api/3/action/package_show?id=${this.datasetName}`;
+    return `http://localhost:3000/api/datapubliclu/${this.datasetName}`;
   }
 
-  getFile(response) {
-    const json = response.json();
-    const csv = json.result.resources.find(
-      resource => resource.format === "CSV"
+  async getFile(response) {
+    const json = await response.json();
+    const csv = json.resources.find(
+      resource => resource.format === "csv"
     );
+
     return csv.url;
   }
 
