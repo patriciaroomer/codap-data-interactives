@@ -10,30 +10,24 @@ export default class OECDImporter extends Importer {
   }
 
   isDataset(url) {
-    // Data Query structure is already unique to datasets
-    return true;
-  }
-
-  prepareUrl(url) {
-    const u = new URL(url);
-    u.searchParams.set("format", "csvfilewithlabels");
-    u.searchParams.set("dimensionAtObservation", "AllDimensions");
-    return u.toString();
+    return url.startsWith(this.host);
   }
 
   getDatasetName() {
     const url = new URL(this.url);
     const parts = url.pathname.split("/").filter(Boolean);
-    const dataIndex = parts.indexOf("data");
+    const index = parts.indexOf("data");
 
     // Get datasetId from:
     // "<this.host>.../<dataAgencyId>,<datasetId>/..."
-    return parts[dataIndex + 1].split(",")[0];
+    return parts[index + 1].split(",")[0];
   }
 
   constructApiCall() {
     // Data query already represents the API call
-    return this.url;
+    const url = new URL(this.url);
+    url.searchParams.set("format", "csvfilewithlabels");
+    return url.toString();
   }
 
   getFile(response) {

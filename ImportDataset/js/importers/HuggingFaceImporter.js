@@ -11,18 +11,14 @@ export default class HuggingFaceImporter extends Importer {
     return url.includes("datasets");
   }
 
-  prepareUrl(url) {
-    return url;
-  }
-
   getDatasetName() {
-    // Last part of URL
-    const parts = this.splitUrl("/");
-    return parts[parts.length - 1];
+    const parts = this.url.split("/");
+    const index = parts.indexOf("datasets");
+    return parts[index + 2];
   }
 
   constructApiCall() {
-    const parts = this.splitUrl("/");
+    const parts = this.url.split("/");
     const index = parts.indexOf("datasets");
     const user = parts[index + 1];
     return `${this.host}api/datasets/${user}/${this.datasetName}`;
@@ -34,7 +30,7 @@ export default class HuggingFaceImporter extends Importer {
     const csv = files.find(file => file.endsWith(".csv"));
 
     // TODO: Make other file types an option
-    const parts = this.splitUrl("/");
+    const parts = this.url.split("/");
     const index = parts.indexOf("datasets");
     const user = parts[index + 1];
     return `${this.host}datasets/${user}/${this.datasetName}/resolve/main/${csv}`;

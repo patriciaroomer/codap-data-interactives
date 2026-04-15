@@ -10,12 +10,26 @@
 
 <body>
 
-  <div>
+  <div id="urlBlock">
     <label for="urlUploader">Insert URL</label>
     <input type="url" id="urlUploader">
   </div>
   <div>
     <button id="urlButton">Submit</button>
+    <p id="logs"></p>
+  </div>
+
+  <div id="infoBlock">
+    <p>Datasets from the following websites are supported: </p>
+    <ul>
+      <li><a href="https://huggingface.co/datasets" target="_blank">Hugging Face</a></li>
+      <li><a href="https://www.kaggle.com/datasets" target="_blank">Kaggle</a></li>
+      <li><a href="https://data.public.lu/en/datasets/" target="_blank">The luxembourgish open data platform</a></li>
+      <li><a href="https://data-explorer.oecd.org/" target="_blank">OECD Data Explorer</a></li>
+      <li><a href="https://data360.worldbank.org/en/search" target="_blank">World Bank Open Data</a></li>
+      <li><a href="https://datasetsearch.research.google.com/" target="_blank">Google Dataset Search</a></li>
+    </ul>
+    <p>Navigate to one of their datasets, copy the URL at the top of your browser, and paste it in the field above. In case of an OECD dataset, use the Data Query URL found in the Developer API category.</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -25,6 +39,8 @@
   <script type="module" src="./js/importers/Importer.js"></script>
   <script type="module" src="./js/importers/HuggingFaceImporter.js"></script>
   <script type="module" src="./js/importers/OECDImporter.js"></script>
+  <script type="module" src="./js/importers/WorldBankImporter.js"></script>
+  <script type="module" src="./js/importers/DataPublicImporter.js"></script>
 
   <script type="module" src="./js/Main.js"></script>
 </body>

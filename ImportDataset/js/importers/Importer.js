@@ -3,41 +3,32 @@ import CODAPConnect from '../codap/CODAPConnect.js';
 
 // This class is constructed like an abstract class
 export default class Importer {
+
   constructor() {
     if (this.constructor == Importer) {
       throw new Error("Importer is abstract and cannot be instantiated.");
     }
     if (this.isDataset == undefined) {
-      throw new Error("isValidUrl must be implemented");
-    }
-    if (this.prepareUrl == undefined) {
-      throw new Error("prepareUrl must be implemented");
+      throw new Error("isDataset(url) must be implemented");
     }
     if (this.getDatasetName == undefined) {
-      throw new Error("getDatasetName must be implemented");
+      throw new Error("getDatasetName() must be implemented");
     }
     if (this.constructApiCall == undefined) {
-      throw new Error("constructApiCall must be implemented");
+      throw new Error("constructApiCall() must be implemented");
     }
     if (this.getFile == undefined) {
-      throw new Error("getFile must be implemented");
+      throw new Error("getFile(response) must be implemented");
     }
 
     this.url = "";
     this.urlField = document.getElementById("urlUploader");
     this.urlButton = document.getElementById("urlButton");
+
     this.attributes = [];
     this.entries = [];
 
     this.addListener();
-  }
-
-  isValidUrl(url) {
-    return url && url.startsWith(this.host) && this.isDataset(url);
-  }
-
-  splitUrl(delimiter) {
-    return this.url.split(delimiter);
   }
 
   addListener() {
@@ -46,16 +37,20 @@ export default class Importer {
     });
   }
 
+  isValidUrl(url) {
+    return url && url.startsWith(this.host) && this.isDataset(url);
+  }
+
   async handleInput() {
     const url = this.urlField.value;
-
     if (!this.isValidUrl(url)) {
+      console.log("Invalid URL");
       // TODO: Tell user the URL is invalid,
       // but only if none of the URL sorts applied
       return;
     }
 
-    this.url = this.prepareUrl(url);
+    this.url = url;
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
     const exists = await CODAPConnect.dataContextExists(this.datasetName);
