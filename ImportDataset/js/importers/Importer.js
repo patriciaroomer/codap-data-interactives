@@ -22,19 +22,8 @@ export default class Importer {
     }
 
     this.url = "";
-    this.urlField = document.getElementById("urlUploader");
-    this.urlButton = document.getElementById("urlButton");
-
     this.attributes = [];
     this.entries = [];
-
-    this.addListener();
-  }
-
-  addListener() {
-    this.urlButton.addEventListener("click", () => {
-      this.handleInput();
-    });
   }
 
   isValidUrl(url) {
@@ -42,15 +31,7 @@ export default class Importer {
   }
 
   async handleInput() {
-    const url = this.urlField.value;
-    if (!this.isValidUrl(url)) {
-      console.log("Invalid URL");
-      // TODO: Tell user the URL is invalid,
-      // but only if none of the URL sorts applied
-      return;
-    }
-
-    this.url = url;
+    this.url = document.getElementById("urlUploader").value;
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
     const exists = await CODAPConnect.dataContextExists(this.datasetName);

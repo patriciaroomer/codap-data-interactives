@@ -1,4 +1,5 @@
 import CODAPConnect from './codap/CODAPConnect.js';
+import Controller from './codap/Controller.js';
 import HuggingFaceImporter from './importers/HuggingFaceImporter.js';
 import OECDImporter from './importers/OECDImporter.js';
 import WorldBankImporter from './importers/WorldBankImporter.js';
@@ -43,11 +44,13 @@ function main() {
 
     createDefaultDataContext(() => {
       createFrame(() => {
-        new HuggingFaceImporter();
-        new KaggleImporter();
-        new OECDImporter();
-        new WorldBankImporter();
-        new DataPublicImporter();
+        new Controller([
+          new HuggingFaceImporter(),
+          new KaggleImporter(),
+          new OECDImporter(),
+          new WorldBankImporter(),
+          new DataPublicImporter()
+        ]);
       });
     })
   })
