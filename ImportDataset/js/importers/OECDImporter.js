@@ -30,7 +30,7 @@ export default class OECDImporter extends Importer {
     return url.toString();
   }
 
-  getFile(response) {
+  getResource(response) {
     return response.text();
   }
 }

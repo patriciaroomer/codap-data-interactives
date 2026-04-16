@@ -21,7 +21,7 @@ export default class WorldBankImporter extends Importer {
     return `http://localhost:3000/api/worldbank/${this.datasetName}`;
   }
 
-  async getFile(response) {
+  async getResource(response) {
     const json = await response.json();
     const csv = Papa.unparse(json.value);
     return csv;

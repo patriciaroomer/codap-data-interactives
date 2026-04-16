@@ -17,11 +17,13 @@ export default class Importer {
     if (this.constructApiCall == undefined) {
       throw new Error("constructApiCall() must be implemented");
     }
-    if (this.getFile == undefined) {
-      throw new Error("getFile(response) must be implemented");
+    if (this.getResource == undefined) {
+      throw new Error("getResource(response) must be implemented");
     }
 
     this.url = "";
+    this.formats = [".csv", ".json"];
+    this.format = this.formats[0] // Default
     this.attributes = [];
     this.entries = [];
   }
@@ -47,39 +49,25 @@ export default class Importer {
     console.log("Connecting to API...");
     const response = await this.connect();
     console.log("Fetching file...");
-    const file = await this.getFile(response);
+    let resource = await this.getResource(response);
 
-    if (!file) {
-      // TODO: Display this message to user
+    if (!resource) {
       console.error("Could not find a dataset file through provided URL!");
       return;
     }
-    console.log("Fetch succesful!");
+    console.log("Fetch successful!");
 
-    try {
-      Papa.parse(file, {
-        download: this.isDownload,
-        header: true,
-        skipEmptyLines: true,
-        complete: (result) => {
-
-          const data = result.data;
-          const header = data[0];
-
-          this.attributes = Object.keys(header).map(name => ({
-            name, type: "nominal"
-          }));
-
-          this.entries = data.map(row => ({
-            values: row
-          }));
-
-          console.log("Parsing successful!");
-          callback?.();
-        }
-      });
-    } catch (e) {
-      console.error("Failed parsing dataset file: ", e);
+    switch (this.format) {
+      case ".csv":
+        await this.parseCsv(resource);
+        callback?.();
+        break;
+      case ".json":
+        await this.parseJson(resource);
+        callback?.();
+        break;
+      default:
+        console.error("Could not find any file!");
     }
   }
 
@@ -90,5 +78,66 @@ export default class Importer {
     }
     console.log("Connection successful!");
     return response;
+  }
+
+  async parseCsv(resource) {
+    return new Promise((resolve, reject) => {
+      try {
+        Papa.parse(resource, {
+          download: this.isDownload,
+          header: true,
+          skipEmptyLines: true,
+          complete: (result) => {
+
+            const data = result.data;
+            const header = data[0];
+
+            this.attributes = Object.keys(header).map(name => ({
+              name, type: "nominal"
+            }));
+
+            this.entries = data.map(row => ({
+              values: row
+            }));
+
+            console.log("Parsing successful!");
+            resolve();
+          },
+          error: (err) => reject(err)
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  async parseJson(resource) {
+    let data;
+
+    if (this.isDownload) {
+      const response = await fetch(resource);
+      data = await response.json();
+    } else {
+      data = typeof resource === "string"
+        ? JSON.parse(resource)
+        : resource;
+    }
+
+    const rows = Array.isArray(data) ? data : [data];
+    const attributes = new Set();
+
+    rows.forEach(row => {
+      if (row && typeof row === "object") {
+        Object.keys(row).forEach(key => attributes.add(key));
+      }
+    });
+
+    this.attributes = Array.from(attributes).map(name => ({
+      name, type: "nominal"
+    }));
+
+    this.entries = rows.map(row => ({
+      values: row
+    }));
   }
 }

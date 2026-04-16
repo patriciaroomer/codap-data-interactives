@@ -21,7 +21,7 @@ export default class DataPublicImporter extends Importer {
     return `http://localhost:3000/api/datapubliclu/${this.datasetName}`;
   }
 
-  async getFile(response) {
+  async getResource(response) {
     const json = await response.json();
     const csv = json.resources.find(
       resource => resource.format === "csv"

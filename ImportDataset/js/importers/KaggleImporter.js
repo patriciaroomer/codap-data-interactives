@@ -24,19 +24,16 @@ export default class KaggleImporter extends Importer {
     return `http://localhost:3000/api/kaggle/${user}/${this.datasetName}`;
   }
 
-  async getFile(response) {
-    const buffer = await response.arrayBuffer();
-    const zip = await JSZip.loadAsync(buffer);
+  async getResource(response) {
+    const arrayBuffer = await response.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    let file = Object.keys(zip.files).find(f => f.endsWith(".csv"));
 
-    const csvFile = Object.values(zip.files).find(file =>
-      file.name.endsWith(".csv")
-    );
-
-    if (!csvFile) {
-      console.log("No CSV file found in Kaggle dataset zip");
-      // TODO: Display message to user or convert other file types to csv
+    if (!file) {
+      file = Object.keys(zip.files).find(f => f.endsWith(".json"));
+      this.format = ".json";
     }
 
-    return await csvFile.async("string");
+    return await zip.files[file].async("string");
   }
 }

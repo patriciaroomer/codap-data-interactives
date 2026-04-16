@@ -24,17 +24,23 @@ export default class HuggingFaceImporter extends Importer {
     return `${this.host}api/datasets/${user}/${this.datasetName}`;
   }
 
-  async getFile(response) {
+  async getResource(response) {
     const metadata = await response.json();
     const files = metadata.siblings.map(file => file.rfilename);
-    const csv = files.find(file => file.endsWith(".csv"));
 
-    // TODO: Make other file types an option
+    let fileName = "";
+
+    for (const format of this.formats) {
+      fileName = files.find(f => f.endsWith(format));
+      if (fileName) {
+        this.format = format;
+        break;
+      }
+    }
+
     const parts = this.url.split("/");
     const index = parts.indexOf("datasets");
     const user = parts[index + 1];
-    return `${this.host}datasets/${user}/${this.datasetName}/resolve/main/${csv}`;
+    return `${this.host}datasets/${user}/${this.datasetName}/resolve/main/${fileName}`;
   }
-
-
 }
