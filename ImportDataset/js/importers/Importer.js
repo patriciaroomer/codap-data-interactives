@@ -35,8 +35,15 @@ export default class Importer {
   }
 
   async handleInput() {
-    this.url = document.getElementById("urlUploader").value;
+    const url = document.getElementById("urlUploader").value;
 
+    if (!this.sanitizeUrl(url)) {
+      Controller.displayMessage("Invalid URL");
+      return;
+    }
+    Controller.removeMessage();
+
+    this.url = url;
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
     const exists = await CODAPConnect.dataContextExists(this.datasetName);
@@ -45,6 +52,19 @@ export default class Importer {
       CODAPConnect.createDataContext(this.datasetName, this.attributes, () =>
         new CaseTable(this.datasetName, this.entries, exists).create())
     );
+  }
+
+  sanitizeUrl(input) {
+    try {
+      const url = new URL(input.trim());
+      const allowedProtocols = ["https:"];
+      if (!allowedProtocols.includes(url.protocol)) {
+        return null;
+      }
+      return url.toString();
+    } catch {
+      return null;
+    }
   }
 
   async parse(callback) {

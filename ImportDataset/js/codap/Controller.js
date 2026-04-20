@@ -12,11 +12,11 @@ export default class Controller {
   static logs = document.getElementById("logs");
 
   static displayMessage(message) {
-    Controller.logs.innerHTML = message;
+    Controller.logs.textContent = message;
   }
 
   static removeMessage() {
-    Controller.logs.innerHTML = "";
+    Controller.logs.textContent = "";
   }
 
   handleInput() {
