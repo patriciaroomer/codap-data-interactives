@@ -3,7 +3,7 @@ import Importer from './Importer.js';
 export default class DataPublicImporter extends Importer {
   constructor() {
     super();
-    this.isDownload = true;
+    this.isDownload = false;
     this.host = "https://data.public.lu/";
   }
 
@@ -18,16 +18,20 @@ export default class DataPublicImporter extends Importer {
   }
 
   constructApiCall() {
-    return `http://localhost:3000/api/datapubliclu/${this.datasetName}`;
+    return `http://localhost:3000/api/datapubliclu/${encodeURIComponent(this.datasetName)}/`;
   }
 
   async getResource(response) {
-    const json = await response.json();
-    const csv = json.resources.find(
-      resource => resource.format === "csv"
-    );
+    const contentType = response.headers.get("content-type") || "";
 
-    return csv.url;
+    if (contentType.includes("text/csv")) {
+      this.format = ".csv";
+      return await response.text();
+    }
+
+    if (contentType.includes("application/json")) {
+      this.format = ".json";
+      return await response.text();
+    }
   }
-
 }

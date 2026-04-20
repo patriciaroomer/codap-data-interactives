@@ -1,5 +1,6 @@
 import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
+import Controller from '../codap/Controller.js';
 
 // This class is constructed like an abstract class
 export default class Importer {
@@ -26,6 +27,7 @@ export default class Importer {
     this.format = this.formats[0] // Default
     this.attributes = [];
     this.entries = [];
+    this.maxEntries = 1000;
   }
 
   isValidUrl(url) {
@@ -34,6 +36,7 @@ export default class Importer {
 
   async handleInput() {
     this.url = document.getElementById("urlUploader").value;
+
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
     const exists = await CODAPConnect.dataContextExists(this.datasetName);
@@ -48,13 +51,20 @@ export default class Importer {
     console.log("Parsing dataset...");
     console.log("Connecting to API...");
     const response = await this.connect();
+
+    if (!response) {
+      return;
+    }
+
     console.log("Fetching file...");
     let resource = await this.getResource(response);
 
     if (!resource) {
-      console.error("Could not find a dataset file through provided URL!");
-      return;
+      console.log("No dataset found, please use another URL.");
+      Controller.displayMessage("No dataset found, please use another URL.");
     }
+    Controller.removeMessage();
+
     console.log("Fetch successful!");
 
     switch (this.format) {
@@ -74,8 +84,11 @@ export default class Importer {
   async connect() {
     const response = await fetch(this.api);
     if (!response.ok) {
-      throw new Error("Failed to connect to API and/or fetch dataset");
+      console.log("No dataset found, please use another URL.");
+      Controller.displayMessage("No dataset found, please use another URL.");
+      return;
     }
+    Controller.removeMessage();
     console.log("Connection successful!");
     return response;
   }
@@ -89,7 +102,7 @@ export default class Importer {
           skipEmptyLines: true,
           complete: (result) => {
 
-            const data = result.data;
+            const data = result.data.slice(0, this.maxEntries);
             const header = data[0];
 
             this.attributes = Object.keys(header).map(name => ({
@@ -123,12 +136,16 @@ export default class Importer {
         : resource;
     }
 
-    const rows = Array.isArray(data) ? data : [data];
+    let rows = Array.isArray(data) ? data : [data];
+    rows = rows.slice(0, this.maxEntries);
     const attributes = new Set();
+    const flattenedRows = [];
 
     rows.forEach(row => {
       if (row && typeof row === "object") {
-        Object.keys(row).forEach(key => attributes.add(key));
+        const flat = this.flattenObject(row);
+        Object.keys(flat).forEach(key => attributes.add(key));
+        flattenedRows.push(flat);
       }
     });
 
@@ -136,8 +153,22 @@ export default class Importer {
       name, type: "nominal"
     }));
 
-    this.entries = rows.map(row => ({
+    this.entries = flattenedRows.map(row => ({
       values: row
     }));
+  }
+
+  flattenObject(obj, prefix = "", result = {}) {
+    for (const key in obj) {
+      const value = obj[key];
+      const newKey = prefix ? `${prefix}.${key}` : key;
+
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        this.flattenObject(value, newKey, result);
+      } else {
+        result[newKey] = value;
+      }
+    }
+    return result;
   }
 }

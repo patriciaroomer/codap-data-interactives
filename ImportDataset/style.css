@@ -31,3 +31,12 @@ button {
 #urlUploader {
   width: 400px;
 }
+
+#logs {
+  padding-left: 10px;
+  color: red;
+}
+
+.inline-child {
+  display: inline-block;
+}
