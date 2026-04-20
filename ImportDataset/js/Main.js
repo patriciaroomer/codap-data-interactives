@@ -6,9 +6,9 @@ import WorldBankImporter from './importers/WorldBankImporter.js';
 import DataPublicImporter from './importers/DataPublicImporter.js';
 import KaggleImporter from './importers/KaggleImporter.js';
 
-const title = 'Import a dataset';
+const title = 'Dataset Importer';
 const version = 'v0.1';
-const dimensions = { width: 500, height: 500 };
+const dimensions = { width: 370, height: 290 };
 const preventBringToFront = false;
 
 function createFrame(callback) {
