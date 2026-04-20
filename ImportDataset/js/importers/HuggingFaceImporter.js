@@ -28,14 +28,24 @@ export default class HuggingFaceImporter extends Importer {
     const metadata = await response.json();
     const files = metadata.siblings.map(file => file.rfilename);
 
+    if (!files || !files.length) {
+      return;
+    }
+
     let fileName = "";
+    let foundFile = false;
 
     for (const format of this.formats) {
       fileName = files.find(f => f.endsWith(format));
       if (fileName) {
         this.format = format;
+        foundFile = true;
         break;
       }
+    }
+
+    if (!foundFile) {
+      return;
     }
 
     const parts = this.url.split("/");

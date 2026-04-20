@@ -26,6 +26,7 @@ export default class Importer {
     this.formats = [".csv", ".json"];
     this.format = this.formats[0] // Default
     this.attributes = [];
+    this.maxAttributes = 20;
     this.entries = [];
     this.maxEntries = 1000;
   }
@@ -80,20 +81,23 @@ export default class Importer {
     let resource = await this.getResource(response);
 
     if (!resource) {
-      console.log("No dataset found, please use another URL.");
       Controller.displayMessage("No dataset found, please use another URL.");
+      return;
     }
     Controller.removeMessage();
 
     console.log("Fetch successful!");
 
+    let result;
     switch (this.format) {
       case ".csv":
-        await this.parseCsv(resource);
+        result = await this.parseCsv(resource);
+        if (!result) return;
         callback?.();
         break;
       case ".json":
-        await this.parseJson(resource);
+        result = await this.parseJson(resource);
+        if (!result) return;
         callback?.();
         break;
       default:
@@ -125,7 +129,7 @@ export default class Importer {
             const data = result.data.slice(0, this.maxEntries);
             const header = data[0];
 
-            this.attributes = Object.keys(header).map(name => ({
+            this.attributes = Object.keys(header).slice(0, this.maxAttributes).map(name => ({
               name, type: "nominal"
             }));
 
@@ -134,59 +138,140 @@ export default class Importer {
             }));
 
             console.log("Parsing successful!");
-            resolve();
+            resolve(true);
           },
-          error: (err) => reject(err)
+          error: (err) => {
+            Controller.displayMessage("Could not parse dataset, please choose another one.");
+            reject(err)
+          }
         });
-      } catch (e) {
-        reject(e);
+      } catch {
+        reject(false);
       }
     });
   }
 
   async parseJson(resource) {
     let data;
-
     if (this.isDownload) {
       const response = await fetch(resource);
-      data = await response.json();
+
+      try {
+        data = await response.json();
+      } catch {
+        Controller.displayMessage("File could not be fetched, please choose another dataset");
+        return;
+      }
+      Controller.removeMessage();
+
     } else {
-      data = typeof resource === "string"
-        ? JSON.parse(resource)
-        : resource;
+      try {
+        data = typeof resource === "string"
+          ? JSON.parse(resource)
+          : resource;
+      } catch {
+        Controller.displayMessage("No dataset found, please choose another URL");
+        return;
+      }
+    }
+    Controller.removeMessage();
+
+    let rows;
+    if (this.isGeoJson(data)) {
+      rows = data.features.map(f => ({
+        ...f.properties,
+        geometry_type: f.geometry?.type,
+        ...this.extractCoordinates(f.geometry)
+      })).slice(0, this.maxEntries);
+    } else {
+      let rawRows;
+      if (Array.isArray(data)) {
+        rawRows = data;
+      } else {
+        const found = this.findDataArray(data);
+        rawRows = found ? found.data : [data];
+      }
+      rows = rawRows.slice(0, this.maxEntries);
     }
 
-    let rows = Array.isArray(data) ? data : [data];
-    rows = rows.slice(0, this.maxEntries);
     const attributes = new Set();
     const flattenedRows = [];
-
     rows.forEach(row => {
-      if (row && typeof row === "object") {
-        const flat = this.flattenObject(row);
+      if (row !== null && typeof row === "object") {
+        const flat = this.flatten(row);
         Object.keys(flat).forEach(key => attributes.add(key));
         flattenedRows.push(flat);
       }
     });
-
     this.attributes = Array.from(attributes).map(name => ({
       name, type: "nominal"
     }));
-
     this.entries = flattenedRows.map(row => ({
       values: row
     }));
+    return true;
   }
 
-  flattenObject(obj, prefix = "", result = {}) {
+  isGeoJson(data) {
+    return data?.type === "FeatureCollection" && Array.isArray(data?.features);
+  }
+
+  findDataArray(obj, maxDepth = 3, currentDepth = 0) {
+    if (currentDepth > maxDepth || Array.isArray(obj)) return null;
+
     for (const key in obj) {
       const value = obj[key];
-      const newKey = prefix ? `${prefix}.${key}` : key;
+      if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
+        return { path: key, data: value }; // Found data array
+      }
+      if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+        const nested = this.findDataArray(value, maxDepth, currentDepth + 1);
+        if (nested) return { path: `${key}.${nested.path}`, data: nested.data };
+      }
+    }
+    return null;
+  }
 
-      if (value && typeof value === "object" && !Array.isArray(value)) {
-        this.flattenObject(value, newKey, result);
+  extractCoordinates(geometry) {
+    if (!geometry) return {};
+
+    if (geometry.type === "Point") {
+      return {
+        longitude: geometry.coordinates[0],
+        latitude: geometry.coordinates[1]
+      };
+    }
+
+    // for all other types, compute centroid from the first ring of coordinates
+    const coords = this.extractFlatCoords(geometry.coordinates);
+    if (coords.length === 0) return {};
+
+    const longitude = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
+    const latitude = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
+    return { longitude, latitude };
+  }
+
+  // recursively flatten nested coord arrays down to [lng, lat] pairs
+  extractFlatCoords(coords) {
+    if (!Array.isArray(coords)) return [];
+    if (typeof coords[0] === "number") return [coords]; // it's a single [lng, lat]
+    return coords.flatMap(c => this.extractFlatCoords(c));
+  }
+
+  flatten(obj, delimiter = '.', maxElements = 1000) {
+    const result = {};
+    const keys = Object.keys(obj).slice(0, maxElements);
+    for (const key of keys) {
+      const value = obj[key];
+      if (Array.isArray(value)) {
+        result[key] = value.slice(0, maxElements);
+      } else if (value !== null && typeof value === 'object') {
+        const nestedKeys = Object.keys(value).slice(0, maxElements);
+        for (const nestedKey of nestedKeys) {
+          result[`${key}${delimiter}${nestedKey}`] = value[nestedKey];
+        }
       } else {
-        result[newKey] = value;
+        result[key] = value;
       }
     }
     return result;
