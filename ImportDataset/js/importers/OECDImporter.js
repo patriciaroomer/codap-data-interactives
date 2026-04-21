@@ -33,4 +33,21 @@ export default class OECDImporter extends Importer {
   getResource(response) {
     return response.text();
   }
+
+  async parseCsv(resource) {
+    const result = await super.parseCsv(resource);
+
+    // OECD data is very verbose, so reduce it to these columns:
+    const columns = ["UNIT_MEASURE", "TIME_PERIOD", "OBS_VALUE"];
+
+    this.attributes = this.attributes.filter(attr => columns.includes(attr.name));
+    this.entries = this.entries.map(entry => ({
+      values: Object.fromEntries(
+        Object.entries(entry.values).filter(([key]) => columns.includes(key))
+      )
+    }));
+
+    return result;
+  }
+
 }
