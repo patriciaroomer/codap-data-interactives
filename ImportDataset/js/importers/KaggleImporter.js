@@ -30,8 +30,7 @@ export default class KaggleImporter extends Importer {
     let file = Object.keys(zip.files).find(f => f.endsWith(".csv"));
 
     if (!file) {
-      file = Object.keys(zip.files).find(f => f.endsWith(".json"));
-      this.format = ".json";
+      return;
     }
 
     return await zip.files[file].async("string");
