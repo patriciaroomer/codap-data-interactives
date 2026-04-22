@@ -4,6 +4,7 @@ export default class OECDImporter extends Importer {
   constructor() {
     super();
     this.isDownload = false;
+    this.format = ".csv";
     // OECD datasets provide a Data Query in the
     // Developer API category, which starts like this:
     this.host = "https://sdmx.oecd.org/public/rest/data/";
@@ -34,6 +35,7 @@ export default class OECDImporter extends Importer {
     return response.text();
   }
 
+  /*
   async parseCsv(resource) {
     const result = await super.parseCsv(resource);
 
@@ -49,5 +51,6 @@ export default class OECDImporter extends Importer {
 
     return result;
   }
+    */
 
 }

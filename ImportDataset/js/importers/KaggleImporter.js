@@ -5,6 +5,7 @@ export default class KaggleImporter extends Importer {
     super();
     this.isDownload = false;
     this.host = "https://www.kaggle.com/";
+    this.maxFiles = 20;
   }
 
   isDataset(url) {
@@ -27,7 +28,18 @@ export default class KaggleImporter extends Importer {
   async getResource(response) {
     const arrayBuffer = await response.arrayBuffer();
     const zip = await JSZip.loadAsync(arrayBuffer);
-    let file = Object.keys(zip.files).find(f => f.endsWith(".csv"));
+
+    // Prevent zip bomb
+    const fileCount = (Object.values(zip.files).filter(f => !f.dir).length);
+    if (fileCount > this.maxFiles) {
+      return;
+    }
+
+    let file = Object.keys(zip.files).find(f => {
+      const format = f.split(".").pop().toLowerCase();
+      this.format = `.${format}`;
+      return f.endsWith(".csv") || f.endsWith(".json");
+    });
 
     if (!file) {
       return;
