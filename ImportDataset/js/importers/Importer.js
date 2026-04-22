@@ -78,7 +78,7 @@ export default class Importer {
     console.log("Fetching file...");
     let resource = await this.getResource(response);
     if (!resource) {
-      Controller.displayMessage("Could not find supported file format or there are too many files, please try another URL");
+      Controller.displayMessage("Could not find supported file format. Please try another URL");
       return;
     }
     Controller.removeMessage();
@@ -151,17 +151,17 @@ export default class Importer {
   async parseJson(resource) {
     let data;
 
-    try {
-      if (this.isDownload) {
-        const response = await fetch(resource);
-        data = await response.json();
-      } else {
-        data = typeof resource === "string"
-          ? JSON.parse(resource) : resource;
+    if (this.isDownload) {
+      try {
+        data = await this.fetchWithTimeout(resource, 5000);
+      } catch {
+        Controller.displayMessage("Fetching timed out");
+        return;
       }
-    } catch {
-      Controller.displayMessage("Could not fetch dataset. Please try another URL.");
-      return;
+    } else {
+      data = typeof resource === "string"
+        ? JSON.parse(resource)
+        : resource;
     }
 
     if (!Array.isArray(data) || typeof data[0] !== "object") {
@@ -173,11 +173,19 @@ export default class Importer {
     const attributes = new Set();
 
     data = data.slice(0, this.maxEntries);
-    data.forEach(row => {
+    for (const row of data) {
       if (row && typeof row === "object") {
-        Object.keys(row).forEach(key => attributes.add(key));
+        for (const [key, value] of Object.entries(row)) {
+
+          if (value && typeof value === "object") {
+            Controller.displayMessage("Dataset must be a flat array of objects.");
+            return;
+          }
+
+          attributes.add(key);
+        }
       }
-    })
+    }
 
     this.attributes = Array.from(attributes).map(name => ({
        name, type: "nominal" }));
@@ -187,5 +195,20 @@ export default class Importer {
     }));
 
     return true;
+  }
+
+  async fetchWithTimeout(url, timeoutMs = 5000) {
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, timeoutMs);
+
+    return fetch(url, { signal: controller.signal })
+      .then(res => {
+        if (!res.ok) throw new Error("Network error");
+        return res.json();
+      })
+      .finally(() => clearTimeout(timeout));
   }
 }
