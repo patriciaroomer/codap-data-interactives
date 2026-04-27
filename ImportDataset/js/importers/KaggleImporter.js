@@ -35,12 +35,7 @@ export default class KaggleImporter extends Importer {
       return;
     }
 
-    let file = Object.keys(zip.files).find(f => {
-      const format = f.split(".").pop().toLowerCase();
-      this.format = `.${format}`;
-      return f.endsWith(".csv") || f.endsWith(".json");
-    });
-
+    const file = this.findFile(Object.keys(zip.files));
     if (!file) {
       return;
     }

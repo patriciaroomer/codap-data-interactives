@@ -125,4 +125,16 @@ export default class Importer {
     }
     return parser;
   }
+
+  findFile(files) {
+    let file;
+    let i = 0;
+
+    while (!file && i < this.formats.length) {
+      file = files.find(f => f.endsWith(this.formats[i]));
+      this.format = this.formats[i];
+      i++;
+    }
+    return file;
+  }
 }

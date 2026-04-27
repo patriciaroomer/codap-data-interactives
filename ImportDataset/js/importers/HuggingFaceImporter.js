@@ -32,25 +32,14 @@ export default class HuggingFaceImporter extends Importer {
       return;
     }
 
-    let fileName = "";
-    let foundFile = false;
-
-    for (const format of this.formats) {
-      fileName = files.find(f => f.endsWith(format));
-      if (fileName) {
-        this.format = format;
-        foundFile = true;
-        break;
-      }
-    }
-
-    if (!foundFile) {
+    const file = this.findFile(files);
+    if (!file) {
       return;
     }
 
     const parts = this.url.split("/");
     const index = parts.indexOf("datasets");
     const user = parts[index + 1];
-    return `${this.host}datasets/${user}/${this.datasetName}/resolve/main/${fileName}`;
+    return `${this.host}datasets/${user}/${this.datasetName}/resolve/main/${file}`;
   }
 }
