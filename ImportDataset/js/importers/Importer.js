@@ -1,6 +1,8 @@
 import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
 import Controller from '../codap/Controller.js';
+import CSVParser from '../parsers/CSVParser.js';
+import JSONParser from '../parsers/JSONParser.js';
 
 // This class is constructed like an abstract class
 export default class Importer {
@@ -72,7 +74,7 @@ export default class Importer {
     console.log("Connecting to API...");
     const response = await this.connect();
     if (!response) {
-      return; // Already handled
+      return;
     }
 
     console.log("Fetching file...");
@@ -85,22 +87,16 @@ export default class Importer {
 
     console.log("Fetch successful!");
 
-    let result;
-    switch (this.format) {
-      case ".csv":
-        result = await this.parseCsv(resource);
-        if (!result) return;
-        callback?.();
-        break;
-      case ".json":
-        result = await this.parseJson(resource);
-        if (!result) return;
-        callback?.();
-        break;
-      default:
-        Controller.displayMessage("No file found");
-        return;
+    const parser = this.findParser();
+    if (!parser) {
+      return;
     }
+
+    const result = await parser.parse(resource, this.isDownload);
+    if (!result) return;
+    this.attributes = parser.attributes;
+    this.entries = parser.entries;
+    callback?.();
   }
 
   async connect() {
@@ -114,101 +110,19 @@ export default class Importer {
     return response;
   }
 
-  async parseCsv(resource) {
-    return new Promise((resolve, reject) => {
-      try {
-        Papa.parse(resource, {
-          download: this.isDownload,
-          header: true,
-          skipEmptyLines: true,
-          complete: (result) => {
-
-            const data = result.data.slice(0, this.maxEntries);
-            const header = data[0];
-
-            this.attributes = Object.keys(header).slice(0, this.maxAttributes).map(name => ({
-              name, type: "nominal"
-            }));
-
-            this.entries = data.map(row => ({
-              values: row
-            }));
-
-            console.log("Parsing successful!");
-            resolve(true);
-          },
-          error: (err) => {
-            Controller.displayMessage("Could not parse dataset, please choose another one.");
-            reject(err)
-          }
-        });
-      } catch {
-        reject(false);
-      }
-    });
-  }
-
-  async parseJson(resource) {
-    let data;
-
-    if (this.isDownload) {
-      try {
-        data = await this.fetchWithTimeout(resource, 5000);
-      } catch {
-        Controller.displayMessage("Fetching timed out");
+  findParser() {
+    let parser;
+    switch (this.format) {
+      case ".csv":
+        parser = new CSVParser();
+        break;
+      case ".json":
+        parser = new JSONParser();
+        break;
+      default:
+        Controller.displayMessage("No suitable file found");
         return;
-      }
-    } else {
-      data = typeof resource === "string"
-        ? JSON.parse(resource)
-        : resource;
     }
-
-    if (!Array.isArray(data) || typeof data[0] !== "object") {
-      Controller.displayMessage("Dataset must be a flat array of objects.");
-      return;
-    }
-    Controller.removeMessage();
-
-    const attributes = new Set();
-
-    data = data.slice(0, this.maxEntries);
-    for (const row of data) {
-      if (row && typeof row === "object") {
-        for (const [key, value] of Object.entries(row)) {
-
-          if (value && typeof value === "object") {
-            Controller.displayMessage("Dataset must be a flat array of objects.");
-            return;
-          }
-
-          attributes.add(key);
-        }
-      }
-    }
-
-    this.attributes = Array.from(attributes).map(name => ({
-       name, type: "nominal" }));
-
-    this.entries = data.map(row => ({
-      values: row
-    }));
-
-    return true;
-  }
-
-  async fetchWithTimeout(url, timeoutMs = 5000) {
-    const controller = new AbortController();
-
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, timeoutMs);
-
-    return fetch(url, { signal: controller.signal })
-      .then(res => {
-        if (!res.ok) throw new Error("Network error");
-        return res.json();
-      })
-      .finally(() => clearTimeout(timeout));
+    return parser;
   }
 }
