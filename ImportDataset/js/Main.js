@@ -11,49 +11,47 @@ const version = 'v0.1';
 const dimensions = { width: 370, height: 290 };
 const preventBringToFront = false;
 
-function createFrame(callback) {
-  CODAPConnect.sendRequest({
+async function createFrame() {
+  await CODAPConnect.sendRequest({
     action: 'update',
     resource: 'interactiveFrame',
     values: {
-      title: title,
-      version: version,
-      dimensions: dimensions,
-      preventBringToFront: preventBringToFront
+      title,
+      version,
+      dimensions,
+      preventBringToFront
     }
-  }, () => { if (callback) callback() });
+  });
 }
 
-function createDefaultDataContext(callback) {
-  CODAPConnect.sendRequest({
+async function createDefaultDataContext() {
+  await CODAPConnect.sendRequest({
     action: "create",
     resource: "dataContext",
     values: {
       name: "default",
       label: "default"
     }
-  }, () => { if (callback) callback() });
+  });
 }
 
-function main() {
+async function main() {
   testServer();
 
   new CODAPConnect();
 
-  CODAPConnect.sendRequest({ action: "get", resource: "document" }, () => {
+  await CODAPConnect.sendRequest({ action: "get", resource: "document" });
 
-    createDefaultDataContext(() => {
-      createFrame(() => {
-        new Controller([
-          new HuggingFaceImporter(),
-          new KaggleImporter(),
-          new OECDImporter(),
-          new WorldBankImporter(),
-          new DataPublicImporter()
-        ]);
-      });
-    })
-  })
+  await createDefaultDataContext();
+  await createFrame();
+
+  new Controller([
+    new HuggingFaceImporter(),
+    new KaggleImporter(),
+    new OECDImporter(),
+    new WorldBankImporter(),
+    new DataPublicImporter()
+  ]);
 }
 
 async function testServer() {

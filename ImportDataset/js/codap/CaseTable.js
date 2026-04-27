@@ -8,49 +8,61 @@ export default class CaseTable {
     this.resource = `dataContext[${dataContext}].collection[${dataContext}].case`;
   }
 
-  create() {
+  async create() {
     console.log("Creating caseTable");
+
     if (this.isUpdate) {
-      this.rewriteEntries(() => this.createComponent());
+      await this.rewriteEntries();
     } else {
-      this.writeEntries(() => this.createComponent());
+      await this.writeEntries();
     }
+
+    await this.createComponent();
   }
 
-  writeEntries(callback) {
+  async writeEntries() {
     console.log("Writing caseTable entries");
-    CODAPConnect.sendRequest({
+
+    const response = await CODAPConnect.sendRequest({
       action: "create",
       resource: this.resource,
       values: this.entries
-    }, () => { if (callback) callback() });
+    });
+
+    return response?.success === true;
   }
 
-  rewriteEntries(callback) {
+  async rewriteEntries() {
     console.log("Rewriting caseTable entries");
-    CODAPConnect.sendRequest({
+
+    const response = await CODAPConnect.sendRequest({
       action: "update",
       resource: this.resource,
       values: this.entries
-    }, () => { if (callback) callback() });
+    });
+
+    return response?.success === true;
   }
 
-  createComponent() {
-    console.log("Creating caseTable");
-      CODAPConnect.sendRequest({
-        action: "create",
-        resource: "component",
-        values: {
-          type: "caseTable",
-          name: this.dataContext,
-          dataContext: this.dataContext,
-          collection: this.dataContext,
-          isVisible: true,
-          dimensions: {
-            width: 1000,
-            height: 300
-          }
+  async createComponent() {
+    console.log("Creating caseTable component");
+
+    const response = await CODAPConnect.sendRequest({
+      action: "create",
+      resource: "component",
+      values: {
+        type: "caseTable",
+        name: this.dataContext,
+        dataContext: this.dataContext,
+        collection: this.dataContext,
+        isVisible: true,
+        dimensions: {
+          width: 1000,
+          height: 300
         }
-      });
+      }
+    });
+
+    return response?.success === true;
   }
 }

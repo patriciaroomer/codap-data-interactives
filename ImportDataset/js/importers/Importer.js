@@ -50,16 +50,14 @@ export default class Importer {
     this.url = url;
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
+
     const exists = await CODAPConnect.dataContextExists(this.datasetName);
 
-    await this.parse(() =>
-      CODAPConnect.createDataContext(this.datasetName, this.attributes, () =>
-        new CaseTable(this.datasetName, this.entries, exists).create())
-    );
-
+    await this.parse();
+    await CODAPConnect.createDataContext(this.datasetName, this.attributes);
+    await new CaseTable(this.datasetName, this.entries, exists).create();
     if (this.format === ".json") {
       Controller.displayWarning("JSON file might potentially be displayed incorrectly.");
-      return;
     }
   }
 

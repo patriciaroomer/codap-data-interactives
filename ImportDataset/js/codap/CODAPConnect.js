@@ -1,6 +1,7 @@
 export default class CODAPConnect {
 
   static phone;
+  static currentDataContext = "";
 
   static {
     this.phone = new iframePhone.IframePhoneRpcEndpoint(
@@ -9,43 +10,69 @@ export default class CODAPConnect {
   }
 
   static requestHandler(request, callback) {
-    callback({ "success": true });
+    callback({ success: true });
   }
 
-  static sendRequest(request, callback) {
-    this.phone.call(request, (response) => {
-      if (callback) callback(response, request);
-    })
-  }
-
-  static dataContextExists(name) {
+  static sendRequest(request) {
     return new Promise((resolve) => {
-      this.sendRequest({
-        action: "get",
-        resource: "dataContext[" + name + "]"
-      }, (response) => {
-        resolve(response?.success === true);
+      this.phone.call(request, (response) => {
+        resolve(response);
       });
     });
   }
 
-  static createDataContext(name, attrs, callback) {
-    console.log("Creating dataContext: " + name);
-
-    return new Promise((resolve) => {
-      this.sendRequest({
-        action: "create",
-        resource: "dataContext",
-        values: {
-          name: name,
-          label: name,
-          collections: [{ name: name, attrs: attrs }]
-        }
-      }, (response) => {
-        console.log("Creation successful!");
-        resolve(response?.success);
-        if (callback) callback();
-      });
+  static async dataContextExists(name) {
+    const response = await this.sendRequest({
+      action: "get",
+      resource: `dataContext[${name}]`
     });
+    return response?.success === true;
+  }
+
+  static async getDataContextList() {
+    const response = await this.sendRequest({
+      action: "get",
+      resource: "dataContextList"
+    });
+    console.log(response?.values);
+    return response?.values || [];
+  }
+
+  static async removeDataContext(name) {
+    if (!name) return true;
+
+    const response = await this.sendRequest({
+      action: "delete",
+      resource: `dataContext[${name}]`
+    });
+
+    return response?.success === true;
+  }
+
+  static async createDataContext(name, attrs, callback) {
+    console.log("Removing previous dataContext:", this.currentDataContext);
+
+    await this.removeDataContext(this.currentDataContext);
+
+    console.log("Creating dataContext:", name);
+
+    const response = await this.sendRequest({
+      action: "create",
+      resource: "dataContext",
+      values: {
+        name: name,
+        label: name,
+        collections: [{ name: name, attrs: attrs }]
+      }
+    });
+
+    if (response?.success) {
+      this.currentDataContext = name;
+      console.log("Created dataContext:", name);
+    }
+
+    if (callback) callback();
+
+    return response?.success === true;
   }
 }
