@@ -1,42 +1,35 @@
 import CODAPConnect from './CODAPConnect.js';
 
 export default class CaseTable {
-  constructor(dataContext, entries, isUpdate = false) {
+  constructor(dataContext, entries) {
     this.dataContext = dataContext;
     this.entries = entries;
-    this.isUpdate = isUpdate;
-    this.resource = `dataContext[${dataContext}].collection[${dataContext}].case`;
+  }
+
+  get resource() {
+    return `dataContext[${this.dataContext}].collection[${this.dataContext}].case`;
   }
 
   async create() {
     console.log("Creating caseTable");
 
-    if (this.isUpdate) {
-      await this.rewriteEntries();
-    } else {
-      await this.writeEntries();
-    }
-
+    await this.clearExistingCases();
+    await this.writeEntries();
     await this.createComponent();
   }
 
+  async clearExistingCases() {
+    await CODAPConnect.sendRequest({
+      action: "delete",
+      resource: `dataContext[${this.dataContext}].case`
+    });
+  }
+
   async writeEntries() {
-    console.log("Writing caseTable entries");
+    console.log("Writing fresh caseTable entries");
 
     const response = await CODAPConnect.sendRequest({
       action: "create",
-      resource: this.resource,
-      values: this.entries
-    });
-
-    return response?.success === true;
-  }
-
-  async rewriteEntries() {
-    console.log("Rewriting caseTable entries");
-
-    const response = await CODAPConnect.sendRequest({
-      action: "update",
       resource: this.resource,
       values: this.entries
     });
@@ -54,7 +47,6 @@ export default class CaseTable {
         type: "caseTable",
         name: this.dataContext,
         dataContext: this.dataContext,
-        collection: this.dataContext,
         isVisible: true,
         dimensions: {
           width: 1000,

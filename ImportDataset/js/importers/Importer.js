@@ -39,6 +39,12 @@ export default class Importer {
   async handleInput() {
     Controller.removeMessage();
 
+    if (await CODAPConnect.anyDataContextExists()) {
+      if (!confirm("Importing a dataset will overwrite the current one. All changes to the dataset will be lost.")) {
+        return;
+      }
+    }
+
     const url = document.getElementById("urlUploader").value;
 
     if (!this.sanitizeUrl(url)) {

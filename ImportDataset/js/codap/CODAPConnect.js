@@ -29,6 +29,21 @@ export default class CODAPConnect {
     return response?.success === true;
   }
 
+  static async anyDataContextExists() {
+    const response = await this.sendRequest({
+      action: "get",
+      resource: "dataContextList"
+    });
+
+    const dataContexts = response?.values || [];
+
+    const nonDefaultContexts = dataContexts.filter(
+      d => d.name !== "default"
+    );
+
+    return nonDefaultContexts.length > 0;
+  }
+
   static async getDataContextList() {
     const response = await this.sendRequest({
       action: "get",
@@ -39,7 +54,7 @@ export default class CODAPConnect {
   }
 
   static async removeDataContext(name) {
-    if (!name) return true;
+    if (!name || name === "default") return true;
 
     const response = await this.sendRequest({
       action: "delete",
