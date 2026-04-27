@@ -11,11 +11,22 @@ export default class Controller {
 
   static logs = document.getElementById("logs");
 
-  static displayMessage(message) {
+  static displayError(message) {
+    Controller.logs.classList.add("error");
+    Controller.logs.classList.remove("warning");
+    Controller.logs.textContent = message;
+  }
+
+  static displayWarning(message) {
+    Controller.logs.classList.add("warning");
+    Controller.logs.classList.remove("error");
     Controller.logs.textContent = message;
   }
 
   static removeMessage() {
+    console.log("Clearing logs!");
+    Controller.logs.classList.remove("error");
+    Controller.logs.classList.remove("warning");
     Controller.logs.textContent = "";
   }
 
@@ -32,7 +43,7 @@ export default class Controller {
     }
 
     if (!isValidUrl) {
-      Controller.displayMessage("Invalid URL");
+      Controller.displayError("Invalid URL");
     } else {
       Controller.removeMessage();
     }

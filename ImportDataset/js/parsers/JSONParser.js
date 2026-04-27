@@ -10,10 +10,9 @@ export default class JSONParser extends Parser {
     }
 
     if (!Array.isArray(data) || typeof data[0] !== "object") {
-      Controller.displayMessage("Invalid dataset");
+      Controller.displayError("Invalid dataset");
       return;
     }
-    Controller.removeMessage();
 
     const attributes = this.findAttributes(data);
     if (!attributes) {
@@ -37,7 +36,7 @@ export default class JSONParser extends Parser {
       try {
         data = await this.fetchWithTimeout(resource, 5000);
       } catch {
-        Controller.displayMessage("Fetching timed out");
+        Controller.displayError("Fetching timed out");
         return;
       }
     } else {
@@ -69,10 +68,9 @@ export default class JSONParser extends Parser {
 
     for (const row of data) {
       if (!row || typeof row !== "object") {
-        Controller.displayMessage("Invalid dataset.");
+        Controller.displayError("Invalid dataset.");
         return;
       }
-      Controller.removeMessage();
       for (const [key, value] of Object.entries(row)) {
         attributes.add(key);
       }

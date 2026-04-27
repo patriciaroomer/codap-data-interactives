@@ -37,23 +37,30 @@ export default class Importer {
   }
 
   async handleInput() {
+    Controller.removeMessage();
+
     const url = document.getElementById("urlUploader").value;
 
     if (!this.sanitizeUrl(url)) {
-      Controller.displayMessage("Invalid URL");
+      Controller.displayError("Invalid URL");
       return;
     }
-    Controller.removeMessage();
 
+    this.format = this.formats[0];
     this.url = url;
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
     const exists = await CODAPConnect.dataContextExists(this.datasetName);
 
-    this.parse(() =>
+    await this.parse(() =>
       CODAPConnect.createDataContext(this.datasetName, this.attributes, () =>
         new CaseTable(this.datasetName, this.entries, exists).create())
     );
+
+    if (this.format === ".json") {
+      Controller.displayWarning("JSON file might potentially be displayed incorrectly.");
+      return;
+    }
   }
 
   sanitizeUrl(input) {
@@ -80,10 +87,9 @@ export default class Importer {
     console.log("Fetching file...");
     let resource = await this.getResource(response);
     if (!resource) {
-      Controller.displayMessage("Could not find supported file format. Please try another URL");
+      Controller.displayError("Could not find supported file format. Please try another URL");
       return;
     }
-    Controller.removeMessage();
 
     console.log("Fetch successful!");
 
@@ -97,15 +103,16 @@ export default class Importer {
     this.attributes = parser.attributes;
     this.entries = parser.entries;
     callback?.();
+
+    return true;
   }
 
   async connect() {
     const response = await fetch(this.api);
     if (!response.ok) {
-      Controller.displayMessage("Could not find dataset, please try another URL");
+      Controller.displayError("Could not find dataset, please try another URL");
       return;
     }
-    Controller.removeMessage();
     console.log("Connection successful!");
     return response;
   }
@@ -118,9 +125,10 @@ export default class Importer {
         break;
       case ".json":
         parser = new JSONParser();
+        Controller.displayWarning("JSON file might potentially be displayed incorrectly.");
         break;
       default:
-        Controller.displayMessage("No suitable file found");
+        Controller.displayError("No suitable file found");
         return;
     }
     return parser;

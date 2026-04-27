@@ -65,8 +65,15 @@ button:hover {
   position: absolute;
   top: 43px;
   padding-left: 2px;
-  color: red;
   font-size: 12px;
+}
+
+#logs.error {
+  color: red;
+}
+
+#logs.warning {
+  color: orangered;
 }
 
 .inline-child {
