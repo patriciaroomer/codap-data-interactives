@@ -48,7 +48,7 @@ export default class Importer {
     const url = document.getElementById("urlUploader").value;
 
     if (!this.sanitizeUrl(url)) {
-      Controller.displayError("Invalid URL");
+      Controller.displayError("Invalid URL. Must be HTTPS");
       return;
     }
 
@@ -91,7 +91,7 @@ export default class Importer {
     console.log("Fetching file...");
     let resource = await this.getResource(response);
     if (!resource) {
-      Controller.displayError("Could not find supported file format. Please try another URL");
+      Controller.displayError("Please try a dataset with a CSV file");
       return;
     }
 
@@ -114,7 +114,7 @@ export default class Importer {
   async connect() {
     const response = await fetch(this.api);
     if (!response.ok) {
-      Controller.displayError("Could not find dataset, please try another URL");
+      Controller.displayError("Sorry, dataset could not be fetched. Please try another one");
       return;
     }
     console.log("Connection successful!");
@@ -129,7 +129,7 @@ export default class Importer {
         break;
       case ".json":
         parser = new JSONParser();
-        Controller.displayWarning("JSON file might potentially be displayed incorrectly.");
+        Controller.displayWarning("JSON file might potentially be displayed incorrectly");
         break;
       default:
         Controller.displayError("No suitable file found");
