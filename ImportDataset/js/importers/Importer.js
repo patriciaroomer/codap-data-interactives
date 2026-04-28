@@ -48,7 +48,7 @@ export default class Importer {
     const url = document.getElementById("urlUploader").value;
 
     if (!this.sanitizeUrl(url)) {
-      Controller.displayError("Invalid URL. Must be HTTPS");
+      Controller.displayError("Please use a HTTPS URL");
       return;
     }
 
@@ -59,7 +59,11 @@ export default class Importer {
 
     const exists = await CODAPConnect.dataContextExists(this.datasetName);
 
-    await this.parse();
+    const parsed = await this.parse();
+    if (!parsed) {
+      return;
+    }
+
     await CODAPConnect.createDataContext(this.datasetName, this.attributes);
     await new CaseTable(this.datasetName, this.entries, exists).create();
     if (this.format === ".json") {
@@ -87,6 +91,7 @@ export default class Importer {
     if (!response) {
       return;
     }
+    console.log("Connection succesful!");
 
     console.log("Fetching file...");
     let resource = await this.getResource(response);
@@ -112,13 +117,12 @@ export default class Importer {
   }
 
   async connect() {
-    const response = await fetch(this.api);
-    if (!response.ok) {
-      Controller.displayError("Sorry, dataset could not be fetched. Please try another one");
-      return;
+    try {
+      const response = await Importer.fetchWithTimeout(this.api);
+      return response;
+    } catch {
+      Controller.displayError("Fetching dataset took too long");
     }
-    console.log("Connection successful!");
-    return response;
   }
 
   findParser() {
@@ -132,7 +136,7 @@ export default class Importer {
         Controller.displayWarning("JSON file might potentially be displayed incorrectly");
         break;
       default:
-        Controller.displayError("No suitable file found");
+        Controller.displayError("No CSV or tabular JSON file found");
         return;
     }
     return parser;
@@ -148,5 +152,20 @@ export default class Importer {
       i++;
     }
     return file;
+  }
+
+  static async fetchWithTimeout(url, ms = 5000) {
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, ms);
+
+    return fetch(url, { signal: controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error("Network error");
+        return response.json();
+      })
+      .finally(() => clearTimeout(timeout));
   }
 }

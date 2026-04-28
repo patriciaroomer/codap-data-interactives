@@ -34,9 +34,9 @@ export default class JSONParser extends Parser {
     let data;
     if (isDownload) {
       try {
-        data = await this.fetchWithTimeout(resource, 5000);
+        data = await Importer.fetchWithTimeout(resource);
       } catch {
-        Controller.displayError("Fetching dataset took too long, try again later or use a smaller dataset");
+        Controller.displayError("Fetching dataset took too long");
         return;
       }
     } else {
@@ -45,21 +45,6 @@ export default class JSONParser extends Parser {
         : resource;
     }
     return data;
-  }
-
-  async fetchWithTimeout(url, ms = 5000) {
-    const controller = new AbortController();
-
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, ms);
-
-    return fetch(url, { signal: controller.signal })
-      .then(response => {
-        if (!response.ok) throw new Error("Network error");
-        return response.json();
-      })
-      .finally(() => clearTimeout(timeout));
   }
 
   findAttributes(data) {

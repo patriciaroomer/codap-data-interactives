@@ -7,6 +7,12 @@ export default class Controller {
     this.urlButton.addEventListener("click", () => {
       this.handleInput();
     })
+
+    this.urlField.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        this.urlButton.click();
+      }
+    })
   }
 
   static logs = document.getElementById("logs");
@@ -43,7 +49,15 @@ export default class Controller {
     }
 
     if (!isValidUrl) {
-      Controller.displayError("Invalid URL");
+      let error = "Invalid URL";
+
+      // Technically one of the supported websites,
+      // but user used website URL instead of Data Query.
+      if (url.startsWith("https://data-explorer.oecd.org/")) {
+        error = `Use the OECD Data Query found under "Developer API"`
+      }
+
+      Controller.displayError(error);
     } else {
       Controller.removeMessage();
     }
