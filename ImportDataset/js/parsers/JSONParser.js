@@ -1,5 +1,6 @@
 import Controller from '../codap/Controller.js';
 import Parser from './Parser.js';
+import Importer from '../importers/Importer.js';
 
 export default class JSONParser extends Parser {
 
@@ -35,7 +36,8 @@ export default class JSONParser extends Parser {
     if (isDownload) {
       try {
         data = await Importer.fetchWithTimeout(resource);
-      } catch {
+        data = data.json();
+      } catch (error){
         Controller.displayError("Fetching dataset took too long");
         return;
       }

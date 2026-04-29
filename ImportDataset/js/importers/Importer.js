@@ -164,7 +164,7 @@ export default class Importer {
     return fetch(url, { signal: controller.signal })
       .then(response => {
         if (!response.ok) throw new Error("Network error");
-        return response.json();
+        return response;
       })
       .finally(() => clearTimeout(timeout));
   }
