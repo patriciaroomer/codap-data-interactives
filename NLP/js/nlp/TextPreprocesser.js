@@ -8,14 +8,24 @@ export default class TextPreprocesser {
   }
 
   process() {
-    const cleanedCorpus = this.clean(this.corpus);
-    const tokens = this.tokenize(cleanedCorpus);
-    const cleanTokens = this.removeStopwords(tokens);
-    const lemmas = this.lemmatize(cleanTokens);
-    //const tokens = this.stem(lemmas);
-    return this.reconstruct(lemmas);
+    const cleaned = this.clean(this.corpus);
+    const tokens = this.tokenize(cleaned);
+    const withoutStopwords = this.removeStopwords(tokens);
+    const lemmas = this.lemmatize(withoutStopwords);
+    const stems = this.stem(lemmas);
+    return this.reconstruct(stems);
   }
 
+  processIndependently() {
+    const cleaned = this.clean(this.corpus);
+    const tokens = this.tokenize(cleaned);
+    const withoutStopwords = this.reconstruct(this.removeStopwords(tokens));
+    const stems = this.reconstruct(this.stem(tokens));
+    const lemmas = this.reconstruct(this.lemmatize(tokens));
+    return [cleaned, withoutStopwords, stems, lemmas];
+  }
+
+  // Returns a list of cleaned sentences
   clean(corpus) {
     const result = [];
     for (let text of corpus) {
@@ -59,10 +69,10 @@ export default class TextPreprocesser {
     );
   }
 
-  reconstruct(lemmas) {
+  reconstruct(tokens) {
     const result = [];
-    for (const line of lemmas) {
-      result.push(line.join(" "));
+    for (const token of tokens) {
+      result.push(token.join(" "));
     }
     return result;
   }
