@@ -6,7 +6,6 @@ export default class BagOfWords {
         this.words.push(word);
       }
     }
-    console.log(this.words);
   }
 
   count() {
