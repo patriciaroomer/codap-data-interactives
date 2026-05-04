@@ -37,8 +37,6 @@ export default class Importer {
   }
 
   async handleInput() {
-    Controller.removeMessage();
-
     if (await CODAPConnect.anyDataContextExists()) {
       if (!confirm("Importing a dataset will overwrite the current one. All changes to the dataset will be lost.")) {
         return;
@@ -51,6 +49,8 @@ export default class Importer {
       Controller.displayError("Please use a HTTPS URL");
       return;
     }
+
+    Controller.displayMessage("Loading...");
 
     this.format = this.formats[0];
     this.url = url;
@@ -68,7 +68,10 @@ export default class Importer {
     await new CaseTable(this.datasetName, this.entries, exists).create();
     if (this.format === ".json") {
       Controller.displayWarning("JSON file might potentially be displayed incorrectly.");
+      return;
     }
+
+    Controller.removeMessage();
   }
 
   sanitizeUrl(input) {
@@ -107,7 +110,18 @@ export default class Importer {
       return;
     }
 
-    const result = await parser.parse(resource, this.isDownload);
+    const result = await Promise.race([
+      parser.parse(resource, this.isDownload),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Parser timeout")), 7000)
+      ),
+    ]).catch(err => {
+      if (err.message === "Parser timeout") {
+        Controller.displayError("Parsing timed out, please try a smaller dataset.");
+      }
+      return;
+    });
+
     if (!result) return;
     this.attributes = parser.attributes;
     this.entries = parser.entries;
@@ -154,7 +168,7 @@ export default class Importer {
     return file;
   }
 
-  static async fetchWithTimeout(url, ms = 5000) {
+  static async fetchWithTimeout(url, ms = 7000) {
     const controller = new AbortController();
 
     const timeout = setTimeout(() => {

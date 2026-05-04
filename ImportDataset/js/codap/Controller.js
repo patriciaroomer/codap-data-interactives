@@ -20,12 +20,21 @@ export default class Controller {
   static displayError(message) {
     Controller.logs.classList.add("error");
     Controller.logs.classList.remove("warning");
+    Controller.logs.classList.remove("message");
     Controller.logs.textContent = message;
   }
 
   static displayWarning(message) {
     Controller.logs.classList.add("warning");
     Controller.logs.classList.remove("error");
+    Controller.logs.classList.remove("message");
+    Controller.logs.textContent = message;
+  }
+
+  static displayMessage(message) {
+    Controller.logs.classList.add("message");
+    Controller.logs.classList.remove("error");
+    Controller.logs.classList.remove("warning");
     Controller.logs.textContent = message;
   }
 
@@ -54,7 +63,7 @@ export default class Controller {
       // Technically one of the supported websites,
       // but user used website URL instead of Data Query.
       if (url.startsWith("https://data-explorer.oecd.org/")) {
-        error = `Use the OECD Data Query found under "Developer API"`
+        error = `Use the Data Query in "Developer API" of the OECD website`
       }
 
       Controller.displayError(error);

@@ -76,6 +76,10 @@ button:hover {
   color: orangered;
 }
 
+#logs.warning {
+  color: black;
+}
+
 .inline-child {
   display: inline-block;
 }

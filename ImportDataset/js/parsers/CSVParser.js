@@ -1,4 +1,5 @@
 import Parser from './Parser.js';
+import Controller from '../codap/Controller.js'
 
 export default class CSVParser extends Parser {
 
@@ -26,7 +27,7 @@ export default class CSVParser extends Parser {
             resolve(true);
           },
           error: (err) => {
-            Controller.displayMessage("Could not parse dataset, please choose another one.");
+            Controller.displayError("Could not parse dataset, please choose another one.");
             reject(err)
           }
         });
