@@ -58,15 +58,7 @@ export default class Controller {
     }
 
     if (!isValidUrl) {
-      let error = "Invalid URL";
-
-      // Technically one of the supported websites,
-      // but user used website URL instead of Data Query.
-      if (url.startsWith("https://data-explorer.oecd.org/")) {
-        error = `Use the Data Query in "Developer API" of the OECD website`
-      }
-
-      Controller.displayError(error);
+      Controller.displayError("Invalid URL");
     } else {
       Controller.removeMessage();
     }

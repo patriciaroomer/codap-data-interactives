@@ -1,3 +1,4 @@
+import Controller from '../codap/Controller.js';
 import Importer from './Importer.js';
 
 export default class OECDImporter extends Importer {
@@ -5,9 +6,7 @@ export default class OECDImporter extends Importer {
     super();
     this.isDownload = false;
     this.format = ".csv";
-    // OECD datasets provide a Data Query in the
-    // Developer API category, which starts like this:
-    this.host = "https://sdmx.oecd.org/public/rest/data/";
+    this.host = "https://data-explorer.oecd.org";
   }
 
   isDataset(url) {
@@ -16,19 +15,40 @@ export default class OECDImporter extends Importer {
 
   getDatasetName() {
     const url = new URL(this.url);
-    const parts = url.pathname.split("/").filter(Boolean);
-    const index = parts.indexOf("data");
-
-    // Get datasetId from:
-    // "<this.host>.../<dataAgencyId>,<datasetId>/..."
-    return parts[index + 1].split(",")[0];
+    return url.searchParams.get("df[id]").toString();
   }
 
   constructApiCall() {
-    // Data query already represents the API call
     const url = new URL(this.url);
-    url.searchParams.set("format", "csvfilewithlabels");
-    return url.toString();
+    const params = url.searchParams;
+
+    const agency = params.get("df[ag]");
+    const dataflow = params.get("df[id]");
+    const version = params.get("df[vs]");
+    const dq = params.get("dq");
+    const pd = params.get("pd");
+
+    if (!agency || !dataflow || !version || !dq) {
+      Controller.displayError("Invalid URL");
+      return;
+    }
+
+    let startPeriod, endPeriod;
+    if (pd) {
+      [startPeriod, endPeriod] = pd.split(",");
+    }
+
+    const apiUrl = new URL(
+      `https://sdmx.oecd.org/public/rest/data/${agency},${dataflow},${version}/${dq}`
+    )
+
+    if (startPeriod) apiUrl.searchParams.set("startPeriod", startPeriod);
+    if (endPeriod) apiUrl.searchParams.set("endPeriod", endPeriod);
+
+    apiUrl.searchParams.set("format", "csvfilewithlabels");
+    apiUrl.searchParams.set("dimensionAtObservation", "AllDimensions");
+
+    return apiUrl.toString();
   }
 
   getResource(response) {
