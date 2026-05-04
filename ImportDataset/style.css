@@ -1,7 +1,10 @@
 :root {
-  --sky: #72bfca;
-  --ocean: #105262;
-  --shadow: rgb(16, 82, 98, 0.25);
+  --herbal: #25a18e;
+  --ocean: #00a5cf;
+  --plunge: #004e64;
+  --shadow: rgba(16, 82, 98, 0.25);
+  --iron: #ccc;
+  --stone: #555;
 }
 
 body {
@@ -14,8 +17,7 @@ body {
 }
 
 p {
-  font-size: 13px;
-  text-align: justify;
+  font-size: 15px;
 }
 
 #title {
@@ -25,15 +27,17 @@ p {
 input {
   padding: 3px;
   margin-right: 5px;
-  border: 2px solid #ccc;
+  border: 2px solid var(--iron);
   border-radius: 5px;
   font-size: 14px;
-  color: #555;
+  color: var(--stone);
   outline: none;
+  width: 310px;
+  transition: 0.3s ease;
 }
 
 input:focus {
-  border-color: var(--sky);
+  border-color: var(--ocean);
   box-shadow: 0 0 0 0.2rem var(--shadow);
 }
 
@@ -43,16 +47,15 @@ button {
 
   padding: 2.5px;
   border-radius: 5px;
-  border-color: black;
+  border-color: var(--plunge);
   width: 60px;
-  background-color: var(--sky);
+  background-color: var(--ocean);
   font-size: 14px;
   transition: 0.3s ease;
 }
 
 button:hover {
-  background-color: var(--ocean);
-  color: white;
+  background-color: var(--herbal);
   cursor: pointer;
 }
 
@@ -89,11 +92,20 @@ button:hover {
 }
 
 a {
-  font-size: 12px;
-  padding-right: 7px;
-  color: var(--ocean);
+  font-size: 13px;
+  font-weight: bold;
+  padding-right: 15px;
+  color: var(--herbal);
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
 }
 
 a:visited {
+  text-decoration: none;
+  color: var(--herbal);
+}
+
+a:hover {
+  text-decoration: none;
   color: var(--ocean);
 }

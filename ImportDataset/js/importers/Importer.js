@@ -99,7 +99,7 @@ export default class Importer {
     console.log("Fetching file...");
     let resource = await this.getResource(response);
     if (!resource) {
-      Controller.displayError("Please try a dataset with a CSV file");
+      Controller.displayError("Could not parse any of the files provided by this dataset");
       return;
     }
 
