@@ -5,9 +5,48 @@
   <script src="../Common/js/iframe-phone.js" language="javascript"></script>
   <script src="../Common/js/CodapInterface.js"></script>
   <title>Natural Language Processing</title>
+  <link rel="stylesheet" href="style.css"
 </head>
 
 <body>
+  <textarea id="inputArea" name="inputArea" rows="5" cols="33">JavaScript is a great programming language!!!</textarea>
+
+  <h3>Text Preprocessing</h3>
+  <p>Prepares the text for NLP tasks like text classification</p>
+  <div id="preprocessingBoxes">
+    <input type="checkbox" id="cleanBox" name="cleanBox" checked="true">
+    <label for="cleanBox">Clean</label>
+    <input type="checkbox" id="stopwordsBox" name="stopwordsBox" checked="true">
+    <label for="stopwordsBox">Remove stopwords</label>
+    <input type="checkbox" id="lemmaBox" name="lemmaBox" checked="true">
+    <label for="lemmaBox">Lemmatize</label>
+    <input type="checkbox" id="stemBox" name="stemBox">
+    <label for="stemBox">Stem</label>
+  </div>
+
+  <div class="buttonDiv">
+    <button id="preprocessingButton">Go</button>
+  </div>
+
+  <textarea id="outputArea" name="outputArea" rows="5" cols="33">javascript great program language</textarea>
+
+  <h3>Bag of Words</h3>
+  <p>Splits the text into words and counts their occurrences</p>
+  <button id="bagOfWordsButton">Create</button>
+
+  <h3>Text Classification</h3>
+  <p>Attempts to determine the best fitting category given a set of options</p>
+  <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
+  <label for="sentimentBox">Sentiment</label>
+  <input type="checkbox" id="emotionBox" name="emotionBox">
+  <label for="emotionBox">Emotion</label>
+  <input type="checkbox" id="topicBox" name="topicBox">
+  <label for="topicBox">Topic</label>
+
+  <div class="buttonDiv">
+    <button id="classificationButton">Go</button>
+  </div>
+
   <script src="https://unpkg.com/compromise"></script>
 
   <script type="module" src="./js/codap/CODAPConnect.js"></script>

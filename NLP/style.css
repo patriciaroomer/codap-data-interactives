@@ -1,0 +1,68 @@
+:root {
+  --herbal: #25a18e;
+  --ocean: #00a5cf;
+  --plunge: #004e64;
+  --shadow: rgba(16, 82, 98, 0.25);
+  --iron: #ccc;
+  --stone: #555;
+}
+
+body {
+  padding: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h3 {
+  font-size: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+p {
+  font-size: 15px;
+}
+
+textarea {
+  margin-top: 10px;
+  width: 400px;
+  border: 2px solid var(--iron);
+  border-radius: 5px;
+  color: var(--stone);
+  outline: none;
+  transition: 0.3s ease;
+}
+
+textarea:focus {
+  border-color: var(--ocean);
+  box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+button {
+  padding: 2.5px;
+  background-color: var(--iron);
+  border-radius: 10px;
+  border-color: var(--stone);
+  transition: 0.3s ease;
+}
+
+#preprocessingButton, #classificationButton {
+  width: 30px;
+}
+
+#bagOfWordsButton {
+  width: 60px;
+}
+
+.buttonDiv {
+  margin: 10px 0px;
+}
+
+button:hover {
+  background-color: var(--herbal);
+  cursor: pointer;
+}
