@@ -6,6 +6,8 @@ export default class BagOfWords {
         this.words.push(word);
       }
     }
+    this.attributes = ["Word", "Count"].map(word => ({word, type: "nominal"}));
+    this.count();
   }
 
   count() {
@@ -18,6 +20,8 @@ export default class BagOfWords {
         bag.set(word, bag.get(word) + 1);
       }
     }
-    return bag;
+    this.entries = [...bag].map(([word, count]) => ({
+      values: [word, count]
+    }));
   }
 }
