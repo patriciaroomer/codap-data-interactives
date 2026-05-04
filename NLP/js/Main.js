@@ -41,18 +41,21 @@ async function main() {
 
   const preprocessed = new TextPreprocesser(corpus).process();
   const bagOfWords = new BagOfWords(preprocessed);
-  const categories = await new TextClassificator(preprocessed).classify();
-  const parser = new Parser(corpus, preprocessed, categories);
+  const classificator = await new TextClassificator(preprocessed);
+  await classificator.classify();
+  const parser = new Parser(corpus, preprocessed);
 
-  await CODAPConnect.createDataContext("Corpus", parser.attributes);
-  console.log(parser.entries);
-  await new CaseTable("Corpus", parser.entries).create();
-
-  console.log(bagOfWords.attributes);
-  console.log(bagOfWords.entries);
+  await CODAPConnect.createDataContext("Text Preprocessing", parser.attributes);
+  await new CaseTable("Text Preprocessing", parser.entries).create();
 
   await CODAPConnect.createDataContext("Bag of Words", bagOfWords.attributes);
   await new CaseTable("Bag of Words", bagOfWords.entries).create();
+
+  console.log(classificator.attributes);
+  console.log(classificator.entries);
+
+  await CODAPConnect.createDataContext("Text Classification", classificator.attributes);
+  await new CaseTable("Text Classification", classificator.entries).create();
 }
 
 main();

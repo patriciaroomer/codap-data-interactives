@@ -6,7 +6,7 @@ export default class BagOfWords {
         this.words.push(word);
       }
     }
-    this.attributes = ["Word", "Count"].map(word => ({word, type: "nominal"}));
+    this.attributes = ["Word", "Count"].map(name => ({name, type: "nominal"}));
     this.count();
   }
 

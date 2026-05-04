@@ -2,8 +2,8 @@ import TextPreprocesser from '../nlp/TextPreprocesser.js';
 import CODAPConnect from './CODAPConnect.js';
 
 export default class Parser {
-  constructor(corpus, preprocessed, categories) {
-    const header = ["Text", "Cleaned", "Without stopwords", "Lemmas", "Stems", "Preprocessed", "Category"];
+  constructor(corpus, preprocessed) {
+    const header = ["Text", "Cleaned", "Without stopwords", "Lemmas", "Stems", "Preprocessed"];
     this.attributes = header.map(name => ({ name, type: "nominal" }));
     this.entries = [];
 
@@ -19,8 +19,7 @@ export default class Parser {
         results[1][i], // Without stopwords
         results[2][i], // Stems
         results[3][i], // Lemmas
-        preprocessed[i],
-        categories[i]]});
+        preprocessed[i]]});
       i++;
     }
   }

@@ -1,17 +1,40 @@
 export default class TextClassificator {
   constructor(corpus) {
     this.corpus = corpus;
+    this.attributes = ["Sentiment", "Emotion", "Topic"].map(name => ({name, type: "nominal"}));
   }
 
   async classify() {
-    const categories = [];
+    const sentiments = [];
+    const emotions = [];
+    const topics = [];
+    const apiRoot = "http://localhost:3000/api/text-classification";
+
     for (const text of this.corpus) {
-      const response = await fetch(`http://localhost:3000/api/text-classification/sentiment?text=${encodeURIComponent(text)}`);
-      const labels = await response.json();
-      console.log(labels);
-      categories.push(this.getLabelWithHighestScore(labels));
+      const sentimentResponse = await fetch(`${apiRoot}/sentiment?text=${encodeURIComponent(text)}`);
+      const emotionResponse = await fetch(`${apiRoot}/emotion?text=${encodeURIComponent(text)}`);
+      const topicResponse = await fetch(`${apiRoot}/topic?text=${encodeURIComponent(text)}`);
+
+      const sentimentLabels = await sentimentResponse.json();
+      const emotionLabels = await emotionResponse.json();
+      const topicLabels = await topicResponse.json();
+
+      sentiments.push(this.getLabelWithHighestScore(sentimentLabels));
+      emotions.push(this.getLabelWithHighestScore(emotionLabels));
+      topics.push(this.getLabelWithHighestScore(topicLabels));
     }
-    return categories;
+
+    console.log(sentiments);
+    console.log(emotions);
+    console.log(topics);
+
+    this.entries = sentiments.map((sentiment, i) => ({
+      values: [
+        sentiment,
+        emotions[i],
+        topics[i]
+      ]
+    }));
   }
 
   getLabelWithHighestScore(labels) {
