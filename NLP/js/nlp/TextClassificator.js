@@ -1,3 +1,5 @@
+import Logger from '../ui/Logger.js';
+
 export default class TextClassificator {
   constructor(text) {
     this.text = text;
@@ -5,7 +7,7 @@ export default class TextClassificator {
   }
 
   async classifySentiment() {
-    const sentimentResponse = await fetch(`${this.apiRoot}/sentiment?text=${encodeURIComponent(this.text)}`);
+    const sentimentResponse = await this.fetchWithTimeout(`${this.apiRoot}/sentiment?text=${encodeURIComponent(this.text)}`, {});
     const sentimentLabels = await sentimentResponse.json();
     const sentiments = this.sortLabels(sentimentLabels);
     this.sentimentAttributes = this.getLabelNames(sentiments).map(name => ({ name, type: "nominal" }));
@@ -13,7 +15,7 @@ export default class TextClassificator {
   }
 
   async classifyEmotion() {
-    const emotionResponse = await fetch(`${this.apiRoot}/emotion?text=${encodeURIComponent(this.text)}`);
+    const emotionResponse = await this.fetchWithTimeout(`${this.apiRoot}/emotion?text=${encodeURIComponent(this.text)}`, {});
     const emotionLabels = await emotionResponse.json();
     const emotions = this.sortLabels(emotionLabels);
     this.emotionAttributes = this.getLabelNames(emotions).map(name => ({ name, type: "nominal" }));
@@ -21,11 +23,32 @@ export default class TextClassificator {
   }
 
   async classifyTopic() {
-    const topicResponse = await fetch(`${this.apiRoot}/topic?text=${encodeURIComponent(this.text)}`);
+    const topicResponse = await this.fetchWithTimeout(`${this.apiRoot}/topic?text=${encodeURIComponent(this.text)}`, {});
     const topicLabels = await topicResponse.json();
     const topics = this.sortLabels(topicLabels);
     this.topicAttributes = this.getLabelNames(topics).map(name => ({ name, type: "nominal" }));
     this.topicEntries = { values: this.getLabelScores(topics) };
+  }
+
+  async fetchWithTimeout(api, options = {}, timeout = 10000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(api, {
+        ...options,
+        signal: controller.signal
+      });
+
+      clearTimeout(id);
+      return response;
+    } catch (err) {
+      if (err.name === "AbortError") {
+        Logger.displayError("Text classification model timed out, please try again later");
+        throw new Error("Request timed out");
+      }
+      throw err;
+    }
   }
 
   sortLabels(labels) {

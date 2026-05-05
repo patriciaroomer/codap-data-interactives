@@ -29,17 +29,31 @@ p {
 
 textarea {
   margin-top: 10px;
+  margin-bottom: 10px;
   width: 450px;
   border: 2px solid var(--iron);
   border-radius: 5px;
   color: var(--stone);
   outline: none;
-  transition: 0.3s ease;
+  transition: 0.3s ease-in-out;
 }
 
 textarea:focus {
   border-color: var(--ocean);
   box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+textarea.highlighted {
+  border-color: #52b788;
+  box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+textarea span {
+  transition: color 0.2s;
+}
+
+textarea span.active {
+  color: green;
 }
 
 input[type="checkbox"] {
@@ -50,17 +64,68 @@ input[type="checkbox"]:hover {
   cursor: pointer;
 }
 
+#preprocessingCheckboxes {
+  display: flex;
+}
+
 label {
   font-size: 12px;
+  margin-top: 8px;
+  margin-right: 3px;
+}
+
+.info {
+  position: relative;
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 10px;
+  cursor: help;
+}
+
+.infoBubble {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ocean);
+  padding: 10px 15px;
+  width: 100px;
+  border-radius: 5px;
+  z-index: 10;
+  font-size: 12px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.info:hover .infoBubble {
+  opacity: 1;
+}
+
+.infoBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 8px solid transparent;
+  border-top-color: var(--ocean);
 }
 
 button {
   font-size: 11px;
   padding: 2.5px;
-  background-color: var(--iron);
+  background-color: var(--white);
   border-radius: 15px;
   border-color: var(--stone);
   transition: 0.3s ease;
+}
+
+#preprocessingButton {
+  height: 25px;
+  margin-top: 7px;
 }
 
 #preprocessingButton, #classificationButton {
@@ -71,6 +136,7 @@ button {
 
 #bagOfWordsButton {
   width: 55px;
+  margin-bottom: 15px;
 }
 
 .buttonDiv {
@@ -78,6 +144,10 @@ button {
 }
 
 button:hover {
-  background-color: var(--herbal);
+  border-color: var(--herbal);
   cursor: pointer;
+}
+
+#logs {
+  font-weight: bold;
 }

@@ -3,11 +3,11 @@ import CODAPConnect from './codap/CODAPConnect.js';
 import TextPreprocesser from './nlp/TextPreprocesser.js';
 import TextClassificator from './nlp/TextClassificator.js';
 import CaseTable from './codap/CaseTable.js';
-import Listener from './Listener.js';
+import Listener from './ui/Listener.js';
 
 const title = "Natural Language Processing";
 const version = "v0.1";
-const dimensions = { width: 500, height: 600 };
+const dimensions = { width: 500, height: 610 };
 const preventBringToFront = false;
 
 async function createFrame() {
