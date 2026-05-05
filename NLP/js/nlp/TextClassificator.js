@@ -1,51 +1,50 @@
 export default class TextClassificator {
-  constructor(corpus) {
-    this.corpus = corpus;
-    this.attributes = ["Sentiment", "Emotion", "Topic"].map(name => ({name, type: "nominal"}));
+  constructor(text) {
+    this.text = text;
+    this.apiRoot = "http://localhost:3000/api/text-classification";
   }
 
-  async classify() {
-    const sentiments = [];
-    const emotions = [];
-    const topics = [];
-    const apiRoot = "http://localhost:3000/api/text-classification";
-
-    for (const text of this.corpus) {
-      const sentimentResponse = await fetch(`${apiRoot}/sentiment?text=${encodeURIComponent(text)}`);
-      const emotionResponse = await fetch(`${apiRoot}/emotion?text=${encodeURIComponent(text)}`);
-      const topicResponse = await fetch(`${apiRoot}/topic?text=${encodeURIComponent(text)}`);
-
-      const sentimentLabels = await sentimentResponse.json();
-      const emotionLabels = await emotionResponse.json();
-      const topicLabels = await topicResponse.json();
-
-      sentiments.push(this.getLabelWithHighestScore(sentimentLabels));
-      emotions.push(this.getLabelWithHighestScore(emotionLabels));
-      topics.push(this.getLabelWithHighestScore(topicLabels));
-    }
-
-    console.log(sentiments);
-    console.log(emotions);
-    console.log(topics);
-
-    this.entries = sentiments.map((sentiment, i) => ({
-      values: [
-        sentiment,
-        emotions[i],
-        topics[i]
-      ]
-    }));
+  async classifySentiment() {
+    const sentimentResponse = await fetch(`${this.apiRoot}/sentiment?text=${encodeURIComponent(this.text)}`);
+    const sentimentLabels = await sentimentResponse.json();
+    const sentiments = this.sortLabels(sentimentLabels);
+    this.sentimentAttributes = this.getLabelNames(sentiments).map(name => ({ name, type: "nominal" }));
+    this.sentimentEntries = { values: this.getLabelScores(sentiments) };
   }
 
-  getLabelWithHighestScore(labels) {
-    let max = 0;
-    let result;
+  async classifyEmotion() {
+    const emotionResponse = await fetch(`${this.apiRoot}/emotion?text=${encodeURIComponent(this.text)}`);
+    const emotionLabels = await emotionResponse.json();
+    const emotions = this.sortLabels(emotionLabels);
+    this.emotionAttributes = this.getLabelNames(emotions).map(name => ({ name, type: "nominal" }));
+    this.emotionEntries = { values: this.getLabelScores(emotions) };
+  }
+
+  async classifyTopic() {
+    const topicResponse = await fetch(`${this.apiRoot}/topic?text=${encodeURIComponent(this.text)}`);
+    const topicLabels = await topicResponse.json();
+    const topics = this.sortLabels(topicLabels);
+    this.topicAttributes = this.getLabelNames(topics).map(name => ({ name, type: "nominal" }));
+    this.topicEntries = { values: this.getLabelScores(topics) };
+  }
+
+  sortLabels(labels) {
+    return labels.sort((a, b) => b.score - a.score);
+  }
+
+  getLabelNames(labels) {
+    const names = [];
     for (const label of labels) {
-      if (label.score > max) {
-        max = label.score;
-        result = label.label;
-      }
+      names.push(label.label);
     }
-    return result;
+    return names;
+  }
+
+  getLabelScores(labels) {
+    const scores = [];
+    for (const label of labels) {
+      scores.push(label.score);
+    }
+    return scores;
   }
 }

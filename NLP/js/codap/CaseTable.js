@@ -38,7 +38,8 @@ export default class CaseTable {
       values: {
         type: "caseTable",
         name: this.dataContext,
-        isVisible: true,
+        isIndexHidden: true,
+        position: "right",
         dimensions: {
           width: 1000,
           height: 300
