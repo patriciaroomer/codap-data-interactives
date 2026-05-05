@@ -8,7 +8,7 @@ import Listener from './Listener.js';
 
 const title = "Natural Language Processing";
 const version = "v0.1";
-const dimensions = { width: 500, height: 500 };
+const dimensions = { width: 500, height: 600 };
 const preventBringToFront = false;
 
 const corpus =

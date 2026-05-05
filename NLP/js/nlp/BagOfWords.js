@@ -1,11 +1,10 @@
 export default class BagOfWords {
-  constructor(corpus) {
+  constructor(text) {
     this.words = [];
-    for (const sentence of corpus) {
-      for (const word of sentence.split(" ")) {
-        this.words.push(word);
-      }
+    for (const word of text.split(" ")) {
+      this.words.push(word);
     }
+
     this.attributes = ["Word", "Count"].map(name => ({name, type: "nominal"}));
     this.count();
   }

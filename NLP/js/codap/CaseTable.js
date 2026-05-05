@@ -21,12 +21,9 @@ export default class CaseTable {
       action: "delete",
       resource: `dataContext[${this.dataContext}].case`
     });
-    console.log("clear response:", response);
   }
 
   async writeEntries() {
-    console.log("writing entries count:", this.entries.length);
-
     await CODAPConnect.sendRequest({
       action: "create",
       resource: this.resource,

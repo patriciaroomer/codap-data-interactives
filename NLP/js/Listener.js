@@ -1,10 +1,13 @@
+import CaseTable from './codap/CaseTable.js';
+import CODAPConnect from './codap/CODAPConnect.js';
+import BagOfWords from './nlp/BagOfWords.js';
 import TextPreprocesser from './nlp/TextPreprocesser.js';
 
 export default class Listener {
   constructor() {
     this.inputField = document.getElementById("inputField");
     this.addPreprocessingListener();
-    this.bagOfWordsButton = document.getElementById("bagOfWordsButton");
+    this.addBagOfWordsListener();
     this.classificationButton = document.getElementById("classificationButton");
   }
 
@@ -13,7 +16,7 @@ export default class Listener {
     const outputField = document.getElementById("outputField");
 
     preprocessingButton.addEventListener("click", () => {
-      const input = inputField.value;
+      const input = this.inputField.value;
       const preprocessor = new TextPreprocesser(input);
 
       if (document.getElementById("cleanBox").checked) preprocessor.clean();
@@ -26,6 +29,13 @@ export default class Listener {
   }
 
   addBagOfWordsListener() {
+    const bagOfWordsButton = document.getElementById("bagOfWordsButton");
 
+    bagOfWordsButton.addEventListener("click", async () => {
+      const input = this.inputField.value;
+      const bagOfWords = new BagOfWords(input);
+      await CODAPConnect.createDataContext("Bag of Words", bagOfWords.attributes);
+      await new CaseTable("Bag of Words", bagOfWords.entries).create();
+    });
   }
 }

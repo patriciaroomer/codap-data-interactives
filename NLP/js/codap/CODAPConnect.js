@@ -21,10 +21,7 @@ export default class CODAPConnect {
   }
 
   static async createDataContext(name, attrs) {
-
-    if (name === this.currentDataContext) {
-      await this.removeDataContext(this.currentDataContext);
-    }
+    await this.removeDataContext(name);
 
     const response = await this.sendRequest({
       action: "create",
