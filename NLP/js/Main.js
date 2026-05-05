@@ -4,6 +4,7 @@ import TextPreprocesser from './nlp/TextPreprocesser.js';
 import TextClassificator from './nlp/TextClassificator.js';
 import CaseTable from './codap/CaseTable.js';
 import Parser from './codap/Parser.js';
+import Listener from './Listener.js';
 
 const title = "Natural Language Processing";
 const version = "v0.1";
@@ -39,6 +40,9 @@ async function main() {
   await CODAPConnect.sendRequest({ action: "get", resource: "document" });
   await createFrame();
 
+  new Listener();
+
+  /*
   const preprocessed = new TextPreprocesser(corpus).process();
   const bagOfWords = new BagOfWords(preprocessed);
   const classificator = await new TextClassificator(preprocessed);
@@ -56,6 +60,7 @@ async function main() {
 
   await CODAPConnect.createDataContext("Text Classification", classificator.attributes);
   await new CaseTable("Text Classification", classificator.entries).create();
-}
+  */
+  }
 
 main();

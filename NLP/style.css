@@ -17,19 +17,19 @@ body {
 }
 
 h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
 }
 
 p {
-  font-size: 15px;
+  font-size: 12px;
 }
 
 textarea {
   margin-top: 10px;
-  width: 400px;
+  width: 450px;
   border: 2px solid var(--iron);
   border-radius: 5px;
   color: var(--stone);
@@ -42,20 +42,35 @@ textarea:focus {
   box-shadow: 0 0 0 0.2rem var(--shadow);
 }
 
+input[type="checkbox"] {
+  background-color: transparent;
+}
+
+input[type="checkbox"]:hover {
+  cursor: pointer;
+}
+
+label {
+  font-size: 12px;
+}
+
 button {
+  font-size: 11px;
   padding: 2.5px;
   background-color: var(--iron);
-  border-radius: 10px;
+  border-radius: 15px;
   border-color: var(--stone);
   transition: 0.3s ease;
 }
 
 #preprocessingButton, #classificationButton {
   width: 30px;
+  border-radius: 10px;
+  margin-left: 5px;
 }
 
 #bagOfWordsButton {
-  width: 60px;
+  width: 55px;
 }
 
 .buttonDiv {

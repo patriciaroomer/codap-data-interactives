@@ -9,26 +9,22 @@
 </head>
 
 <body>
-  <textarea id="inputArea" name="inputArea" rows="5" cols="33">JavaScript is a great programming language!!!</textarea>
 
   <h3>Text Preprocessing</h3>
   <p>Prepares the text for NLP tasks like text classification</p>
-  <div id="preprocessingBoxes">
-    <input type="checkbox" id="cleanBox" name="cleanBox" checked="true">
-    <label for="cleanBox">Clean</label>
-    <input type="checkbox" id="stopwordsBox" name="stopwordsBox" checked="true">
-    <label for="stopwordsBox">Remove stopwords</label>
-    <input type="checkbox" id="lemmaBox" name="lemmaBox" checked="true">
-    <label for="lemmaBox">Lemmatize</label>
-    <input type="checkbox" id="stemBox" name="stemBox">
-    <label for="stemBox">Stem</label>
-  </div>
 
-  <div class="buttonDiv">
-    <button id="preprocessingButton">Go</button>
-  </div>
+  <input type="checkbox" class="preprocessingBox" id="cleanBox" name="cleanBox" checked="true">
+  <label for="cleanBox">Clean</label>
+  <input type="checkbox" class="preprocessingBox" id="stopwordsBox" name="stopwordsBox" checked="true">
+  <label for="stopwordsBox">Remove stopwords</label>
+  <input type="checkbox" class="preprocessingBox" id="lemmaBox" name="lemmaBox" checked="true">
+  <label for="lemmaBox">Lemmatize</label>
+  <input type="checkbox" class="preprocessingBox" id="stemBox" name="stemBox">
+  <label for="stemBox">Stem</label>
+  <button id="preprocessingButton">Go</button>
 
-  <textarea id="outputArea" name="outputArea" rows="5" cols="33">javascript great program language</textarea>
+  <textarea id="inputField" name="inputField" rows="3" cols="33">JavaScript is a great programming language!!!</textarea>
+  <textarea id="outputField" name="outputField" rows="3" cols="33">javascript great program language</textarea>
 
   <h3>Bag of Words</h3>
   <p>Splits the text into words and counts their occurrences</p>
@@ -42,10 +38,7 @@
   <label for="emotionBox">Emotion</label>
   <input type="checkbox" id="topicBox" name="topicBox">
   <label for="topicBox">Topic</label>
-
-  <div class="buttonDiv">
-    <button id="classificationButton">Go</button>
-  </div>
+  <button id="classificationButton">Go</button>
 
   <script src="https://unpkg.com/compromise"></script>
 
@@ -56,6 +49,8 @@
   <script type="module" src="./js/nlp/BagOfWords.js"></script>
   <script type="module" src="./js/nlp/TextClassificator.js"></script>
   <script type="module" src="./js/nlp/TextPreprocesser.js"></script>
+
+  <script type="module" src="./js/Listener.js"></script>
   <script type="module" src="./js/Main.js"></script>
 </body>
 </html>

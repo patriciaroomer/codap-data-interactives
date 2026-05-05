@@ -3,77 +3,65 @@ import { stemmer } from 'https://esm.sh/stemmer@2?bundle'
 import nlp from 'https://esm.sh/compromise';
 
 export default class TextPreprocesser {
-  constructor(corpus) {
-    this.corpus = corpus;
+  constructor(text) {
+    this.text = text;
   }
 
-  process() {
-    const cleaned = this.clean(this.corpus);
-    const tokens = this.tokenize(cleaned);
-    const withoutStopwords = this.removeStopwords(tokens);
-    const lemmas = this.lemmatize(withoutStopwords);
-    const stems = this.stem(lemmas); // Might be too aggressive
-    return this.reconstruct(lemmas);
+  tokenize() {
+    return this.text.split(" ");
   }
 
-  processIndependently() {
-    const cleaned = this.clean(this.corpus);
-    const tokens = this.tokenize(cleaned);
-    const withoutStopwords = this.reconstruct(this.removeStopwords(tokens));
-    const lemmas = this.reconstruct(this.lemmatize(tokens));
-    const stems = this.reconstruct(this.stem(tokens));
-    return [cleaned, withoutStopwords, lemmas, stems];
+  clean() {
+    this.text = this.text.toLowerCase();
+    this.text = this.text.replace(/<[^>]*>/g, '');
+    this.text = this.text.replace(/https?:\/\/\S+|www\.\S+/g, '');
+    this.text = this.text.replace(/\d+/g, '');
+    this.text = this.text.replace(/[^\w\s]|_/g, '');
+    this.text = this.text.replace(/\W+/g, ' ');
+    this.text = this.text.replace(/\s+/g, ' ').trim();
   }
 
-  // Returns a list of cleaned sentences
-  clean(corpus) {
-    const result = [];
-    for (let text of corpus) {
-      text = text.toLowerCase();
-      text = text.replace(/<[^>]*>/g, '');
-      text = text.replace(/https?:\/\/\S+|www\.\S+/g, '');
-      text = text.replace(/\d+/g, '');
-      text = text.replace(/[^\w\s]|_/g, '');
-      text = text.replace(/\W+/g, ' ');
-      text = text.replace(/\s+/g, ' ').trim();
-      result.push(text);
+  removeStopwords() {
+    const tokens = this.tokenize();
+    const cleanedTokens = removeStopwords(tokens);
+    this.reconstruct(cleanedTokens);
+  }
+
+  stem() {
+    const tokens = this.tokenize();
+    const stems = [];
+
+    for (const word of tokens) {
+      stems.push(stemmer(word));
     }
-    return result;
+    this.reconstruct(stems);
   }
 
-  tokenize(corpus) {
-    return corpus.map(text => text.match(/\b\w+\b/g) || []);
-  }
+  lemmatize() {
+    const tokens = this.tokenize();
+    const lemmas = [];
 
-  removeStopwords(tokens) {
-    return tokens.map(t => removeStopwords(t));
-  }
+    for (const word of tokens) {
+      const doc = nlp(word);
 
-  stem(tokens) {
-    return tokens.map(sentence => sentence.map(t => stemmer(t)));
-  }
+      const asVerb = doc.verbs().toInfinitive().out('text');
+      if (asVerb && asVerb !== word) {
+        lemmas.push(asVerb);
+        continue;
+      }
 
-  lemmatize(tokens) {
-    return tokens.map(sentence =>
-      sentence.map(word => {
-        const doc = nlp(word);
+      const asNoun = doc.nouns().toSingular().out('text');
+      if (asNoun && asNoun !== word) {
+        lemmas.push(asNoun);
+        continue;
+      }
 
-        const asVerb = doc.verbs().toInfinitive().out('text');
-        if (asVerb && asVerb !== word) return asVerb;
-
-        const asNoun = doc.nouns().toSingular().out('text');
-        if (asNoun && asNoun !== word) return asNoun;
-
-        return word;
-      })
-    );
+      lemmas.push(word);
+    }
+    this.reconstruct(lemmas);
   }
 
   reconstruct(tokens) {
-    const result = [];
-    for (const token of tokens) {
-      result.push(token.join(" "));
-    }
-    return result;
+    this.text = tokens.join(" ");
   }
 }
