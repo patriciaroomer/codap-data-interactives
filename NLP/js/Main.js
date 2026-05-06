@@ -1,9 +1,8 @@
-import BagOfWords from './nlp/BagOfWords.js';
 import CODAPConnect from './codap/CODAPConnect.js';
-import TextPreprocesser from './nlp/TextPreprocesser.js';
-import TextClassificator from './nlp/TextClassificator.js';
-import CaseTable from './codap/CaseTable.js';
-import Listener from './ui/Listener.js';
+import UIListener from './ui/UIListener.js';
+import TextPreprocessingListener from './ui/TextPreprocessingListener.js';
+import BagOfWordsListener from './ui/BagOfWordsListener.js';
+import TextClassificationListener from './ui/TextClassificationListener.js';
 
 const title = "Natural Language Processing";
 const version = "v0.1";
@@ -26,7 +25,10 @@ async function createFrame() {
 async function main() {
   await CODAPConnect.sendRequest({ action: "get", resource: "document" });
   await createFrame();
-  new Listener();
+  new UIListener();
+  new TextPreprocessingListener();
+  new BagOfWordsListener();
+  new TextClassificationListener();
 }
 
 main();
