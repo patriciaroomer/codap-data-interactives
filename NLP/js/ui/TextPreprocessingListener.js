@@ -1,6 +1,8 @@
-import Prompts from '../nlp/Prompts.js';
+import Prompts from './PromptListener.js';
 import TextPreprocesser from '../nlp/TextPreprocesser.js';
 import UIListener from './UIListener.js';
+import Prompt from '../nlp/Prompt.js';
+import PromptListener from './PromptListener.js';
 
 export default class TextPreprocessingListener extends UIListener {
   constructor() {
@@ -11,8 +13,8 @@ export default class TextPreprocessingListener extends UIListener {
 
   addListener() {
     this.button.addEventListener("click", async () => {
-      const input = Prompts.prompts[0]; // TODO: User selects prompt which is used here
-      const preprocessor = new TextPreprocesser(input);
+      const input = this.inputField.value;
+      const preprocessor = new TextPreprocesser(new Prompt(input, PromptListener.currentLanguage));
       await preprocessor.init();
 
       if (document.getElementById("cleanBox").checked) preprocessor.clean();

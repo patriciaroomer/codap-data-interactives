@@ -1,10 +1,9 @@
 :root {
-  --herbal: #25a18e;
-  --ocean: #00a5cf;
-  --plunge: #004e64;
+  --sky: #9fd5ff;
   --shadow: rgba(16, 82, 98, 0.25);
   --iron: #ccc;
   --stone: #555;
+  --codap: #2596be;
 }
 
 body {
@@ -17,6 +16,7 @@ body {
 }
 
 h3 {
+  margin-left: 5px;
   font-size: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -24,7 +24,37 @@ h3 {
 }
 
 p {
+  margin-left: 5px;
   font-size: 12px;
+}
+
+table {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  display: block;
+  font-size: 12px;
+  width: 462px;
+  height: 130px;
+  overflow-y: scroll;
+  padding-right: 5px;
+}
+
+#dePrompts, #frPrompts {
+  position: absolute;
+  visibility: hidden;
+}
+
+td {
+  border: 2px solid var(--codap);
+  border-radius: 5px;
+  padding: 5px;
+  background-color: var(--sky);
+  transition: 0.3s;
+}
+
+td:hover {
+  cursor: pointer;
+  border: 2px solid black;
 }
 
 textarea {
@@ -87,12 +117,13 @@ label {
   bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--ocean);
+  background: var(--sky);
   padding: 10px 15px;
   width: 100px;
   border-radius: 5px;
   z-index: 10;
   font-size: 12px;
+  border: 1px solid black;
 
   opacity: 0;
   pointer-events: none;
@@ -111,15 +142,15 @@ label {
   transform: translateX(-50%);
 
   border: 8px solid transparent;
-  border-top-color: var(--ocean);
+  border-top-color: var(--sky);
 }
 
 button {
   font-size: 11px;
   padding: 2.5px;
-  background-color: var(--white);
+  background-color: var(--sky);
   border-radius: 15px;
-  border-color: var(--stone);
+  border-color: var(--codap);
   transition: 0.3s ease;
 }
 
@@ -144,7 +175,7 @@ button {
 }
 
 button:hover {
-  border-color: var(--herbal);
+  border-color: black;
   cursor: pointer;
 }
 
