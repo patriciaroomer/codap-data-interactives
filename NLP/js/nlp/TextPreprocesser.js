@@ -1,14 +1,18 @@
-import { removeStopwords } from "https://cdn.skypack.dev/stopword";
-import { stemmer } from 'https://esm.sh/stemmer@2?bundle'
-import nlp from 'https://esm.sh/compromise';
-
 export default class TextPreprocesser {
-  constructor(text) {
-    this.text = text;
+
+  constructor(prompt) {
+    this.text = prompt.text;
+    this.language = prompt.language;
   }
 
-  tokenize() {
-    return this.text.split(" ");
+  async init() {
+    const response = await fetch("http://localhost:3000/nlp_lookup.json");
+    const json = await response.json();
+    this.lookup = json;
+  }
+
+  tokenize(text) {
+    return text.split(" ");
   }
 
   clean() {
@@ -22,46 +26,45 @@ export default class TextPreprocesser {
   }
 
   removeStopwords() {
-    const tokens = this.tokenize();
-    const cleanedTokens = removeStopwords(tokens);
-    this.reconstruct(cleanedTokens);
-  }
+    let stopwords;
+    if (this.language === "en") stopwords = this.lookup.stopwords.en;
+    if (this.language === "de") stopwords = this.lookup.stopwords.de;
+    if (this.language === "fr") stopwords = this.lookup.stopwords.fr;
 
-  stem() {
-    const tokens = this.tokenize();
-    const stems = [];
+    this.text = this.text
+      .split(" ")
+      .filter(word => !stopwords.includes(word))
+      .join(" ");
 
-    for (const word of tokens) {
-      stems.push(stemmer(word));
-    }
-    this.reconstruct(stems);
+    return this.text;
   }
 
   lemmatize() {
-    const tokens = this.tokenize();
-    const lemmas = [];
+    let lemmas;
+    if (this.language === "en") lemmas = this.lookup.lemmas.en;
+    if (this.language === "de") lemmas = this.lookup.lemmas.de;
+    if (this.language === "fr") lemmas = this.lookup.lemmas.fr;
 
-    for (const word of tokens) {
-      const doc = nlp(word);
+    this.text = this.text
+      .split(" ")
+      .map(token => lemmas[token] || token)
+      .join(" ");
 
-      const asVerb = doc.verbs().toInfinitive().out('text');
-      if (asVerb && asVerb !== word) {
-        lemmas.push(asVerb);
-        continue;
-      }
-
-      const asNoun = doc.nouns().toSingular().out('text');
-      if (asNoun && asNoun !== word) {
-        lemmas.push(asNoun);
-        continue;
-      }
-
-      lemmas.push(word);
-    }
-    this.reconstruct(lemmas);
+    return this.text;
   }
 
-  reconstruct(tokens) {
-    this.text = tokens.join(" ");
+  stem() {
+    let stems;
+    if (this.language === "en") stems = this.lookup.stems.en;
+    if (this.language === "de") stems = this.lookup.stems.de;
+    if (this.language === "fr") stems = this.lookup.stems.fr;
+
+    this.text = this.text
+      .split(" ")
+      .map(token => stems[token] || token)
+      .join(" ");
+
+    return this.text;
   }
+
 }

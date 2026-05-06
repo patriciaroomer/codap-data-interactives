@@ -48,6 +48,7 @@ export default class TextClassificationListener extends UIListener {
   }
 
   async handleTopic(classificator) {
+    if (!document.getElementById("topicBox").checked) return;
     await classificator.classifyTopic();
     await CODAPConnect.createDataContext("Topics", classificator.topicAttributes);
     await new CaseTable("Topics", classificator.topicEntries).create();
