@@ -98,6 +98,10 @@ textarea:focus {
   box-shadow: 0 0 0 0.2rem var(--shadow);
 }
 
+textarea:hover {
+  cursor: pointer;
+}
+
 textarea.highlighted {
   border-color: #52b788;
   box-shadow: 0 0 0 0.2rem var(--shadow);
@@ -115,19 +119,20 @@ input[type="checkbox"]:hover {
   cursor: pointer;
 }
 
-#preprocessingCheckboxes {
+.checkboxes {
   display: inline-flex;
-  margin-bottom: 6px;
 }
 
 label {
   font-size: 12px;
   padding-top: 8px;
-  margin-right: 2px;
+  margin-bottom: 9px;
+  margin-left: 3px;
+  margin-right: 5px;
 }
 
 #preprocessingCheckboxes label {
-  margin-left: 5px;
+  margin-left: 7px;
 }
 
 .info {
@@ -149,11 +154,17 @@ label {
   border-radius: 5px;
   z-index: 10;
   font-size: 12px;
-  border: 1px solid black;
+  border: 2px solid var(--codap);
 
   opacity: 0;
   pointer-events: none;
   transition: 0.2s;
+}
+
+.aiInfoBubble {
+  border: 2px solid color-mix(in srgb, #7F77DD 40%, transparent);
+  background: color-mix(in srgb, #7F77DD 10%, transparent);
+  font-weight: normal;
 }
 
 .info:hover .infoBubble {
@@ -168,7 +179,18 @@ label {
   transform: translateX(-50%);
 
   border: 8px solid transparent;
-  border-top-color: var(--sky);
+  border-top-color: var(--codap);
+}
+
+.aiInfoBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 8px solid transparent;
+  border-top-color: #7F77DD;
 }
 
 button {
@@ -180,20 +202,18 @@ button {
   transition: 0.3s ease;
 }
 
-#preprocessingButton {
-  height: 25px;
-  margin-top: 6px;
-}
-
-#preprocessingButton, #classificationButton {
-  width: 30px;
-  border-radius: 10px;
-  margin-left: 5px;
-}
-
 #bagOfWordsButton {
+  height: 25px;
   width: 55px;
+  margin-left: 2px;
   margin-bottom: 15px;
+}
+
+#classificationButton {
+  height: 25px;
+  width: 40px;
+  margin-top: 5px;
+  margin-left: 20px;
 }
 
 .buttonDiv {
@@ -203,6 +223,33 @@ button {
 button:hover {
   border-color: black;
   cursor: pointer;
+}
+
+.aiBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 8px;
+  margin-left: 7px;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, #7F77DD 40%, transparent);
+  background: color-mix(in srgb, #7F77DD 10%, transparent);
+  font-size: 12px;
+  font-weight: 600;
+  color: #534AB7;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.aiBadge::before {
+  content: "★ AI";
+  font-size: 10px;
+  line-height: 1;
+  color: #7F77DD;
+}
+
+.aiBadge:hover {
+  cursor: help;
 }
 
 #logger {

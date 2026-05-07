@@ -23,6 +23,7 @@ export default class TextPreprocesser {
     this.text = this.text.replace(/[^\w\s]|_/g, '');
     this.text = this.text.replace(/\W+/g, ' ');
     this.text = this.text.replace(/\s+/g, ' ').trim();
+    return this.text;
   }
 
   removeStopwords() {

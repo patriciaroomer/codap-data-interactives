@@ -7,25 +7,29 @@ import PromptListener from './PromptListener.js';
 export default class TextPreprocessingListener extends UIListener {
   constructor() {
     super();
-    this.button = document.getElementById("preprocessingButton");
-    this.addListener();
+
+    this.cleanBox = document.getElementById("cleanBox");
+    this.stopwordsBox = document.getElementById("stopwordsBox");
+    this.lemmaBox = document.getElementById("lemmaBox");
+    this.stemBox = document.getElementById("stemBox");
+
+    this.cleanBox.addEventListener("change", () => this.preprocess());
+    this.stopwordsBox.addEventListener("change", () => this.preprocess());
+    this.lemmaBox.addEventListener("change", () => this.preprocess());
+    this.stemBox.addEventListener("change", () => this.preprocess());
   }
 
-  addListener() {
-    this.button.addEventListener("click", async () => {
-      const input = this.inputField.value;
-      const preprocessor = new TextPreprocesser(new Prompt(input, PromptListener.currentLanguage));
-      await preprocessor.init();
+  async preprocess() {
+    let text = this.inputField.value;
+    const preprocessor = new TextPreprocesser(new Prompt(text, PromptListener.currentLanguage));
+    await preprocessor.init();
 
-      if (document.getElementById("cleanBox").checked) preprocessor.clean();
-      if (document.getElementById("stopwordsBox").checked) preprocessor.removeStopwords();
-      if (document.getElementById("lemmaBox").checked) preprocessor.lemmatize();
-      if (document.getElementById("stemBox").checked) preprocessor.stem();
-
-      this.outputField.value = preprocessor.text;
-
-      await this.highlightOutput();
-    });
+    if (this.cleanBox.checked) text = preprocessor.clean();
+    if (this.stopwordsBox.checked) text = preprocessor.removeStopwords();
+    if (this.lemmaBox.checked) text = preprocessor.lemmatize();
+    if (this.stemBox.checked) text = preprocessor.stem();
+    this.outputField.value = text;
+    await this.highlightOutput();
   }
 
   async highlightOutput() {

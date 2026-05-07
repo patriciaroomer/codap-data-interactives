@@ -38,6 +38,7 @@ export default class PromptListener extends UIListener {
 
   addEnglishListener() {
     this.englishButton.addEventListener("click", () => {
+      PromptListener.currentLanguage = "en";
       document.getElementById("dePrompts").classList.add("hidden");
       document.getElementById("frPrompts").classList.add("hidden");
       document.getElementById("enPrompts").classList.remove("hidden");
@@ -46,6 +47,7 @@ export default class PromptListener extends UIListener {
 
   addGermanListener() {
     this.germanButton.addEventListener("click", () => {
+      PromptListener.currentLanguage = "de";
       document.getElementById("enPrompts").classList.add("hidden");
       document.getElementById("frPrompts").classList.add("hidden");
       document.getElementById("dePrompts").classList.remove("hidden");
@@ -54,6 +56,7 @@ export default class PromptListener extends UIListener {
 
   addFrenchListener() {
     this.frenchButton.addEventListener("click", () => {
+      PromptListener.currentLanguage = "fr";
       document.getElementById("enPrompts").classList.add("hidden");
       document.getElementById("dePrompts").classList.add("hidden");
       document.getElementById("frPrompts").classList.remove("hidden");

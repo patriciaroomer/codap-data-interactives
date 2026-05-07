@@ -120,11 +120,10 @@
 
   <div class="rightSection">
     <h3>Text Preprocessing</h3>
-    <p>Prepares the text for NLP tasks like text classification. <b>Choose one of the following prompts:</b> </p>
+    <p>Prepares the text for NLP tasks like text classification. <br> <b>Choose one of the prompts on the left.</b></p>
+    <textarea id="inputField" name="inputField" rows="5" cols="33" readonly="true"></textarea>
 
-    <textarea id="inputField" name="inputField" rows="5" cols="33"></textarea>
-
-    <div id="preprocessingCheckboxes">
+    <div class="checkboxes">
       <input type="checkbox" class="preprocessingBox" id="cleanBox" name="cleanBox" checked="true" readonly="true">
       <label for="cleanBox">Clean</label>
 
@@ -156,8 +155,6 @@
         &#9432
         <div class="infoBubble">Reduces words to their root form (stem), e.g "running", "runs", and "runner" all become "run".</div>
       </div>
-    <button id="preprocessingButton">Go</button>
-
     </div>
 
     <textarea id="outputField" name="outputField" rows="5" cols="33" readonly="true"></textarea>
@@ -169,15 +166,22 @@
     <p>Splits the text from the <b>selected box</b> into words and counts their occurrences.</p>
     <button id="bagOfWordsButton">Create</button>
 
-    <h3>Text Classification</h3>
+    <h3>Text Classification <div class="info">
+        <div class="aiBadge"></div>
+        <div class="infoBubble aiInfoBubble">This feature uses artificial intelligence.</div>
+      </div></h3>
     <p>Attempts to determine the best fitting category for the text from the <b>selected box</b>.</p>
-    <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
-    <label for="sentimentBox">Sentiment</label>
-    <input type="checkbox" id="emotionBox" name="emotionBox">
-    <label for="emotionBox">Emotion</label>
-    <input type="checkbox" id="topicBox" name="topicBox">
-    <label for="topicBox">Topic</label>
-    <button id="classificationButton">Go</button>
+
+    <div class="checkboxes">
+      <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
+      <label for="sentimentBox">Sentiment</label>
+      <input type="checkbox" id="emotionBox" name="emotionBox">
+      <label for="emotionBox">Emotion</label>
+      <input type="checkbox" id="topicBox" name="topicBox">
+      <label for="topicBox">Topic</label>
+      <button id="classificationButton">Go</button>
+    </div>
+
     <p id="logger"></p>
   </div>
 
