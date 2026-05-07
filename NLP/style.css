@@ -123,6 +123,11 @@ input[type="checkbox"]:hover {
   display: inline-flex;
 }
 
+input[type="checkbox"]:disabled {
+  cursor: default;
+  filter: invert(25%);
+}
+
 label {
   font-size: 12px;
   padding-top: 8px;
@@ -165,6 +170,7 @@ label {
   border: 2px solid color-mix(in srgb, #7F77DD 40%, transparent);
   background: color-mix(in srgb, #7F77DD 10%, transparent);
   font-weight: normal;
+  z-index: 10;
 }
 
 .info:hover .infoBubble {
@@ -206,7 +212,7 @@ button {
   height: 25px;
   width: 55px;
   margin-left: 2px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 #classificationButton {

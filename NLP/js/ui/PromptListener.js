@@ -1,3 +1,4 @@
+import TextPreprocessingListener from './TextPreprocessingListener.js';
 import UIListener from './UIListener.js';
 
 export default class PromptListener extends UIListener {
@@ -25,6 +26,8 @@ export default class PromptListener extends UIListener {
     this.germanButton = document.getElementById("deButton");
     this.frenchButton = document.getElementById("frButton");
 
+    this.topicCheckbox = document.getElementById("topicBox");
+
     this.addEnglishListener();
     this.addGermanListener();
     this.addFrenchListener();
@@ -33,6 +36,7 @@ export default class PromptListener extends UIListener {
   addPromptListener(prompt) {
     prompt.addEventListener("click", () => {
       this.inputField.value = prompt.textContent;
+      new TextPreprocessingListener().preprocess();
     });
   }
 
@@ -42,6 +46,7 @@ export default class PromptListener extends UIListener {
       document.getElementById("dePrompts").classList.add("hidden");
       document.getElementById("frPrompts").classList.add("hidden");
       document.getElementById("enPrompts").classList.remove("hidden");
+      this.topicCheckbox.disabled = false;
     });
   }
 
@@ -51,6 +56,7 @@ export default class PromptListener extends UIListener {
       document.getElementById("enPrompts").classList.add("hidden");
       document.getElementById("frPrompts").classList.add("hidden");
       document.getElementById("dePrompts").classList.remove("hidden");
+      this.topicCheckbox.disabled = true;
     });
   }
 
@@ -60,6 +66,7 @@ export default class PromptListener extends UIListener {
       document.getElementById("enPrompts").classList.add("hidden");
       document.getElementById("dePrompts").classList.add("hidden");
       document.getElementById("frPrompts").classList.remove("hidden");
+      this.topicCheckbox.disabled = true;
     });
   }
 }

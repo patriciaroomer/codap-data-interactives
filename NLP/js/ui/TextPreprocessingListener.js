@@ -20,7 +20,7 @@ export default class TextPreprocessingListener extends UIListener {
   }
 
   async preprocess() {
-    let text = this.inputField.value;
+    let text = document.getElementById("inputField").value;
     const preprocessor = new TextPreprocesser(new Prompt(text, PromptListener.currentLanguage));
     await preprocessor.init();
 
