@@ -7,7 +7,7 @@ import PromptListener from './ui/PromptListener.js';
 
 const title = "Natural Language Processing";
 const version = "v0.1";
-const dimensions = { width: 500, height: 610 };
+const dimensions = { width: 1000, height: 620 };
 const preventBringToFront = false;
 
 async function createFrame() {
