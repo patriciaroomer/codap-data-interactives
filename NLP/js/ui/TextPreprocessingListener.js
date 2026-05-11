@@ -29,12 +29,5 @@ export default class TextPreprocessingListener extends UIListener {
     if (this.lemmaBox.checked) text = preprocessor.lemmatize();
     if (this.stemBox.checked) text = preprocessor.stem();
     this.outputField.value = text;
-    await this.highlightOutput();
-  }
-
-  async highlightOutput() {
-    this.outputField.classList.add("highlighted");
-    await new Promise(r => setTimeout(r, 2000));
-    this.outputField.classList.remove("highlighted");
   }
 }

@@ -16,14 +16,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.leftSection, .rightSection {
-  width: 50%;
-}
-
-.leftSection {
-  margin-top: 10px;
-}
-
 h3 {
   margin-left: 5px;
   font-size: 16px;
@@ -42,11 +34,19 @@ a {
   color: black;
 }
 
-#languageButtons {
+.leftSection, .rightSection {
+  width: 50%;
+}
+
+.leftSection {
+  margin-top: 10px;
+}
+
+.languageButtons {
   display: inline-flex;
 }
 
-#languageButtons:hover {
+.languageButtons:hover {
   cursor: pointer;
 }
 
@@ -89,35 +89,14 @@ td:hover {
 
 textarea {
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   width: 450px;
   border: 2px solid var(--iron);
   border-radius: 5px;
   color: var(--stone);
   outline: none;
   transition: 0.3s ease-in-out;
-}
-
-textarea:focus {
-  border-color: var(--ocean);
-  box-shadow: 0 0 0 0.2rem var(--shadow);
-}
-
-textarea:hover {
-  cursor: pointer;
-}
-
-textarea.highlighted {
-  border-color: #52b788;
-  box-shadow: 0 0 0 0.2rem var(--shadow);
-}
-
-textarea span {
-  transition: color 0.2s;
-}
-
-textarea span.active {
-  color: green;
+  pointer-events: none;
 }
 
 input[type="checkbox"]:hover {
@@ -227,10 +206,6 @@ button {
   width: 40px;
   margin-top: 5px;
   margin-left: 20px;
-}
-
-.buttonDiv {
-  margin: 10px 0px;
 }
 
 button:hover {

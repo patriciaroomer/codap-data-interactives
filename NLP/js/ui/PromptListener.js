@@ -1,3 +1,4 @@
+import CODAPConnect from '../codap/CODAPConnect.js';
 import TextPreprocessingListener from './TextPreprocessingListener.js';
 import UIListener from './UIListener.js';
 
@@ -34,7 +35,12 @@ export default class PromptListener extends UIListener {
   }
 
   addPromptListener(prompt) {
-    prompt.addEventListener("click", () => {
+    prompt.addEventListener("click", async () => {
+      await CODAPConnect.removeDataContext("Bag of Words");
+      await CODAPConnect.removeDataContext("Sentiments");
+      await CODAPConnect.removeDataContext("Emotions");
+      await CODAPConnect.removeDataContext("Topics");
+
       this.inputField.value = prompt.textContent;
       new TextPreprocessingListener().preprocess();
     });

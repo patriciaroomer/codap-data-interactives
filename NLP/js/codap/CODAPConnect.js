@@ -45,7 +45,7 @@ export default class CODAPConnect {
     })
   }
 
-  static async removeDataContext(name, attrs) {
+  static async removeDataContext(name) {
     await this.sendRequest({
       action: "delete",
       resource: `dataContext[${name}]`

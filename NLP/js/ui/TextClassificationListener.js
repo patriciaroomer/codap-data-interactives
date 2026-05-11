@@ -15,15 +15,16 @@ export default class TextClassificationListener extends UIListener {
     this.button.addEventListener("click", async () => {
 
       try {
+
         Logger.displayMessage("Loading...");
 
-        if (this.focused == undefined) this.focused = this.outputField;
-        this.focused.classList.add("highlighted");
+        const classificator = new TextClassificator(this.outputField.value);
 
-        const classificator = new TextClassificator(this.focused.value);
-        await this.handleSentiment(classificator);
-        await this.handleEmotion(classificator);
-        await this.handleTopic(classificator);
+        await Promise.all([
+          this.handleSentiment(classificator),
+          this.handleEmotion(classificator),
+          this.handleTopic(classificator),
+        ]);
 
         Logger.removeMessage();
       } catch (error) {
@@ -34,21 +35,30 @@ export default class TextClassificationListener extends UIListener {
   }
 
   async handleSentiment(classificator) {
-    if (!document.getElementById("sentimentBox").checked) return;
+    if (!document.getElementById("sentimentBox").checked) {
+      await CODAPConnect.removeDataContext("Sentiments");
+      return;
+    }
     await classificator.classifySentiment();
     await CODAPConnect.createDataContext("Sentiments", classificator.sentimentAttributes);
     await new CaseTable("Sentiments", classificator.sentimentEntries).create();
   }
 
   async handleEmotion(classificator) {
-    if (!document.getElementById("emotionBox").checked) return;
+    if (!document.getElementById("emotionBox").checked) {
+      await CODAPConnect.removeDataContext("Emotions");
+      return
+    };
     await classificator.classifyEmotion();
     await CODAPConnect.createDataContext("Emotions", classificator.emotionAttributes);
     await new CaseTable("Emotions", classificator.emotionEntries).create();
   }
 
   async handleTopic(classificator) {
-    if (!document.getElementById("topicBox").checked) return;
+    if (!document.getElementById("topicBox").checked || document.getElementById("topicBox").disabled) {
+      await CODAPConnect.removeDataContext("Topics");
+      return;
+    }
     await classificator.classifyTopic();
     await CODAPConnect.createDataContext("Topics", classificator.topicAttributes);
     await new CaseTable("Topics", classificator.topicEntries).create();
