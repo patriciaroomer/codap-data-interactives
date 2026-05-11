@@ -12,10 +12,8 @@ export default class BagOfWordsListener extends UIListener {
 
   async addListener() {
     this.button.addEventListener("click", async () => {
-      if (this.focused == undefined) this.focused = this.outputField;
-      this.focused.classList.add("highlighted");
-
-      const bagOfWords = new BagOfWords(this.focused.value);
+      this.inputField.classList.add("highlighted");
+      const bagOfWords = new BagOfWords(this.inputField.value);
       await CODAPConnect.createDataContext("Bag of Words", bagOfWords.attributes);
       await new CaseTable("Bag of Words", bagOfWords.entries).create();
     });

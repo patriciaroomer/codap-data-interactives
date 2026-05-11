@@ -44,7 +44,6 @@ export default class TextClassificator {
       return response;
     } catch (err) {
       if (err.name === "AbortError") {
-        Logger.displayError("Text classification model timed out, please try again later");
         throw new Error("Request timed out");
       }
       throw err;

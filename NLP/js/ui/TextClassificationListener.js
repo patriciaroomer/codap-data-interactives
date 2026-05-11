@@ -27,7 +27,7 @@ export default class TextClassificationListener extends UIListener {
 
         Logger.removeMessage();
       } catch (error) {
-        Logger.displayError("Something went wrong on our end");
+        Logger.displayError("The classification model timed out, try again later.");
       }
 
     })
