@@ -37,6 +37,11 @@ p {
   font-size: 12px;
 }
 
+a {
+  font-weight: bold;
+  color: black;
+}
+
 #languageButtons {
   display: inline-flex;
 }
@@ -171,10 +176,12 @@ label {
   background: color-mix(in srgb, #7F77DD 10%, transparent);
   font-weight: normal;
   z-index: 10;
+  width: 150px;
 }
 
-.info:hover .infoBubble {
+.info:hover .infoBubble, .infoBubble:hover {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .infoBubble::after {

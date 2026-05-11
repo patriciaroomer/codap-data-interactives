@@ -119,8 +119,11 @@
   </div>
 
   <div class="rightSection">
+
     <h3>Text Preprocessing</h3>
+
     <p>Prepares the text for NLP tasks like text classification. <br> <b>Choose one of the prompts on the left.</b></p>
+
     <textarea id="inputField" name="inputField" rows="5" cols="33" readonly="true"></textarea>
 
     <div class="checkboxes">
@@ -175,10 +178,28 @@
     <div class="checkboxes">
       <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
       <label for="sentimentBox">Sentiment</label>
+
+      <div class="info">
+        &#9432
+        <div class="infoBubble">Classifies text into positive, neutral, or negative sentiment, using <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/tabularisai/multilingual-sentiment-analysis">this</a> language model</div>
+      </div>
+
       <input type="checkbox" id="emotionBox" name="emotionBox">
       <label for="emotionBox">Emotion</label>
+
+      <div class="info">
+        &#9432
+        <div class="infoBubble">Classifies text into emotions like joy, anger, sadness, and more. The language model including its full list of emotions can be found <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/AnasAlokla/multilingual_go_emotions_V1.2">here</a></div>
+      </div>
+
       <input type="checkbox" id="topicBox" name="topicBox">
       <label for="topicBox">Topic</label>
+
+      <div class="info">
+        &#9432
+        <div class="infoBubble">Classifies text into different topics like sports, arts, business, and more, using a <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/dstefa/roberta-base_topic_classification_nyt_news">language model</a> trained on news</div>
+      </div>
+
       <button id="classificationButton">Go</button>
     </div>
 
