@@ -37,7 +37,7 @@
         </label>
 
         <div class="actions">
-          <button id="btnReset" type="button">Reset (neu)</button>
+          <button id="btnReset" type="button">Reset (new)</button>
           <button id="btnStart" type="button">Start</button>
           <button id="btnPause" type="button">Pause</button>
           <button id="btnStep" type="button">Step</button>
@@ -47,19 +47,29 @@
         <div class="status">
           <div><b>Iteration:</b> <span id="iter">0</span></div>
           <div><b>Phase:</b> <span id="phase">—</span></div>
-          <div><b>Convergent:</b> <span id="conv">nein</span></div>
-          <div><b>CODAP:</b> <span id="codapStatus" class="warn">Connecting...</span></div>
+          <div><b>Converged:</b> <span id="conv">No</span></div>
           <div class="small" id="msg"></div>
+          <div class="small"><b>Iteration</b> Slider shows iteration <span class="mono" id="shownIter">1</span></div>
         </div>
-
       </div>
+
+      <div class="card">
+        <b>Visualisierung (im Plugin)</b>
+        <div class="small">Blinken: innen = alte Farbe, außen = neue Farbe → danach bleibt neue Farbe.</div>
+        <canvas id="cv" width="720" height="520"></canvas>
+      </div>
+
     </div>
 
-    <script type="moduke" src="./js/codap/CODAPConnect.js"></script>
-    <script type="moduke" src="./js/ui/UIListener.js"></script>
-    <script type="moduke" src="./js/ui/GraphDrawer.js"></script>
+    <script type="module" src="./js/clustering/Clustering.js"></script>
+    <script type="module" src="./js/clustering/Randomizer.js"></script>
 
-    <script type="module" src="./js/Clustering.js"></script>
+    <script type="module" src="./js/codap/CODAPConnect.js"></script>
+
+    <script type="module" src="./js/ui/ControlPanel.js"></script>
+    <script type="module" src="./js/ui/GraphDrawer.js"></script>
+    <script type="module" src="./js/ui/State.js"></script>
+
     <script type="module" src="./js/Main.js"></script>
   </body>
 </html>

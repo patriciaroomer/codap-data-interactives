@@ -46,6 +46,20 @@ export default class CODAPConnect {
     }
   }
 
+  static async getDataContext(name) {
+    await this.sendRequest({
+      action: "get",
+      resource: `dataContext[${name}]`
+    })
+  }
+
+  static async removeDataContext(name) {
+    await this.sendRequest({
+      action: "delete",
+      resource: `dataContext[${name}]`
+    });
+  }
+
   static async createDefaultDataContext() {
     await this.sendRequest({
       action: "create",
@@ -84,21 +98,7 @@ export default class CODAPConnect {
     });
   }
 
-  static async getDataContext(name) {
-    await this.sendRequest({
-      action: "get",
-      resource: `dataContext[${name}]`
-    })
-  }
-
-  static async removeDataContext(name) {
-    await this.sendRequest({
-      action: "delete",
-      resource: `dataContext[${name}]`
-    });
-  }
-
-  static createGraphComponent() {
+  static async createGraphComponent() {
     await this.sendRequest({
       action: "create",
       resource: "component",
@@ -133,5 +133,25 @@ export default class CODAPConnect {
           upperBound: upper
         }
     });
+  }
+
+  static async showIteration(snapshot, iteration) {
+    await this.deleteAllCases();
+
+    const cases = [];
+    for (let i = 0; i < snapshot.points.length; i++) {
+      const point = snapshot.points[i];
+      const label = snapshot.label[i];
+      cases.push({
+        values: {
+          pid: i,
+          x: point.x,
+          y: point.y,
+          cluster: "C" + (label + 1),
+          iteration: iteration
+        }
+      });
+    }
+    await this.createCases(cases);
   }
 }
