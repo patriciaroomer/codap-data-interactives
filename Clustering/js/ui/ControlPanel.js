@@ -1,35 +1,49 @@
 import Clustering from '../clustering/Clustering.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
-import GraphDrawer from './GraphDrawer.js';
 import State from './State.js';
 
 export default class ControlPanel {
-
-  static k = document.getElementById("k");
-  static n = document.getElementById("n");
-  static seed = document.getElementById("seed");
-  static maxIterations = document.getElementById("maxIter");
-  static toggleLines = document.getElementById("toggleLines");
-
-  static resetButton = document.getElementById("btnReset");
-  static startButton = document.getElementById("btnStart");
-  static pauseButton = document.getElementById("btnPause");
-  static stepButton = document.getElementById("btnStep");
-  static restartButton = document.getElementById("btnRestart");
-
-  static iteration = document.getElementById("iter");
-  static phase = document.getElementById("phase");
-  static converged = document.getElementById("conv");
-  static codapStatus = document.getElementById("codapStatus");
-  static msg = document.getElementById("msg");
+  static k = null;
+  static n = null;
+  static seed = null;
+  static maxIterations = null;
+  static toggleLines = null;
+  static resetButton = null;
+  static startButton = null;
+  static pauseButton = null;
+  static stepButton = null;
+  static restartButton = null;
+  static iteration = null;
+  static phase = null;
+  static converged = null;
+  static codapStatus = null;
+  static msg = null;
 
   static sliderIteration = 1;
-  static clustering;
+  static clustering = null;
+  static graph = null;
 
-  static {
+  static init(graph) {
+    ControlPanel.graph = graph;
+
+    ControlPanel.k             = document.getElementById("k");
+    ControlPanel.n             = document.getElementById("n");
+    ControlPanel.seed          = document.getElementById("seed");
+    ControlPanel.maxIterations = document.getElementById("maxIter");
+    ControlPanel.toggleLines   = document.getElementById("toggleLines");
+    ControlPanel.resetButton   = document.getElementById("btnReset");
+    ControlPanel.startButton   = document.getElementById("btnStart");
+    ControlPanel.pauseButton   = document.getElementById("btnPause");
+    ControlPanel.stepButton    = document.getElementById("btnStep");
+    ControlPanel.restartButton = document.getElementById("btnRestart");
+    ControlPanel.iteration     = document.getElementById("iter");
+    ControlPanel.phase         = document.getElementById("phase");
+    ControlPanel.converged     = document.getElementById("conv");
+    ControlPanel.codapStatus   = document.getElementById("codapStatus");
+    ControlPanel.msg           = document.getElementById("msg");
+
     ControlPanel.addResetListener();
     ControlPanel.addStartListener();
-    ControlPanel.addPauseListener();
     ControlPanel.addPauseListener();
     ControlPanel.addStepListener();
     ControlPanel.addRestartListener();
@@ -38,30 +52,27 @@ export default class ControlPanel {
 
   static update() {
     ControlPanel.iteration.textContent = String(State.iteration);
-    ControlPanel.phase.textContent = State.phase;
+    ControlPanel.phase.textContent     = State.phase;
     ControlPanel.converged.textContent = State.converged ? "Yes" : "No";
   }
 
   static addResetListener() {
     ControlPanel.resetButton.addEventListener("click", async () => {
-      this.clustering = new Clustering();
-      this.clustering.initialize();
-
+      ControlPanel.clustering = new Clustering();
+      ControlPanel.clustering.initialize();
       ControlPanel.sliderIteration = 1;
       document.getElementById("shownIter").textContent = "1";
-      await CODAPConnect.showIteration(1);
+      await CODAPConnect.showIteration(1, ControlPanel.clustering.snapshots.get(1));
     });
   }
 
   static addStartListener() {
     ControlPanel.startButton.addEventListener("click", async () => {
       if (State.converged || State.running) return;
-
-      State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.ariaValueMax, 10) || 25));
+      State.maxIter   = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
-
-      this.clustering = new Clustering();
-      await this.clustering.run();
+      ControlPanel.clustering = new Clustering();
+      await ControlPanel.clustering.run();
     });
   }
 
@@ -74,45 +85,40 @@ export default class ControlPanel {
   static addStepListener() {
     ControlPanel.stepButton.addEventListener("click", async () => {
       if (State.running) return;
-      State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
+      State.maxIter   = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
-
-      if (!this.clustering) this.clustering = new Clustering();
-      await this.clustering.step();
+      if (!ControlPanel.clustering) ControlPanel.clustering = new Clustering();
+      await ControlPanel.clustering.step();
     });
   }
 
   static addRestartListener() {
     ControlPanel.restartButton.addEventListener("click", async () => {
-      if (!this.clustering) return;
-
-      State.running = false;
+      if (!ControlPanel.clustering) return;
+      State.running   = false;
       State.converged = false;
       State.iteration = 0;
-      State.phase = "—";
-      State.centroids = this.clustering.cloneCentroids(State.startCentroids);
-      State.targetCentroids = this.clustering.cloneCentroids(State.startCentroids);
+      State.phase     = "—";
+      State.centroids             = ControlPanel.clustering.cloneCentroids(State.startCentroids);
+      State.targetCentroids       = ControlPanel.clustering.cloneCentroids(State.startCentroids);
       State.labels.fill(-1);
       State.prevLabelsforBlink.fill(-1);
       State.changed.fill(false);
       State.blinking = false;
-
-      this.clustering.snapshots.clear();
-      this.clustering.initializeFirstGeneration();
-
-      new GraphDrawer().draw();
+      ControlPanel.clustering.snapshots.clear();
+      ControlPanel.clustering.initializeFirstGeneration();
+      ControlPanel.graph.draw();
       ControlPanel.update();
-
-      this.sliderIteration = 1;
+      ControlPanel.sliderIteration = 1;
       document.getElementById("shownIter").textContent = "1";
-      await CODAPConnect.showIteration(1);
+      await CODAPConnect.showIteration(1, ControlPanel.clustering.snapshots.get(1));
     });
   }
 
   static addToggleLinesListener() {
     ControlPanel.toggleLines.addEventListener("change", () => {
       State.showLines = !!ControlPanel.toggleLines.checked;
-      new GraphDrawer().draw();
+      ControlPanel.graph.draw();
     });
   }
 }

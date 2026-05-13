@@ -93,7 +93,7 @@ export default class CODAPConnect {
   static async createCases(cases) {
     await this.sendRequest({
       action: "create",
-      resource: `dataContext[${CODAP_DATA_CONTEXT}].collection[${CODAP_COLLECTION}].case`,
+      resource: `dataContext[${CODAPConnect.CODAP_DATA_CONTEXT}].collection[${CODAPConnect.CODAP_COLLECTION}].case`,
       values: cases
     });
   }
@@ -135,7 +135,7 @@ export default class CODAPConnect {
     });
   }
 
-  static async showIteration(snapshot, iteration) {
+  static async showIteration(iteration, snapshot) {
     await this.deleteAllCases();
 
     const cases = [];

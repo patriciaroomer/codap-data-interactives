@@ -8,23 +8,29 @@ export default class Clustering {
 
   constructor() {
     this.snapshots = new Map();
+    this.graph = new GraphDrawer();
   }
 
   // generateData()
   initialize() {
     this.snapshots.clear();
-    this.initializeCentroids();
-    const randomizer = new Randomizer().generate();
 
     State.k = Math.max(2, Math.min(10, parseInt(ControlPanel.k.value, 10) || 3));
-    State.showLines = !!ControlPanel.toggleLines.checked;
-    State.points = Array.from({ length: n }, () => ({ x: randomizer() * 2 - 1 , y: randomizer() * 2 - 1}));
+    State.n = Math.max(5, Math.min(400, parseInt(ControlPanel.n.value, 10) || 60));
     State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
+    State.showLines = !!ControlPanel.toggleLines.checked;
+    
+    console.log("Setting random points");
+    const randomizer = new Randomizer().generate();
+    State.points = Array.from({ length: State.n }, () => ({ x: randomizer() * 2 - 1 , y: randomizer() * 2 - 1}));
+      
+    this.initializeCentroids(randomizer);
+
     State.startCentroids = this.cloneCentroids(State.centroids);
     State.targetCentroids = this.cloneCentroids(State.centroids);
-    State.labels = new Array(n).fill(-1);
-    State.prevLabelsforBlink = new Array(n).fill(-1);
-    State.changed = new Array(n).fill(false);
+    State.labels = new Array(State.n).fill(-1);
+    State.prevLabelsforBlink = new Array(State.n).fill(-1);
+    State.changed = new Array(State.n).fill(false);
     State.blinking = false;
     State.iteration = 0;
     State.phase = "—";
@@ -32,17 +38,17 @@ export default class Clustering {
     State.converged = false;
 
     ControlPanel.msg.textContent = "";
-    new GraphDrawer().draw();
+    this.graph.draw();
     ControlPanel.update();
 
     this.initializeFirstGeneration();
   }
 
-  initializeCentroids() {
+  initializeCentroids(randomizer) {
     const chosen = new Set();
     State.centroids = [];
-    while (State.centroids.length < k) {
-      const idx = Math.floor(random() * 2);
+    while (State.centroids.length < State.k) {
+      const idx = Math.floor(randomizer() * State.n);
       if (chosen.has(idx)) continue;
       chosen.add(idx);
       State.centroids.push({ x: State.points[idx].x, y: State.points[idx].y });
@@ -62,13 +68,12 @@ export default class Clustering {
     });
 
     State.blinking = true;
-    const graph = new GraphDrawer();
 
-    graph.draw();
+    this.graph.draw();
     setTimeout(() => {
       State.blinking = false;
       State.changed.fill(false);
-      graph.draw();
+      this.graph.draw();
     });
   }
 
@@ -87,12 +92,12 @@ export default class Clustering {
     this.setLabels(previousLabels);
 
     State.blinking = true;
-    new GraphDrawer().draw();
+    this.graph.draw();
     ControlPanel.update();
     await new Promise(r => setTimeout(r, State.blinkMs));
     State.blinking = false;
     State.changed.fill(false);
-    new GraphDrawer().draw();
+    this.graph.draw();
     await new Promise(r => setTimeout(r, Math.max(0, State.phaseMsAssign - State.blinkMs)));
 
     this.snapshots.set(nextIteration, {
@@ -102,7 +107,7 @@ export default class Clustering {
     });
 
     if (ControlPanel.sliderIteration === nextIteration) {
-      await CODAPConnect.showIteration(nextIteration);
+      await CODAPConnect.showIteration(nextIteration, this.snapshots.get(nextIteration));
     }
 
     State.phase("Update");
@@ -120,7 +125,7 @@ export default class Clustering {
       State.phase = "—";
     }
 
-    new GraphDrawer().draw();
+    this.graph.draw();
     ControlPanel.update();
   }
 
@@ -134,7 +139,7 @@ export default class Clustering {
   async end() {
     State.running = false;
     State.phase = "Max iterations reached";
-    new GraphDrawer().draw();
+    this.graph.draw();
     ControlPanel.update();
     return;
   }
@@ -196,7 +201,7 @@ export default class Clustering {
         State.centroids[j].x = start[j].x + (target[j].x - start[j].x)*alpha;
         State.centroids[j].y = start[j].y + (target[j].y - start[j].y)*alpha;
       }
-      new GraphDrawer().draw();
+      this.graph.draw();
       await new Promise(r => setTimeout(r, State.phaseMsMove / steps));
     }
   }

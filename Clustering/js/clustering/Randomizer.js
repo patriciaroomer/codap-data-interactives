@@ -2,9 +2,12 @@ import ControlPanel from '../ui/ControlPanel.js';
 
 export default class Randomizer {
 
+  constructor() {
+    this.seed = this.parseSeed(ControlPanel.seed.value);
+  }
+
   generate() {
-    const seed = this.parseSeed(ControlPanel.seed.value);
-    const random = this.makeLCG(seed === null ? (Date.now() & 0x7fffffff) : (seed & 0x7fffffff));
+    return this.makeLCG(this.seed === null ? (Date.now() & 0x7fffffff) : (seed & 0x7fffffff));
   }
 
   parseSeed() {

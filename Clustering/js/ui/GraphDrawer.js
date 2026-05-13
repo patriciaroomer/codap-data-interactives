@@ -26,28 +26,31 @@ export default class GraphDrawer {
 
     this.context.fillStyle = "rgba(0, 0, 0, 0.8)";
     this.context.font = "13px system-ui";
-    ctx.fillText(`k=${state.k}  n=${state.points.length}  iter=${state.iter}/${state.maxIter}  phase=${state.phase}`, 12, 18);
+    this.context.fillText(`k=${State.k}  n=${State.points.length}  iter=${State.iter}/${State.maxIter}  phase=${State.phase}`, 12, 18);
   }
 
   drawGrid() {
-    this.context.clearRect(0, 0, this.cv.width, this.cv.height);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.lineWidth = 1;
     this.context.strokeStyle = "rgba(0, 0, 0, 0.10)";
 
-    for (let i = 0; i <= grid; i++) {
-      const x = pad + i * (this.canvas.width - 2 * this.pad) / this.grid;
+    // Background grid
+    for (let i = 0; i <= this.grid; i++) {
+      const x = this.pad + i * (this.canvas.width - 2 * this.pad) / this.grid;
       this.drawStroke(x, this.pad, x, this.canvas.height - this.pad);
 
-      const y = pad + i * (this.canvas.height - 2 * this.pad) / this.grid;
-      this.drawStroke(this.pad, y, this.canvas - this.pad, y);
+      const y = this.pad + i * (this.canvas.height - 2 * this.pad) / this.grid;
+      this.drawStroke(this.pad, y, this.canvas.width - this.pad, y);
     }
 
     this.context.strokeStyle = "rgba(0, 0, 0, 0.25)";
 
+    // Y axis
     let [x0, y0] = this.toCanvas(0, -1);
     let [x1, y1] = this.toCanvas(0, 1);
     this.drawStroke(x0, y0, x1, y1);
 
+    // X axis
     [x0, y0] = this.toCanvas(-1, 0);
     [x1, y1] = this.toCanvas(1, 0);
     this.drawStroke(x0, y0, x1, y1);
