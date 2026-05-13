@@ -1,7 +1,5 @@
 :root {
   --herbal: #25a18e;
-  --ocean: #00a5cf;
-  --plunge: #004e64;
   --shadow: rgba(16, 82, 98, 0.25);
   --iron: #ccc;
   --stone: #555;
@@ -45,13 +43,13 @@ button {
   appearance: none;
   -webkit-appearance: none;
 
-  padding: 2.5px;
-  border-radius: 5px;
-  border-color: var(--plunge);
+  padding: 1.75px;
+  border-radius: 3px;
   width: 60px;
-  background-color: var(--ocean);
+  background-color: var(--herbal);
+  color: white;
   font-size: 14px;
-  transition: 0.3s ease;
+  transition: 0.1s ease;
 }
 
 button:hover {
@@ -79,7 +77,7 @@ button:hover {
   color: orangered;
 }
 
-#logs.warning {
+#logs.message {
   color: black;
 }
 
@@ -96,8 +94,8 @@ a {
   font-weight: bold;
   padding-right: 15px;
   color: var(--herbal);
-  text-underline-offset: 6px;
-  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
 }
 
 a:visited {
@@ -106,6 +104,5 @@ a:visited {
 }
 
 a:hover {
-  text-decoration: none;
-  color: var(--ocean);
+  text-decoration-thickness: 2px;
 }

@@ -58,7 +58,7 @@ export default class Controller {
     }
 
     if (!isValidUrl) {
-      Controller.displayError("Invalid URL");
+      Controller.displayError("Could not parse URL. Please try another dataset");
     } else {
       Controller.removeMessage();
     }

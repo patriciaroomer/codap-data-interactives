@@ -99,7 +99,7 @@ export default class Importer {
     console.log("Fetching file...");
     let resource = await this.getResource(response);
     if (!resource) {
-      Controller.displayError("Coult not parse any of the files provided by this dataset, please try another one.");
+      Controller.displayError("Could not parse any of the files provided by this dataset, please try another one.");
       return;
     }
 
