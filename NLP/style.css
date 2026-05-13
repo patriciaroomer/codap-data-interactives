@@ -202,25 +202,23 @@ label {
 
 button {
   font-size: 11px;
-  padding: 2.5px;
+  padding: 1.5px;
   background-color: var(--sky);
-  border-radius: 15px;
+  border-radius: 10px;
   border-color: var(--codap);
+  height: 23px;
+  margin-left: 5px;
   transition: 0.3s ease;
 }
 
 #bagOfWordsButton {
-  height: 25px;
   width: 55px;
-  margin-left: 2px;
   margin-bottom: 5px;
 }
 
 #classificationButton {
-  height: 25px;
   width: 40px;
   margin-top: 5px;
-  margin-left: 5px;
 }
 
 button:hover {
