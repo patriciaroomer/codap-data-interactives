@@ -52,8 +52,8 @@ a {
 
 .tableContainer {
   position: relative;
-  width: 462px;
-  height: 512px;
+  width: 460px;
+  height: 530px;
   overflow-y: scroll;
 }
 
@@ -90,6 +90,7 @@ td:hover {
 textarea {
   margin-top: 10px;
   margin-bottom: 2px;
+  margin-left: 5px;
   width: 450px;
   border: 2px solid var(--iron);
   border-radius: 5px;
@@ -105,6 +106,8 @@ input[type="checkbox"]:hover {
 
 .checkboxes {
   display: inline-flex;
+  margin-top: 5px;
+  margin-left: 4px;
 }
 
 input[type="checkbox"]:disabled {
@@ -150,19 +153,6 @@ label {
   transition: 0.2s;
 }
 
-.aiInfoBubble {
-  border: 2px solid color-mix(in srgb, #7F77DD 40%, transparent);
-  background: color-mix(in srgb, #7F77DD 10%, transparent);
-  font-weight: normal;
-  z-index: 10;
-  width: 150px;
-}
-
-.info:hover .infoBubble, .infoBubble:hover {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .infoBubble::after {
   content: "";
   position: absolute;
@@ -174,15 +164,40 @@ label {
   border-top-color: var(--codap);
 }
 
-.aiInfoBubble::after {
+.infoBubbleRight {
+  position: absolute;
+  top: 50%;
+  left: 175%;
+  transform: translateY(-50%);
+  background: var(--sky);
+  padding: 10px 15px;
+  width: 100px;
+  border-radius: 5px;
+  z-index: 10;
+  font-size: 12px;
+  border: 2px solid var(--codap);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;  
+}
+
+.infoBubbleRight::after {
   content: "";
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%) rotate(90deg);
 
   border: 8px solid transparent;
-  border-top-color: #7F77DD;
+  border-top-color: var(--codap);
+}
+
+.info:hover .infoBubble, .infoBubble:hover,
+.info:hover .infoBubbleRight, .infoBubbleRight:hover {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 button {
@@ -205,39 +220,12 @@ button {
   height: 25px;
   width: 40px;
   margin-top: 5px;
-  margin-left: 20px;
+  margin-left: 5px;
 }
 
 button:hover {
   border-color: black;
   cursor: pointer;
-}
-
-.aiBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px 3px 8px;
-  margin-left: 7px;
-  border-radius: 999px;
-  border: 2px solid color-mix(in srgb, #7F77DD 40%, transparent);
-  background: color-mix(in srgb, #7F77DD 10%, transparent);
-  font-size: 12px;
-  font-weight: 600;
-  color: #534AB7;
-  letter-spacing: 0.04em;
-  user-select: none;
-}
-
-.aiBadge::before {
-  content: "★ AI";
-  font-size: 10px;
-  line-height: 1;
-  color: #7F77DD;
-}
-
-.aiBadge:hover {
-  cursor: help;
 }
 
 #logger {

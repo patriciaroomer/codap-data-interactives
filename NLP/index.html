@@ -222,7 +222,12 @@
 
   <div class="rightSection">
 
-    <h3>Text Preprocessing</h3>
+    <h3>Text Preprocessing
+      <div class="info">
+        &#9432
+        <div class="infoBubbleRight" style="font-weight: normal;">More information can be found in <a target="_blank" rel="noopener noreferrer" href="https://www.sciencedirect.com/science/article/pii/S0306437923001783">this</a> paper</div>
+      </div>
+    </h3>
 
     <p>Prepares the text for NLP tasks like text classification. <br> <b>Choose one of the prompts on the left.</b></p>
 
@@ -264,20 +269,15 @@
 
     <textarea id="outputField" name="outputField" rows="5" cols="33" readonly="true"></textarea>
 
-
-
-
     <h3>Bag of Words</h3>
     <p>Splits the text into words and counts their occurrences, which can be very informative.<br> It helps language models to process text in a structured way.</p>
     <button id="bagOfWordsButton">Create</button>
 
-    <h3>Text Classification <div class="info">
-        <div class="aiBadge"></div>
-        <div class="infoBubble aiInfoBubble">This feature uses artificial intelligence.</div>
-      </div></h3>
-    <p>Attempts to determine the best fitting category for the text.</p>
+    <h3>Text Classification</h3>
+    <p><span style="color: #7F77DD; font-weight: bold;">This feature uses artificial intelligence.</span> Attempts to determine the best fitting <br> category for the text. Attempts to determine the best fitting category for the text.</p>
+    
 
-    <div class="checkboxes">
+    <div class="checkboxes" style="margin-top: 0px">
       <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
       <label for="sentimentBox">Sentiment</label>
 
