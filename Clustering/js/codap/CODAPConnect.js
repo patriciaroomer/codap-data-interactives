@@ -141,7 +141,7 @@ export default class CODAPConnect {
     const cases = [];
     for (let i = 0; i < snapshot.points.length; i++) {
       const point = snapshot.points[i];
-      const label = snapshot.label[i];
+      const label = snapshot.labels[i];
       cases.push({
         values: {
           pid: i,

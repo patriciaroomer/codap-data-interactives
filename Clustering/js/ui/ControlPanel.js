@@ -71,6 +71,7 @@ export default class ControlPanel {
       if (State.converged || State.running) return;
       State.maxIter   = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
+      State.running = true;
       ControlPanel.clustering = new Clustering();
       await ControlPanel.clustering.run();
     });

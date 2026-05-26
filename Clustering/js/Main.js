@@ -12,7 +12,7 @@ const preventBringToFront = false;
 async function init() {
   const clustering = new Clustering();
   clustering.initialize();
-  
+
   ControlPanel.update();
   await CODAPConnect.createGraphComponent();
   await CODAPConnect.createSliderComponent(1, Math.max(1, State.maxIter), 1);
@@ -21,7 +21,7 @@ async function init() {
   ControlPanel.msg.innerHTML = `<span class="ok">Datensatz + Streudiagramm + Slider erstellt.</span>`;
   ControlPanel.sliderIteration = 1;
   document.getElementById("shownIter").textContent = "1";
-  
+
   await CODAPConnect.showIteration(1, clustering.snapshots.get(1));
 }
 

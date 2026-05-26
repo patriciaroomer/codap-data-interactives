@@ -80,16 +80,16 @@ export default class GraphDrawer {
       if (State.blinking && State.changed[i]) {
         // Outer circle (new)
         this.context.fillStyle = this.determineColor(newLabel);
-        this.drawCircle(cx, cy, radius);
+        this.drawCircle(cx, cy, this.radius);
 
         // Inner circle (old)
         this.context.fillStyle = this.determineColor(oldLabel);
-        this.drawCircle(cx, cy, radius - 3);
+        this.drawCircle(cx, cy, this.radius - 3);
 
         // Ring
         this.context.lineWidth = 3;
         this.context.strokeStyle = "rgba(0, 0, 0, 0.40)";
-        this.drawRing(cx, cy, radius + 2);
+        this.drawRing(cx, cy, this.radius + 2);
 
         continue;
       }
@@ -101,17 +101,17 @@ export default class GraphDrawer {
   }
 
   drawCentroids() {
-    for (let j = 0; j < State.centroids.length; j++) {
+    for (let i = 0; i < State.centroids.length; i++) {
       const centroid = State.centroids[i];
       const [cx, cy] = this.toCanvas(centroid.x, centroid.y);
 
-      this.context.strokeStyle = determineColor(j);
+      this.context.strokeStyle = this.determineColor(i);
       this.context.lineWidth = 3;
       this.drawCentroid(cx, cy);
 
-      this.context.fillStyle = "rgba(0, 0, 0, 0.8)";
+      this.context.fillStyle = "rgba(0, 0, 0, 0.75)";
       this.context.font = "12px system-ui";
-      this.context.fillText("C"+ (j + 1), cx + 12, cy - 12);
+      this.context.fillText("C"+ (i + 1), cx + 12, cy - 12);
     }
   }
 

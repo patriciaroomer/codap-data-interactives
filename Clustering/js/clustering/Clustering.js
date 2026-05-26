@@ -19,11 +19,11 @@ export default class Clustering {
     State.n = Math.max(5, Math.min(400, parseInt(ControlPanel.n.value, 10) || 60));
     State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
     State.showLines = !!ControlPanel.toggleLines.checked;
-    
+
     console.log("Setting random points");
     const randomizer = new Randomizer().generate();
     State.points = Array.from({ length: State.n }, () => ({ x: randomizer() * 2 - 1 , y: randomizer() * 2 - 1}));
-      
+
     this.initializeCentroids(randomizer);
 
     State.startCentroids = this.cloneCentroids(State.centroids);
@@ -110,7 +110,7 @@ export default class Clustering {
       await CODAPConnect.showIteration(nextIteration, this.snapshots.get(nextIteration));
     }
 
-    State.phase("Update");
+    State.phase = "Update";
     this.computeTargets();
     ControlPanel.update();
     await this.moveCentroidsSmooth();
@@ -151,10 +151,10 @@ export default class Clustering {
       let bestJ = 0;
       let bestD = Infinity;
 
-      for (let j=0; j < State.centroids.length; j++){
-        const c = State.centroids[j];
-        const dx = p.x - c.x;
-        const dy = p.y - c.y;
+      for (let j = 0; j < State.centroids.length; j++){
+        const centroid = State.centroids[j];
+        const dx = point.x - centroid.x;
+        const dy = point.y - centroid.y;
         const d2 = dx*dx + dy*dy;
         if (d2 < bestD) { bestD = d2; bestJ = j; }
       }
@@ -198,24 +198,28 @@ export default class Clustering {
     for (let i = 1; i <= steps; i++) {
       const alpha = i / steps;
       for (let j = 0; j < State.centroids.length; j++) {
-        State.centroids[j].x = start[j].x + (target[j].x - start[j].x)*alpha;
-        State.centroids[j].y = start[j].y + (target[j].y - start[j].y)*alpha;
+        State.centroids[j].x = start[j].x + (target[j].x - start[j].x) * alpha;
+        State.centroids[j].y = start[j].y + (target[j].y - start[j].y) * alpha;
       }
       this.graph.draw();
-      await new Promise(r => setTimeout(r, State.phaseMsMove / steps));
+      await new Promise(r => {
+        requestAnimationFrame(() => {
+          setTimeout(r, State.phaseMsMove / steps);
+        });
+      });
     }
   }
 
-  clonePoints() {
-    return State.points.map(p => ({ x: p.x, y: p.y }));
+  clonePoints(points) {
+    return points.map(p => ({ x: p.x, y: p.y }));
   }
 
-  cloneCentroids() {
-    return State.centroids.map(c => ({ x: c.x, y: c.y}));
+  cloneCentroids(centroids) {
+    return centroids.map(c => ({ x: c.x, y: c.y}));
   }
 
-  cloneLabels() {
-    return State.labels.slice();
+  cloneLabels(labels) {
+    return labels.slice();
   }
 
   labelsEqual(a, b) {
