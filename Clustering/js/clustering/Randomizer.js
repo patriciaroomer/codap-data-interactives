@@ -7,7 +7,7 @@ export default class Randomizer {
   }
 
   generate() {
-    return this.makeLCG(this.seed === null ? (Date.now() & 0x7fffffff) : (seed & 0x7fffffff));
+    return this.makeLCG(this.seed === null ? (Date.now() & 0x7fffffff) : (this.seed & 0x7fffffff));
   }
 
   parseSeed() {

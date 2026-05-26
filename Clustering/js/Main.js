@@ -6,7 +6,7 @@ import State from './ui/State.js';
 
 const title = "Clustering";
 const version = "v0.1";
-const dimensions = { width: 500, height: 600 };
+const dimensions = { width: 800, height: 1100 };
 const preventBringToFront = false;
 
 async function init() {
@@ -14,15 +14,17 @@ async function init() {
   clustering.initialize();
 
   ControlPanel.update();
+
+  await CODAPConnect.createDefaultDataContext();
   await CODAPConnect.createGraphComponent();
   await CODAPConnect.createSliderComponent(1, Math.max(1, State.maxIter), 1);
-  console.log("UI initialized");
-
+  
   ControlPanel.msg.innerHTML = `<span class="ok">Datensatz + Streudiagramm + Slider erstellt.</span>`;
   ControlPanel.sliderIteration = 1;
   document.getElementById("shownIter").textContent = "1";
-
+  
   await CODAPConnect.showIteration(1, clustering.snapshots.get(1));
+  await CODAPConnect.createTable();
 }
 
 async function createFrame() {

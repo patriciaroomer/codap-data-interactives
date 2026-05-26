@@ -1,10 +1,8 @@
 export default class CODAPConnect {
-  static CODAP_DATA_CONTEXT = "KMeans";
-  static CODAP_COLLECTION = "Points";
-  static CODAP_LABELS = { singleCase: "Point", pluralCase: "Points" };
-  static CODAP_GRAPH_NAME = "KMeansGraph";
-  static CODAP_SLIDER_GLOBAL = "iterSlider";
-  static CODAP_SLIDER_TITLE = "Iteration";
+  static DATACONTEXT = "KMeansDemo";
+  static COLLECTION = "Points";
+  static SLIDER = "iterSlider";
+  static WIDGET_WIDTH = 360;
 
   static phone;
   static currentDataContext = "";
@@ -65,12 +63,12 @@ export default class CODAPConnect {
       action: "create",
       resource: "dataContext",
       values: {
-        name: CODAPConnect.CODAP_DATA_CONTEXT,
-        title: CODAPConnect.CODAP_DATA_CONTEXT,
+        name: CODAPConnect.DATACONTEXT,
+        title: "k-means Demo",
         collections: [{
-          name: CODAPConnect.CODAP_COLLECTION,
-          title: CODAPConnect.CODAP_COLLECTION,
-          labels: CODAPConnect.CODAP_LABELS,
+          name: CODAPConnect.COLLECTION,
+          title: "Points",
+          labels: { singleCase: "Point", pluralCase: "Points"},
           attrs : [
             { name: "pid", type: "numeric", precision: 0 },
             { name: "x", type: "numeric", precision: 4 },
@@ -86,14 +84,14 @@ export default class CODAPConnect {
   static async deleteAllCases() {
     await this.sendRequest({
       action: "delete",
-      resource: `dataContext[${CODAPConnect.CODAP_DATA_CONTEXT}].collection[${CODAPConnect.CODAP_COLLECTION}].allCases`
+      resource: `dataContext[${CODAPConnect.DATACONTEXT}].collection[${CODAPConnect.COLLECTION}].allCases`
     });
   }
 
   static async createCases(cases) {
     await this.sendRequest({
       action: "create",
-      resource: `dataContext[${CODAPConnect.CODAP_DATA_CONTEXT}].collection[${CODAPConnect.CODAP_COLLECTION}].case`,
+      resource: `dataContext[${CODAPConnect.DATACONTEXT}].collection[${CODAPConnect.COLLECTION}].case`,
       values: cases
     });
   }
@@ -104,8 +102,11 @@ export default class CODAPConnect {
       resource: "component",
       values: {
         type: "graph",
-        name: CODAPConnect.CODAP_GRAPH_NAME,
-        dimensions: { width: 360, height: 320 },
+        name: "KMeansGraph",
+        dimensions: { 
+          width: CODAPConnect.WIDGET_WIDTH, 
+          height: 320 
+        },
         position: "top",
         xAttributeName: "x",
         yAttributeName: "y",
@@ -119,19 +120,40 @@ export default class CODAPConnect {
     await this.sendRequest({
       action: "create",
       resource: "global",
-      values: { name: CODAPConnect.CODAP_SLIDER_GLOBAL, value: startValue }
+      values: { name: CODAPConnect.SLIDER, value: startValue }
     });
 
     await this.sendRequest({
       action: "create",
-        resource: "component",
-        values: {
-          title: CODAPConnect.CODAP_SLIDER_TITLE,
-          type: "slider",
-          globalValueName: CODAPConnect.CODAP_SLIDER_GLOBAL,
-          lowerBound: lower,
-          upperBound: upper
+      resource: "component",
+      values: {
+        title: "Iteration",
+        type: "slider",
+        globalValueName: CODAPConnect.SLIDER,
+        lowerBound: lower,
+        upperBound: upper,
+        dimensions: {
+          width: CODAPConnect.WIDGET_WIDTH,
+          height: 95
         }
+      }
+    });
+  }
+
+  static async createTable() {
+    await this.sendRequest({
+      action: "create",
+      resource: "component",
+      values: {
+        type: "caseTable",
+        name: "k-means Demo",
+        dataContext: CODAPConnect.DATACONTEXT,
+        isVisible: true,
+        dimensions: {
+          width: CODAPConnect.WIDGET_WIDTH, 
+          height: 675
+        },
+      }
     });
   }
 

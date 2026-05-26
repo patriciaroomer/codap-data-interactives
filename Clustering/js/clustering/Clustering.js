@@ -77,6 +77,13 @@ export default class Clustering {
     });
   }
 
+  async run() {
+    while (State.running && !State.converged) {
+      await this.step();
+      await new Promise(r => setTimeout(r, 120));
+    }
+  }
+
   async step() {
     if (State.converged) return;
     if (State.iteration >= State.maxIter) {
@@ -127,13 +134,6 @@ export default class Clustering {
 
     this.graph.draw();
     ControlPanel.update();
-  }
-
-  async run() {
-    while (State.running && !State.converged) {
-      await this.step();
-      await new Promise(r => setTimeout(r, 120));
-    }
   }
 
   async end() {

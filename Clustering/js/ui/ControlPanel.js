@@ -52,7 +52,7 @@ export default class ControlPanel {
 
   static update() {
     ControlPanel.iteration.textContent = String(State.iteration);
-    ControlPanel.phase.textContent     = State.phase;
+    ControlPanel.phase.textContent = State.phase;
     ControlPanel.converged.textContent = State.converged ? "Yes" : "No";
   }
 
@@ -69,7 +69,7 @@ export default class ControlPanel {
   static addStartListener() {
     ControlPanel.startButton.addEventListener("click", async () => {
       if (State.converged || State.running) return;
-      State.maxIter   = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
+      State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
       State.running = true;
       ControlPanel.clustering = new Clustering();
@@ -86,7 +86,7 @@ export default class ControlPanel {
   static addStepListener() {
     ControlPanel.stepButton.addEventListener("click", async () => {
       if (State.running) return;
-      State.maxIter   = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
+      State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
       if (!ControlPanel.clustering) ControlPanel.clustering = new Clustering();
       await ControlPanel.clustering.step();
@@ -96,12 +96,12 @@ export default class ControlPanel {
   static addRestartListener() {
     ControlPanel.restartButton.addEventListener("click", async () => {
       if (!ControlPanel.clustering) return;
-      State.running   = false;
+      State.running = false;
       State.converged = false;
       State.iteration = 0;
-      State.phase     = "—";
-      State.centroids             = ControlPanel.clustering.cloneCentroids(State.startCentroids);
-      State.targetCentroids       = ControlPanel.clustering.cloneCentroids(State.startCentroids);
+      State.phase = "—";
+      State.centroids = ControlPanel.clustering.cloneCentroids(State.startCentroids);
+      State.targetCentroids = ControlPanel.clustering.cloneCentroids(State.startCentroids);
       State.labels.fill(-1);
       State.prevLabelsforBlink.fill(-1);
       State.changed.fill(false);
