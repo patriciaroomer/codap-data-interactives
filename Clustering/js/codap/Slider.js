@@ -1,4 +1,5 @@
 import State from "../ui/State.js";
+import CaseTable from "./CaseTable.js";
 import CODAPConnect from "./CODAPConnect.js";
 
 export default class Slider {
@@ -58,17 +59,17 @@ export default class Slider {
 	}
 
 	static async getSliderValue() {
-    const response = await CODAPConnect.sendRequest({
-      action: "get",
-      resource: `global[${CODAPConnect.SLIDER}]`
-    });
-    let value = response?.values?.value;
-		return Slider.roundSliderValue(value);
-  }
+		const response = await CODAPConnect.sendRequest({
+		action: "get",
+		resource: `global[${CODAPConnect.SLIDER}]`
+		});
+		let value = response?.values?.value;
+			return Slider.roundSliderValue(value);
+	}
 
 	static roundSliderValue(value) {
 		const rounded = Math.round(value);
-		const lastIteration = Slider.clustering.snapshots.size;
+		const lastIteration = Slider.clustering.snapshots.size - 1;
 
 		if (rounded < 0) return 0;
 		if (rounded > lastIteration) return lastIteration;
@@ -84,6 +85,7 @@ export default class Slider {
 				value: iteration
 			}
 		});
+		CaseTable.showIteration(iteration, Slider.clustering.snapshots.get(iteration));
 	}
 
 	static scheduleIterationRendering(iteration) {

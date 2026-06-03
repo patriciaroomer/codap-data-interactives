@@ -111,6 +111,9 @@ export default class Clustering {
     await new Promise(r => setTimeout(r, Math.max(0, State.phaseMsAssign - State.blinkMs)));
 
     State.iteration++;
+
+    await Slider.setSliderValue(State.iteration);
+    
     this.snapshots.set(State.iteration, {
       points: this.clonePoints(State.points),
       labels: this.cloneLabels(State.labels),

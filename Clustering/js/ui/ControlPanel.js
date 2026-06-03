@@ -1,6 +1,7 @@
 import Clustering from '../clustering/Clustering.js';
 import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
+import Slider from '../codap/Slider.js';
 import State from './State.js';
 
 export default class ControlPanel {
@@ -64,9 +65,9 @@ export default class ControlPanel {
     ControlPanel.resetButton.addEventListener("click", async () => {
       ControlPanel.clustering = new Clustering();
       ControlPanel.clustering.initialize();
-      ControlPanel.sliderIteration = 1;
-      document.getElementById("shownIter").textContent = "1";
-      await CaseTable.showIteration(0, ControlPanel.clustering.snapshots.get(1));
+      ControlPanel.sliderIteration = 0;
+      await CaseTable.showIteration(0, ControlPanel.clustering.snapshots.get(0));
+      await Slider.setSliderValue(0);
     });
   }
 
@@ -112,9 +113,9 @@ export default class ControlPanel {
       ControlPanel.clustering.initializeFirstGeneration();
       ControlPanel.graph.draw();
       ControlPanel.update();
-      ControlPanel.sliderIteration = 1;
-      document.getElementById("shownIter").textContent = "1";
-      await CaseTable.showIteration(0, ControlPanel.clustering.snapshots.get(1));
+      ControlPanel.sliderIteration = 0;
+      await Slider.setSliderValue(0);
+      await CaseTable.showIteration(0, ControlPanel.clustering.snapshots.get(0));
     });
   }
 
