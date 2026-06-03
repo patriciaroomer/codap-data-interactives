@@ -1,3 +1,5 @@
+import State from '../ui/State.js';
+
 export default class CODAPConnect {
   static DATACONTEXT = "KMeansDemo";
   static COLLECTION = "Points";
@@ -8,6 +10,13 @@ export default class CODAPConnect {
   static currentDataContext = "";
   static codapSliderValue = 1;
 
+  static clustering;
+
+  static currentIteration = 1;
+  static pendingIteration = null;
+  static sliderReadScheduled = false;
+  static sliderUpdateScheduled = false;
+
   static {
     this.phone = new iframePhone.IframePhoneRpcEndpoint(
       this.requestHandler, "data-interactive", window.parent
@@ -15,7 +24,9 @@ export default class CODAPConnect {
   }
 
   static requestHandler(request, callback) {
-    callback({ succes: true });
+    console.log(request);
+    CODAPConnect.handleSliderChange(request);
+    callback({ success: true });
   }
 
   static sendRequest(request) {
@@ -103,9 +114,9 @@ export default class CODAPConnect {
       values: {
         type: "graph",
         name: "KMeansGraph",
-        dimensions: { 
-          width: CODAPConnect.WIDGET_WIDTH, 
-          height: 320 
+        dimensions: {
+          width: CODAPConnect.WIDGET_WIDTH,
+          height: 320
         },
         position: "top",
         xAttributeName: "x",
@@ -140,6 +151,52 @@ export default class CODAPConnect {
     });
   }
 
+  static handleSliderChange(request) {
+    if (!CODAPConnect.sliderChanged(request)) return;
+    CODAPConnect.queueSliderRead();
+  }
+
+  static async queueSliderRead() {
+    if (CODAPConnect.sliderReadScheduled) return;
+    CODAPConnect.sliderReadScheduled = true;
+
+    const iteration = await CODAPConnect.getSliderValue();
+    CODAPConnect.sliderReadScheduled = false;
+    CODAPConnect.currentIteration = iteration;
+    CODAPConnect.scheduleIterationRendering(iteration);
+  }
+
+  static sliderChanged(request) {
+    return request.action === "notify" &&
+           request.resource === "component" &&
+           request.values?.operation === "change slider value" &&
+           request.values?.type === "DG.SliderView";
+  }
+
+  static async getSliderValue() {
+    const response = await this.sendRequest({
+      action: "get",
+      resource: `global[${CODAPConnect.SLIDER}]`
+    });
+    const iteration = response?.values?.value;
+    return Math.round(iteration);
+  }
+
+  static scheduleIterationRendering(iteration) {
+    CODAPConnect.pendingIteration = iteration;
+
+    if (CODAPConnect.sliderUpdateScheduled) return;
+    CODAPConnect.sliderUpdateScheduled  = true;
+
+    requestAnimationFrame(() => {
+      CODAPConnect.sliderUpdateScheduled = false;
+      const iter = CODAPConnect.pendingIteration;
+      const snapshot = CODAPConnect.clustering?.snapshots?.get(iter);
+      if (!snapshot) return;
+      CODAPConnect.clustering.showIteration(iter, snapshot);
+    });
+  }
+
   static async createTable() {
     await this.sendRequest({
       action: "create",
@@ -150,7 +207,7 @@ export default class CODAPConnect {
         dataContext: CODAPConnect.DATACONTEXT,
         isVisible: true,
         dimensions: {
-          width: CODAPConnect.WIDGET_WIDTH, 
+          width: CODAPConnect.WIDGET_WIDTH,
           height: 675
         },
       }

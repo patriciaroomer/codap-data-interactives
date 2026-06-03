@@ -42,6 +42,9 @@ export default class ControlPanel {
     ControlPanel.codapStatus   = document.getElementById("codapStatus");
     ControlPanel.msg           = document.getElementById("msg");
 
+    ControlPanel.clustering = new Clustering();
+    this.clustering.initialize();
+
     ControlPanel.addResetListener();
     ControlPanel.addStartListener();
     ControlPanel.addPauseListener();
@@ -72,7 +75,6 @@ export default class ControlPanel {
       State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
       State.running = true;
-      ControlPanel.clustering = new Clustering();
       await ControlPanel.clustering.run();
     });
   }
@@ -88,7 +90,6 @@ export default class ControlPanel {
       if (State.running) return;
       State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
       State.showLines = !!ControlPanel.toggleLines.checked;
-      if (!ControlPanel.clustering) ControlPanel.clustering = new Clustering();
       await ControlPanel.clustering.step();
     });
   }

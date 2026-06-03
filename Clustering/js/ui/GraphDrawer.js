@@ -26,7 +26,7 @@ export default class GraphDrawer {
 
     this.context.fillStyle = "rgba(0, 0, 0, 0.8)";
     this.context.font = "13px system-ui";
-    this.context.fillText(`k=${State.k}  n=${State.points.length}  iter=${State.iter}/${State.maxIter}  phase=${State.phase}`, 12, 18);
+    this.context.fillText(`k=${State.k}  n=${State.points.length}  iter=${State.iteration}/${State.maxIter}  phase=${State.phase}`, 12, 18);
   }
 
   drawGrid() {

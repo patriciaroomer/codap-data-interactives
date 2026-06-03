@@ -47,6 +47,7 @@ export default class Clustering {
   initializeCentroids(randomizer) {
     const chosen = new Set();
     State.centroids = [];
+
     while (State.centroids.length < State.k) {
       const idx = Math.floor(randomizer() * State.n);
       if (chosen.has(idx)) continue;
@@ -58,7 +59,7 @@ export default class Clustering {
   // prepareIteration1Snapshot()
   initializeFirstGeneration() {
     const previousLabels = State.labels.slice();
-    State.prevLabelsforBlink = previousLabels.slice();
+    State.prevLabelsforBlink = previousLabels;
     this.setLabels(previousLabels);
 
     this.snapshots.set(1, {
@@ -66,6 +67,7 @@ export default class Clustering {
       labels: this.cloneLabels(State.labels),
       centroids: this.cloneCentroids(State.centroids)
     });
+    CODAPConnect.clustering = this;
 
     State.blinking = true;
 
@@ -95,7 +97,7 @@ export default class Clustering {
 
     State.phase = "Assign";
     const previousLabels = State.labels.slice();
-    State.prevLabelsforBlink = previousLabels.slice();
+    State.prevLabelsforBlink = previousLabels;
     this.setLabels(previousLabels);
 
     State.blinking = true;
@@ -112,6 +114,7 @@ export default class Clustering {
       labels: this.cloneLabels(State.labels),
       centroids: this.cloneCentroids(State.centroids)
     });
+    CODAPConnect.clustering = this;
 
     if (ControlPanel.sliderIteration === nextIteration) {
       await CODAPConnect.showIteration(nextIteration, this.snapshots.get(nextIteration));
@@ -122,7 +125,9 @@ export default class Clustering {
     ControlPanel.update();
     await this.moveCentroidsSmooth();
 
-    State.iteration += 1;
+    const newLabels = State.labels.slice();
+    this.setLabels(newLabels);
+    State.iteration++;
 
     if (this.labelsEqual(previousLabels, State.labels)) {
       State.converged = true;
@@ -145,24 +150,31 @@ export default class Clustering {
   }
 
   setLabels(previousLabels) {
-    for (let i=0; i < State.points.length; i++){
-      const point = State.points[i];
+
+    const points = State.points;
+    const centroids = State.centroids;
+    const labels = State.labels;
+    const changed = State.changed;
+
+    for (let i=0; i < points.length; i++) {
+      const point = points[i];
 
       let bestJ = 0;
       let bestD = Infinity;
 
-      for (let j = 0; j < State.centroids.length; j++){
-        const centroid = State.centroids[j];
+      for (let j = 0; j < centroids.length; j++){
+        const centroid = centroids[j];
         const dx = point.x - centroid.x;
         const dy = point.y - centroid.y;
         const d2 = dx*dx + dy*dy;
         if (d2 < bestD) { bestD = d2; bestJ = j; }
       }
-      State.labels[i] = bestJ;
+      labels[i] = bestJ;
+      changed[i] = bestJ !== previousLabels[i];
     }
-    for (let i=0; i < State.labels.length;i++){
-      State.changed[i] = (State.labels[i] !== previousLabels[i]);
-    }
+
+    State.labels = labels;
+    State.changed = changed;
   }
 
   computeTargets() {
@@ -227,5 +239,11 @@ export default class Clustering {
       if (a[i] !== b[i]) return false;
     }
     return true;
+  }
+
+  showIteration(iteration, snapshot) {
+    State.labels = snapshot.labels.slice();
+    State.centroids = this.cloneCentroids(snapshot.centroids);
+    this.graph.draw();
   }
 }
