@@ -93,21 +93,6 @@ export default class CODAPConnect {
     });
   }
 
-  static async deleteAllCases() {
-    await this.sendRequest({
-      action: "delete",
-      resource: `dataContext[${CODAPConnect.DATACONTEXT}].collection[${CODAPConnect.COLLECTION}].allCases`
-    });
-  }
-
-  static async createCases(cases) {
-    await this.sendRequest({
-      action: "create",
-      resource: `dataContext[${CODAPConnect.DATACONTEXT}].collection[${CODAPConnect.COLLECTION}].case`,
-      values: cases
-    });
-  }
-
   static async createGraphComponent() {
     await this.sendRequest({
       action: "create",
@@ -128,69 +113,8 @@ export default class CODAPConnect {
     });
   }
 
-  static async createSliderComponent(lower, upper, startValue) {
-    await this.sendRequest({
-      action: "create",
-      resource: "global",
-      values: { name: CODAPConnect.SLIDER, value: startValue }
-    });
-
-    await this.sendRequest({
-      action: "create",
-      resource: "component",
-      values: {
-        title: "Iteration",
-        type: "slider",
-        globalValueName: CODAPConnect.SLIDER,
-        lowerBound: lower,
-        upperBound: upper,
-        dimensions: {
-          width: CODAPConnect.WIDGET_WIDTH,
-          height: 95
-        }
-      }
-    });
-  }
-
   static handleSliderChange(request) {
     if (!Slider.sliderChanged(request)) return;
     Slider.queueSliderRead();
-  }
-
-  static async createTable() {
-    await this.sendRequest({
-      action: "create",
-      resource: "component",
-      values: {
-        type: "caseTable",
-        name: "k-means Demo",
-        dataContext: CODAPConnect.DATACONTEXT,
-        isVisible: true,
-        dimensions: {
-          width: CODAPConnect.WIDGET_WIDTH,
-          height: 675
-        },
-      }
-    });
-  }
-
-  static async showIteration(iteration, snapshot) {
-    await this.deleteAllCases();
-
-    const cases = [];
-    for (let i = 0; i < snapshot.points.length; i++) {
-      const point = snapshot.points[i];
-      const label = snapshot.labels[i];
-      cases.push({
-        values: {
-          pid: i,
-          x: point.x,
-          y: point.y,
-          cluster: "C" + (label + 1),
-          iteration: iteration
-        }
-      });
-    }
-    await this.createCases(cases);
   }
 }

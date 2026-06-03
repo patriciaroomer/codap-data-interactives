@@ -8,7 +8,7 @@ export default class State {
   static changed = [];
   static blinking = false;
 
-  static iteration = 1;
+  static iteration = 0;
   static phase = "—";
   static running = false;
   static converged = false;

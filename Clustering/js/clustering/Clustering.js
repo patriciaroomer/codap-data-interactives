@@ -1,3 +1,4 @@
+import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
 import Slider from '../codap/Slider.js';
 import ControlPanel from '../ui/ControlPanel.js';
@@ -10,6 +11,7 @@ export default class Clustering {
   constructor() {
     this.snapshots = new Map();
     this.graph = new GraphDrawer();
+    this.iteration = 0;
   }
 
   // generateData()
@@ -18,7 +20,7 @@ export default class Clustering {
 
     State.k = Math.max(2, Math.min(10, parseInt(ControlPanel.k.value, 10) || 3));
     State.n = Math.max(5, Math.min(400, parseInt(ControlPanel.n.value, 10) || 60));
-    State.maxIter = Math.max(1, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
+    State.maxIter = Math.max(0, Math.min(200, parseInt(ControlPanel.maxIterations.value, 10) || 25));
     State.showLines = !!ControlPanel.toggleLines.checked;
 
     console.log("Setting random points");
@@ -63,7 +65,7 @@ export default class Clustering {
     State.prevLabelsforBlink = previousLabels;
     this.setLabels(previousLabels);
 
-    this.snapshots.set(1, {
+    this.snapshots.set(0, {
       points: this.clonePoints(State.points),
       labels: this.cloneLabels(State.labels),
       centroids: this.cloneCentroids(State.centroids)
@@ -94,8 +96,6 @@ export default class Clustering {
       return;
     }
 
-    const nextIteration = Math.max(2, this.snapshots.size + 1);
-
     State.phase = "Assign";
     const previousLabels = State.labels.slice();
     State.prevLabelsforBlink = previousLabels;
@@ -110,16 +110,15 @@ export default class Clustering {
     this.graph.draw();
     await new Promise(r => setTimeout(r, Math.max(0, State.phaseMsAssign - State.blinkMs)));
 
-    this.snapshots.set(nextIteration, {
+    State.iteration++;
+    this.snapshots.set(State.iteration, {
       points: this.clonePoints(State.points),
       labels: this.cloneLabels(State.labels),
       centroids: this.cloneCentroids(State.centroids)
     });
     Slider.clustering = this;
 
-    if (ControlPanel.sliderIteration === nextIteration) {
-      await CODAPConnect.showIteration(nextIteration, this.snapshots.get(nextIteration));
-    }
+    await CaseTable.showIteration(State.iteration, this.snapshots.get(State.iteration));
 
     State.phase = "Update";
     this.computeTargets();
@@ -128,7 +127,6 @@ export default class Clustering {
 
     const newLabels = State.labels.slice();
     this.setLabels(newLabels);
-    State.iteration++;
 
     if (this.labelsEqual(previousLabels, State.labels)) {
       State.converged = true;
@@ -243,9 +241,6 @@ export default class Clustering {
   }
 
   showIteration(iteration) {
-    if (iteration < 1) iteration = 1;
-    if (iteration > this.snapshots.size) iteration = this.snapshots.size;
-    
     const snapshot = this.snapshots.get(iteration);
     if (!snapshot) return;
 
