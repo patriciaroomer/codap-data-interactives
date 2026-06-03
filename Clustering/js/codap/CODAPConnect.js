@@ -1,4 +1,5 @@
 import State from '../ui/State.js';
+import Slider from './Slider.js';
 
 export default class CODAPConnect {
   static DATACONTEXT = "KMeansDemo";
@@ -152,49 +153,8 @@ export default class CODAPConnect {
   }
 
   static handleSliderChange(request) {
-    if (!CODAPConnect.sliderChanged(request)) return;
-    CODAPConnect.queueSliderRead();
-  }
-
-  static async queueSliderRead() {
-    if (CODAPConnect.sliderReadScheduled) return;
-    CODAPConnect.sliderReadScheduled = true;
-
-    const iteration = await CODAPConnect.getSliderValue();
-    CODAPConnect.sliderReadScheduled = false;
-    CODAPConnect.currentIteration = iteration;
-    CODAPConnect.scheduleIterationRendering(iteration);
-  }
-
-  static sliderChanged(request) {
-    return request.action === "notify" &&
-           request.resource === "component" &&
-           request.values?.operation === "change slider value" &&
-           request.values?.type === "DG.SliderView";
-  }
-
-  static async getSliderValue() {
-    const response = await this.sendRequest({
-      action: "get",
-      resource: `global[${CODAPConnect.SLIDER}]`
-    });
-    const iteration = response?.values?.value;
-    return Math.round(iteration);
-  }
-
-  static scheduleIterationRendering(iteration) {
-    CODAPConnect.pendingIteration = iteration;
-
-    if (CODAPConnect.sliderUpdateScheduled) return;
-    CODAPConnect.sliderUpdateScheduled  = true;
-
-    requestAnimationFrame(() => {
-      CODAPConnect.sliderUpdateScheduled = false;
-      const iter = CODAPConnect.pendingIteration;
-      const snapshot = CODAPConnect.clustering?.snapshots?.get(iter);
-      if (!snapshot) return;
-      CODAPConnect.clustering.showIteration(iter, snapshot);
-    });
+    if (!Slider.sliderChanged(request)) return;
+    Slider.queueSliderRead();
   }
 
   static async createTable() {

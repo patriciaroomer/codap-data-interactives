@@ -1,4 +1,5 @@
 import CODAPConnect from '../codap/CODAPConnect.js';
+import Slider from '../codap/Slider.js';
 import ControlPanel from '../ui/ControlPanel.js';
 import GraphDrawer from '../ui/GraphDrawer.js';
 import State from '../ui/State.js';
@@ -67,7 +68,7 @@ export default class Clustering {
       labels: this.cloneLabels(State.labels),
       centroids: this.cloneCentroids(State.centroids)
     });
-    CODAPConnect.clustering = this;
+    Slider.clustering = this;
 
     State.blinking = true;
 
@@ -114,7 +115,7 @@ export default class Clustering {
       labels: this.cloneLabels(State.labels),
       centroids: this.cloneCentroids(State.centroids)
     });
-    CODAPConnect.clustering = this;
+    Slider.clustering = this;
 
     if (ControlPanel.sliderIteration === nextIteration) {
       await CODAPConnect.showIteration(nextIteration, this.snapshots.get(nextIteration));
@@ -241,7 +242,13 @@ export default class Clustering {
     return true;
   }
 
-  showIteration(iteration, snapshot) {
+  showIteration(iteration) {
+    if (iteration < 1) iteration = 1;
+    if (iteration > this.snapshots.size) iteration = this.snapshots.size;
+    
+    const snapshot = this.snapshots.get(iteration);
+    if (!snapshot) return;
+
     State.labels = snapshot.labels.slice();
     State.centroids = this.cloneCentroids(snapshot.centroids);
     this.graph.draw();
