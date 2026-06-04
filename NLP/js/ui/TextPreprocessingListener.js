@@ -20,14 +20,23 @@ export default class TextPreprocessingListener extends UIListener {
   }
 
   async preprocess() {
-    let text = document.getElementById("inputField").value;
-    const preprocessor = new TextPreprocesser(new Prompt(text, PromptListener.currentLanguage));
-    await preprocessor.init();
+    const promptId = localStorage.getItem("promptId");
+    const language = localStorage.getItem("language");
+    const tasks = this.determineTasks();
 
-    if (this.cleanBox.checked) text = preprocessor.clean();
-    if (this.stopwordsBox.checked) text = preprocessor.removeStopwords();
-    if (this.lemmaBox.checked) text = preprocessor.lemmatize();
-    if (this.stemBox.checked) text = preprocessor.stem();
-    this.outputField.value = text;
+    const response = await fetch(`http://localhost:3000/api/nlp/preprocess?id=${promptId}&language=${language}&tasks=${tasks}`)
+    let output = await response.text();
+    output = output.replace(/"/g, "");
+
+    this.outputField.value = output;
+  }
+
+  determineTasks() {
+    const tasks = [];
+    if (this.cleanBox.checked) tasks.push("clean");
+    if (this.stopwordsBox.checked) tasks.push("stopwords");
+    if (this.lemmaBox.checked) tasks.push("lemma");
+    if (this.stemBox.checked) tasks.push("stem");
+    return tasks;
   }
 }

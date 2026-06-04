@@ -4,30 +4,33 @@ import UIListener from './UIListener.js';
 
 export default class PromptListener extends UIListener {
 
-  static currentLanguage = "en";
-
   constructor() {
     super();
 
-    this.tables = [document.getElementById("enPrompts"), document.getElementById("dePrompts"), document.getElementById("frPrompts")];
+    this.enTable = document.getElementById("enPrompts");
+    this.deTable = document.getElementById("dePrompts");
+    this.frTable = document.getElementById("frPrompts"); 
 
-    const englishPrompts = this.tables[0].getElementsByTagName("td");
-    const germanPrompts = this.tables[1].getElementsByTagName("td");
-    const frenchPrompts = this.tables[2].getElementsByTagName("td");
+    this.enPrompts = this.enTable.getElementsByTagName("td");
+    this.dePrompts = this.deTable.getElementsByTagName("td");
+    this.frPrompts = this.frTable.getElementsByTagName("td");
 
+    this.enButton = document.getElementById("enButton");
+    this.deButton = document.getElementById("deButton");
+    this.frButton = document.getElementById("frButton");
+
+    this.addListeners();
+    this.applySelectedLanguage();
+  }
+
+  addListeners() {
     let i = 0;
-    for (const prompt of englishPrompts) {
+    for (const prompt of this.enPrompts) {
       this.addPromptListener(prompt);
-      this.addPromptListener(germanPrompts[i]);
-      this.addPromptListener(frenchPrompts[i]);
+      this.addPromptListener(this.dePrompts[i]);
+      this.addPromptListener(this.frPrompts[i]);
       i++;
     }
-
-    this.englishButton = document.getElementById("enButton");
-    this.germanButton = document.getElementById("deButton");
-    this.frenchButton = document.getElementById("frButton");
-
-    this.topicCheckbox = document.getElementById("topicBox");
 
     this.addEnglishListener();
     this.addGermanListener();
@@ -48,32 +51,58 @@ export default class PromptListener extends UIListener {
   }
 
   addEnglishListener() {
-    this.englishButton.addEventListener("click", () => {
-      PromptListener.currentLanguage = "en";
-      document.getElementById("dePrompts").classList.add("hidden");
-      document.getElementById("frPrompts").classList.add("hidden");
-      document.getElementById("enPrompts").classList.remove("hidden");
-      this.topicCheckbox.disabled = false;
+    this.enButton.addEventListener("click", () => {
+      localStorage.setItem("language", "en");
+      this.applySelectedLanguage();
     });
   }
 
   addGermanListener() {
-    this.germanButton.addEventListener("click", () => {
-      PromptListener.currentLanguage = "de";
-      document.getElementById("enPrompts").classList.add("hidden");
-      document.getElementById("frPrompts").classList.add("hidden");
-      document.getElementById("dePrompts").classList.remove("hidden");
-      this.topicCheckbox.disabled = true;
+    this.deButton.addEventListener("click", () => {
+      localStorage.setItem("language", "de");
+      this.applySelectedLanguage();
     });
   }
 
   addFrenchListener() {
-    this.frenchButton.addEventListener("click", () => {
-      PromptListener.currentLanguage = "fr";
-      document.getElementById("enPrompts").classList.add("hidden");
-      document.getElementById("dePrompts").classList.add("hidden");
-      document.getElementById("frPrompts").classList.remove("hidden");
-      this.topicCheckbox.disabled = true;
+    this.frButton.addEventListener("click", () => {
+      localStorage.setItem("language", "fr");
+      this.applySelectedLanguage();
     });
+  }
+
+  applySelectedLanguage() {
+    let language = localStorage.getItem("language");
+
+    if (!language) {
+      localStorage.setItem("language", "en");
+      language = "en";
+    }
+    
+    // Topic classification is only available in English as of now
+    const topicBox = document.getElementById("topicBox");
+
+    switch (language) {
+      case "en":
+        this.deTable.classList.add("hidden");
+        this.frTable.classList.add("hidden");
+        this.enTable.classList.remove("hidden");
+        topicBox.disabled = false;
+        break;
+      case "de":
+        this.enTable.classList.add("hidden");
+        this.frTable.classList.add("hidden");
+        this.deTable.classList.remove("hidden");
+        topicBox.disabled = true;
+        break;
+      case "fr":
+        this.enTable.classList.add("hidden");
+        this.deTable.classList.add("hidden");
+        this.frTable.classList.remove("hidden");
+        topicBox.disabled = true;
+        break;
+      default:
+        return;
+    }
   }
 }

@@ -31,6 +31,10 @@ async function main() {
   new TextPreprocessingListener();
   new BagOfWordsListener();
   new TextClassificationListener();
+
+  if (!localStorage.getItem("language")) {
+    localStorage.setItem("language", "en");
+  }
 }
 
 main();
