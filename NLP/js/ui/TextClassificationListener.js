@@ -8,6 +8,7 @@ export default class TextClassificationListener extends UIListener {
   constructor() {
     super();
     this.button = document.getElementById("classificationButton");
+    this.api = "http://localhost:3000/api/nlp/classify";
     this.addListener();
   }
 
@@ -15,7 +16,6 @@ export default class TextClassificationListener extends UIListener {
     this.button.addEventListener("click", async () => {
 
       try {
-
         Logger.displayMessage("Loading...");
 
         const classificator = new TextClassificator(this.outputField.value);
@@ -30,37 +30,58 @@ export default class TextClassificationListener extends UIListener {
       } catch (error) {
         Logger.displayError("The classification model timed out, try again later.");
       }
-
     })
   }
 
   async handleSentiment(classificator) {
-    if (!document.getElementById("sentimentBox").checked) {
-      await CODAPConnect.removeDataContext("Sentiments");
-      return;
-    }
-    await classificator.classifySentiment();
-    await CODAPConnect.createDataContext("Sentiments", classificator.sentimentAttributes);
-    await new CaseTable("Sentiments", classificator.sentimentEntries).create();
+    this.handleClassification("sentimentBox", "sentiment", "Sentiments");
   }
 
   async handleEmotion(classificator) {
-    if (!document.getElementById("emotionBox").checked) {
-      await CODAPConnect.removeDataContext("Emotions");
-      return
-    };
-    await classificator.classifyEmotion();
-    await CODAPConnect.createDataContext("Emotions", classificator.emotionAttributes);
-    await new CaseTable("Emotions", classificator.emotionEntries).create();
+    this.handleClassification("emotionBox", "emotion", "Emotions");
   }
 
   async handleTopic(classificator) {
-    if (!document.getElementById("topicBox").checked || document.getElementById("topicBox").disabled) {
-      await CODAPConnect.removeDataContext("Topics");
-      return;
+    this.handleClassification("topicBox", "topic", "Topics");
+  }
+  
+  async handleClassification(checkbox, category, title) {
+    const applicable = await this.isApplicable(checkbox, title);
+    if (!applicable) return;
+    
+    const response = await fetch(`${this.api}/${category}?id=${localStorage.getItem("promptId")}&language=${localStorage.getItem("language")}`);
+    const results = await response.json();
+    console.log(results);
+
+    const codapAttributes = this.getLabelNames(results).map(name => ({ name, type: "nominal" }));
+    const codapEntries = { values: this.getLabelScores(results) };
+    await CODAPConnect.createDataContext(title, codapAttributes);
+    await new CaseTable(title, codapEntries).create();
+  }
+
+  // --- Helper functions --- //
+
+  async isApplicable(checkbox, title) {
+    if (!document.getElementById(checkbox).checked) {
+      await CODAPConnect.removeDataContext(title);
+      return false;
     }
-    await classificator.classifyTopic();
-    await CODAPConnect.createDataContext("Topics", classificator.topicAttributes);
-    await new CaseTable("Topics", classificator.topicEntries).create();
+    return true;
+  }
+
+  getLabelNames(labels) {
+    const names = [];
+    for (const label of labels) {
+      names.push(label.label);
+    }
+    return names;
+  }
+
+  getLabelScores(labels) {
+    const scores = [];
+    for (const label of labels) {
+      scores.push(label.score);
+    }
+    return scores;
   }
 }
