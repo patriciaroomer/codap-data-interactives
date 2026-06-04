@@ -42,6 +42,7 @@ export default class PromptListener extends UIListener {
       await CODAPConnect.removeDataContext("Topics");
 
       this.inputField.value = prompt.textContent;
+      localStorage.setItem("promptId", prompt.dataset.id);
       new TextPreprocessingListener().preprocess();
     });
   }

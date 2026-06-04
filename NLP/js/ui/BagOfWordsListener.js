@@ -1,6 +1,7 @@
 import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
 import BagOfWords from '../nlp/BagOfWords.js';
+import PromptListener from './PromptListener.js';
 import UIListener from './UIListener.js';
 
 export default class BagOfWordsListener extends UIListener {
@@ -9,12 +10,21 @@ export default class BagOfWordsListener extends UIListener {
     this.button = document.getElementById("bagOfWordsButton");
     this.addListener();
   }
-
+  
   async addListener() {
     this.button.addEventListener("click", async () => {
-      const bagOfWords = new BagOfWords(this.inputField.value);
-      await CODAPConnect.createDataContext("Bag of Words", bagOfWords.attributes);
-      await new CaseTable("Bag of Words", bagOfWords.entries).create();
+      const promptId = localStorage.getItem("promptId");
+      const language = PromptListener.currentLanguage;
+
+      const response = await fetch(`http://localhost:3000/api/nlp/bagofwords?id=${promptId}&language=${language}`);
+      console.log(response);
+      const bagOfWords = await response.json();
+
+      const codapAttributes = ["Word", "Count"].map(name => ({name, type: "nominal"}));
+      const codapEntries = bagOfWords.map(([word, count]) => ({ values: [word, count] }));
+      
+      await CODAPConnect.createDataContext("Bag of Words", codapAttributes);
+      await new CaseTable("Bag of Words", codapEntries).create();
     });
   }
 }
