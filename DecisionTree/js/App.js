@@ -36,8 +36,11 @@ export default class App {
   }
 
   bindEvents() {
-    this.on('btnAddClass', () => this.trainingData.addClass());
     this.on('btnAddAttr', () => this.trainingData.addAttribute());
+    this.on('btnApplyAttr', () => this.trainingData.applyAttributes());
+    this.on('btnAddClass', () => this.trainingData.addClass());
+    this.on('btnApplyClass', () => this.trainingData.applyClasses());
+    this.on('btnAddTrainData', () => this.trainingData.addData());
 
     /*
     this.on('btnSetup',          () => this.handleSetup());

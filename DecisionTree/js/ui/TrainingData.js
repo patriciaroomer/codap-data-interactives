@@ -15,19 +15,45 @@ export default class TrainingData {
         const name = document.getElementById("attrName").value;
         if (!name) return;
         this.attributes.add(name);
-        this.extendInputForm(name);
     }
 
-    addData(name, values, clazz) {
-        this.data.add({ name: name, values: values, class: clazz });
+    addData() {
+        const form = document.getElementById("inputFormTrain");
+        const name = document.getElementById("dataName").value;
+
+        const values = [];
+        for (const dropdown of document.getElementsByClassName("trainSelect")) {
+            values.add(dropdown.value);
+        }
+
+        const c = document.getElementById("classSelect").value;
+
+        this.data.add({ name: name, values: values, class: c });
+        console.log(this.data);
     }
 
-    extendInputForm(attr) {
-        const n = this.attributes.size;
-        const labelId = "trainLabel" + n;
-        const selectId = "trainSelect" + n;
-        const style = "min-width:110px;";         
+    applyAttributes() {
+        const form = document.getElementById("inputFormTrain");
     
-        document.getElementById("inputFormTrain").innerHTML += `<label id=${labelId} style=${style}>${attr}</label><select id=${selectId}><option value="nein">no</option><option value="ja">yes</option>`;
+        let i = 1;
+        for (const attr of this.attributes) {
+
+            form.innerHTML += 
+                `<label class="trainLabel">${attr}</label>` +
+                `<select class="trainSelect"` +
+                `<option value="no">No</option>` +
+                `<option value="yes">Yes</option>` +
+                `</select>`
+        }
+    }
+
+    applyClasses() {
+        const options = document.getElementById("classSelect");
+        const dropdown = document.getElementById("classDropdown");
+        dropdown.style.visibility = "visible";
+
+        for (const c of this.classes) {
+            options.innerHTML += `<option>${c}</option>`;
+        }
     }
 }

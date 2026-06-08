@@ -36,19 +36,6 @@
         </div>
 
         <div><h1>Training</h1></div>
-        
-        <div class="card">
-            <div class="taskTitle">Set classes</div>
-    
-            <div class="row" style="margin-bottom:8px">
-                <label id="classLabel" style="min-width:110px;">Name</label>
-                <input id="className" style="min-width:220px;">
-                
-                <button id="btnAddClass">Add</button>
-                <div class="classList"></div>
-            </div>
-            <div class="row"><button id="btnApplyClass">Apply classes</div>
-        </div>
 
         <div class="card">
             <div class="taskTitle">Set attributes</div>
@@ -64,20 +51,39 @@
         </div>
 
         <div class="card">
+            <div class="taskTitle">Set classes</div>
+    
+            <div class="row" style="margin-bottom:8px">
+                <label id="classLabel" style="min-width:110px;">Name</label>
+                <input id="className" style="min-width:220px;">
+                
+                <button id="btnAddClass">Add</button>
+                <div class="classList"></div>
+            </div>
+            <div class="row"><button id="btnApplyClass">Apply classes</div>
+        </div>
+
+        <div class="card">
             <div class="taskTitle">Set training data</div>
 
             <div class="row" style="margin-bottom:8px;">
-                <label id="lblName" style="min-width:110px;">Name</label>
-                <input id="inName" placeholder="z.B. Schach" style="min-width:220px;">
+                <label id="dataLabel" style="min-width:110px;">Name</label>
+                <input id="dataName" placeholder="z.B. Schach" style="min-width:220px;">
                 
-                <button id="btnAddOne">Add</button>
             </div>
-
-            <div class="row" id="inputFormTrain" style="margin-bottom:8px;"></div>
-
-            <div class="row">
-                <button id="btnTrain">Train</button>
+            
+            <div class="row" id="inputFormTrain" style="margin-bottom:8px;">
+                
+                <div id="classDropdown">
+                    <label id="classLabel" style="min-width:110px;">Class</label>
+                    <select id="classSelect"></select>
+                </div>
             </div>
+            
+            <button id="btnAddTrainData">Add</button>
+        </div>
+        <div class="row">
+            <button id="btnTrain">Train</button>
         </div>
         
         <div><h1>Testing</h1></div>

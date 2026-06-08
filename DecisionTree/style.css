@@ -72,6 +72,7 @@ input, select {
 label { 
 	font-size: 12px; 
 	color: #444; 
+	min-width: 110px;
 }
 
 /* Tree styles */
@@ -120,4 +121,8 @@ label {
 .smallNote { 
 	font-size: 11px; 
 	color: #666; 
+}
+
+#classDropdown {
+	visibility: hidden;
 }
