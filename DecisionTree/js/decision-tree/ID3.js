@@ -1,0 +1,151 @@
+class ID3 {
+    constructor(targetAttribute = 'Klasse') {
+        this.targetAttribute = targetAttribute;
+    }
+
+    train(data) {
+        const attributes = Object.keys(data[0]).filter(
+            key => key !== this.targetAttribute && key !== 'Name'
+        );
+
+        return this.buildTree(data, attributes);
+    }
+
+    buildTree(data, attributes) {
+        const classes = [...new Set(data.map(row => row[this.targetAttribute]))];
+
+        // All examples belong to the same class
+        if (classes.length === 1) {
+            return {
+                type: 'leaf',
+                class: classes[0]
+            };
+        }
+
+        // No attributes left
+        if (attributes.length === 0) {
+            return {
+                type: 'leaf',
+                class: this.majorityClass(data)
+            };
+        }
+
+        const bestAttribute = this.findBestAttribute(data, attributes);
+
+        const node = {
+            type: 'node',
+            attribute: bestAttribute,
+            children: {}
+        };
+
+        const values = [...new Set(data.map(row => row[bestAttribute]))];
+
+        for (const value of values) {
+            const subset = data.filter(
+                row => row[bestAttribute] === value
+            );
+
+            if (subset.length === 0) {
+                node.children[value] = {
+                    type: 'leaf',
+                    class: this.majorityClass(data)
+                };
+            } else {
+                const remainingAttributes = attributes.filter(
+                    attr => attr !== bestAttribute
+                );
+
+                node.children[value] = this.buildTree(
+                    subset,
+                    remainingAttributes
+                );
+            }
+        }
+
+        return node;
+    }
+
+    entropy(data) {
+        const total = data.length;
+
+        const counts = {};
+
+        for (const row of data) {
+            const cls = row[this.targetAttribute];
+            counts[cls] = (counts[cls] || 0) + 1;
+        }
+
+        let entropy = 0;
+
+        for (const count of Object.values(counts)) {
+            const p = count / total;
+            entropy -= p * Math.log2(p);
+        }
+
+        return entropy;
+    }
+
+    informationGain(data, attribute) {
+        const totalEntropy = this.entropy(data);
+        const totalSize = data.length;
+
+        const values = [...new Set(data.map(row => row[attribute]))];
+
+        let weightedEntropy = 0;
+
+        for (const value of values) {
+            const subset = data.filter(
+                row => row[attribute] === value
+            );
+
+            weightedEntropy +=
+                (subset.length / totalSize) *
+                this.entropy(subset);
+        }
+
+        return totalEntropy - weightedEntropy;
+    }
+
+    findBestAttribute(data, attributes) {
+        let bestAttribute = null;
+        let bestGain = -Infinity;
+
+        for (const attribute of attributes) {
+            const gain = this.informationGain(data, attribute);
+
+            if (gain > bestGain) {
+                bestGain = gain;
+                bestAttribute = attribute;
+            }
+        }
+
+        return bestAttribute;
+    }
+
+    majorityClass(data) {
+        const counts = {};
+
+        for (const row of data) {
+            const cls = row[this.targetAttribute];
+            counts[cls] = (counts[cls] || 0) + 1;
+        }
+
+        return Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    predict(tree, sample) {
+        if (tree.type === 'leaf') {
+            return tree.class;
+        }
+
+        const value = sample[tree.attribute];
+        const child = tree.children[value];
+
+        if (!child) {
+            return null;
+        }
+
+        return this.predict(child, sample);
+    }
+}

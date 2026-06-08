@@ -25,70 +25,108 @@
         <button id="btnRefreshList">Liste aktualisieren</button>
         <button id="btnRefreshMapping">Merkmale neu laden</button>
     </div>
-
-    <div class="hint">
-        Idee: Der Code nutzt intern <b>Merkmal1..Merkmal5</b>. In einer zweiten Tabelle <b>Merkmale</b> legst du fest,
-        wie diese heißen sollen (z.B. „Digital“, „Koop“, „Spielerzahl“). Der Tree zeigt dann die richtigen Namen.
-    </div>
     </header>
 
     <main>
     <div class="grid">
         <div class="card">
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Decision Tree (Anzeige nutzt Merkmals-Tabelle)</div>
-        <!-- kleiner Tree -->
-        <svg id="treeSvg" width="100%" viewBox="0 0 920 320" style="display:block;"></svg>
-        <div id="treeInfo" class="hint" style="margin-top:6px;"></div>
+            <div class="cardTitle">Decision Tree</div>
+            <svg id="treeSvg" width="100%" viewBox="0 0 920 320" style="display:block;"></svg>
+            <div id="treeInfo" class="hint" style="margin-top:6px;"></div>
+        </div>
+
+        <div><h1>Training</h1></div>
+        
+        <div class="card">
+            <div class="taskTitle">Set classes</div>
+    
+            <div class="row" style="margin-bottom:8px">
+                <label id="classLabel" style="min-width:110px;">Name</label>
+                <input id="className" style="min-width:220px;">
+                
+                <button id="btnAddClass">Add</button>
+                <div class="classList"></div>
+            </div>
+            <div class="row"><button id="btnApplyClass">Apply classes</div>
         </div>
 
         <div class="card">
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Neues Spiel hinzufügen (optional)</div>
-
-        <div class="row" style="margin-bottom:8px;">
-            <label id="lblName" style="min-width:110px;">Name</label>
-            <input id="inName" placeholder="z.B. Schach" style="min-width:220px;">
+            <div class="taskTitle">Set attributes</div>
+            
+            <div class="row" style="margin-bottom:8px;">
+                <label id="attrLabel" style="min-width:110px;">Name</label>
+                <input id="attrName" style="min-width:220px;">
+                
+                <button id="btnAddAttr">Add</button>
+                <div class="attrList"></div>
+            </div>
+            <div class="row"><button id="btnApplyAttr">Apply attributes</div>
         </div>
 
-        <div class="row" style="margin-bottom:8px;">
-            <label id="lblM1" style="min-width:110px;">Merkmal1</label>
-            <select id="inM1">
-            <option value="nein">nein</option>
-            <option value="ja">ja</option>
-            </select>
+        <div class="card">
+            <div class="taskTitle">Set training data</div>
 
-            <label id="lblM2" style="min-width:110px;">Merkmal2</label>
-            <select id="inM2">
-            <option value="nein">nein</option>
-            <option value="ja">ja</option>
-            </select>
+            <div class="row" style="margin-bottom:8px;">
+                <label id="lblName" style="min-width:110px;">Name</label>
+                <input id="inName" placeholder="z.B. Schach" style="min-width:220px;">
+                
+                <button id="btnAddOne">Add</button>
+            </div>
 
-            <label id="lblM3" style="min-width:110px;">Merkmal3</label>
-            <select id="inM3">
-            <option value="nein">nein</option>
-            <option value="ja">ja</option>
-            </select>
+            <div class="row" id="inputFormTrain" style="margin-bottom:8px;"></div>
+
+            <div class="row">
+                <button id="btnTrain">Train</button>
+            </div>
         </div>
+        
+        <div><h1>Testing</h1></div>
 
-        <div class="row" style="margin-bottom:8px;">
-            <label id="lblM4" style="min-width:110px;">Merkmal4</label>
-            <select id="inM4">
-            <option value="nein">nein</option>
-            <option value="ja">ja</option>
-            </select>
+        <div class="card">
+        <div class="taskTitle">Test data</div>
 
-            <label id="lblM5" style="min-width:110px;">Merkmal5</label>
-            <input id="inM5" type="number" placeholder="Zahl" style="width:120px;">
+            <div class="row" style="margin-bottom:8px;">
+                <label id="lblName" style="min-width:110px;">Name</label>
+                <input id="inName" placeholder="z.B. Schach" style="min-width:220px;">
+            </div>
+
+            <div class="row" style="margin-bottom:8px;">
+                <label id="lblM1" style="min-width:110px;">Attribute1</label>
+                <select id="inM1">
+                <option value="nein">no</option>
+                <option value="ja">yes</option>
+                </select>
+
+                <label id="lblM2" style="min-width:110px;">Attribute2</label>
+                <select id="inM2">
+                <option value="nein">no</option>
+                <option value="ja">yes</option>
+                </select>
+
+                <label id="lblM3" style="min-width:110px;">Attribute3</label>
+                <select id="inM3">
+                <option value="nein">no</option>
+                <option value="ja">yes</option>
+                </select>
+            </div>
+
+                <div class="row" style="margin-bottom:8px;">
+                    <label id="lblM4" style="min-width:110px;">Attribute4</label>
+                    <select id="inM4">
+                    <option value="nein">no</option>
+                    <option value="ja">yes</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <button id="btnAddOne">Add</button>
+                </div>
+            </div>
         </div>
-
-        <div class="row">
-            <button id="btnAddOne">Spiel hinzufügen</button>
-            <span class="smallNote">Du kannst auch direkt in CODAP in der Tabelle neue Zeilen erstellen.</span>
-        </div>
-        </div>
-
-        <pre id="log">Starte… (warte auf CODAP-Verbindung)</pre>
     </div>
-    </main>
+
+    <pre id="log">Starte… (warte auf CODAP-Verbindung)</pre>
+</main>
 
     <script type="module" src="./js/Main.js"></script>
   </body>

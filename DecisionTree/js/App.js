@@ -5,11 +5,14 @@ import FeatureMapping from "./decision-tree/FeatureMapping.js";
 import GameFormController from "./games/GameFormController.js";
 import GameRepository from "./games/GameRepository.js";
 import Logger from "./ui/Logger.js";
+import TrainingData from "./ui/TrainingData.js";
 import TreeRenderer from "./ui/TreeRenderer.js";
 
 export default class App {
   constructor() {
     this.logger   = new Logger();
+
+    this.trainingData = new TrainingData();
 
     this.mapping  = new FeatureMapping();
     this.repo     = new GameRepository();
@@ -20,7 +23,6 @@ export default class App {
       document.getElementById('treeInfo'),
       this.mapping
     );
-    this.form     = new GameFormController(this.mapping, this.repo, this.logger);
     this.graphs   = new Graphs(this.mapping, this.logger);
 
     this.gameSelect = document.getElementById('gameSelect');
@@ -29,11 +31,15 @@ export default class App {
   async start() {
     this.bindEvents();
     this.renderer.render();
-    this.form.updateLabels();
+    //this.form.updateLabels();
     this.logger.log("Bereit. Klick auf 'Datensätze anlegen'.");
   }
 
   bindEvents() {
+    this.on('btnAddClass', () => this.trainingData.addClass());
+    this.on('btnAddAttr', () => this.trainingData.addAttribute());
+
+    /*
     this.on('btnSetup',          () => this.handleSetup());
     this.on('btnSample',         () => this.handleSample());
     this.on('btnApplyMapping',   () => this.handleApplyMapping());
@@ -44,6 +50,7 @@ export default class App {
     this.on('btnAddOne',         () => this.handleAddGame());
 
     this.gameSelect.addEventListener('change', () => this.highlightSelected());
+    */
   }
 
   on(id, fn) {
