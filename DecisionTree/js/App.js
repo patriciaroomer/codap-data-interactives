@@ -2,10 +2,12 @@ import CODAPConnect from "./codap/CODAPConnect.js";
 import Graphs from "./codap/Graphs.js";
 import DecisionTree from "./decision-tree/DecisionTree.js";
 import FeatureMapping from "./decision-tree/FeatureMapping.js";
+import ID3 from "./decision-tree/ID3.js";
 import GameFormController from "./games/GameFormController.js";
 import GameRepository from "./games/GameRepository.js";
 import Logger from "./ui/Logger.js";
 import TrainingData from "./ui/TrainingData.js";
+import TreeLayout from "./ui/TreeLayout.js";
 import TreeRenderer from "./ui/TreeRenderer.js";
 
 export default class App {
@@ -17,6 +19,7 @@ export default class App {
     this.mapping  = new FeatureMapping();
     this.repo     = new GameRepository();
     this.tree     = new DecisionTree(this.mapping);
+    this.id3      = new ID3();
 
     this.renderer = new TreeRenderer(
       document.getElementById('treeSvg'),
@@ -41,6 +44,7 @@ export default class App {
     this.on('btnAddClass', () => this.trainingData.addClass());
     this.on('btnApplyClass', () => this.trainingData.applyClasses());
     this.on('btnAddTrainData', () => this.trainingData.addData());
+    this.on('btnTrain', () => this.handleTrain());
 
     /*
     this.on('btnSetup',          () => this.handleSetup());
@@ -118,6 +122,11 @@ export default class App {
       GameRepository.COLLNAME
     );
     this.logger.log('Mapping aktualisiert. (Falls Graphs schon existieren: ggf. neu erstellen.)');
+  }
+
+  handleTrain() {
+    const tree = this.id3.train(this.trainingData.data);
+    this.renderer.render(tree);
   }
 
   async handleClassify() {

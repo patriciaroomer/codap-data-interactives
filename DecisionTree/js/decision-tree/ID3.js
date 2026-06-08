@@ -1,5 +1,5 @@
-class ID3 {
-    constructor(targetAttribute = 'Klasse') {
+export default class ID3 {
+    constructor(targetAttribute = 'targetClass') {
         this.targetAttribute = targetAttribute;
     }
 
@@ -148,4 +148,14 @@ class ID3 {
 
         return this.predict(child, sample);
     }
+
+    static assignIds(node, counter = { value: 0 }) {
+        node.id = `n${counter.value++}`;
+
+        if (node.type === 'node') {
+            for (const child of Object.values(node.children)) {
+                this.assignIds(child, counter);
+            }
+        }
+    }   
 }
