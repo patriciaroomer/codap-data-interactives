@@ -8,10 +8,15 @@ export default class ID3 {
             key => key !== this.targetAttribute && key !== 'Name'
         );
 
-        return this.buildTree(data, attributes);
+        const attrValues = {};
+        for (const attr of attributes) {
+            attrValues[attr] = [...new Set(data.map(row => row[attr]))];
+        }
+
+        return this.buildTree(data, attributes, attrValues);
     }
 
-    buildTree(data, attributes) {
+    buildTree(data, attributes, attrValues) {
         const classes = [...new Set(data.map(row => row[this.targetAttribute]))];
 
         // All examples belong to the same class
@@ -38,7 +43,7 @@ export default class ID3 {
             children: {}
         };
 
-        const values = [...new Set(data.map(row => row[bestAttribute]))];
+        const values = attrValues[bestAttribute];
 
         for (const value of values) {
             const subset = data.filter(
@@ -57,7 +62,8 @@ export default class ID3 {
 
                 node.children[value] = this.buildTree(
                     subset,
-                    remainingAttributes
+                    remainingAttributes,
+                    attrValues
                 );
             }
         }

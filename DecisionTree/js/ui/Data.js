@@ -22,7 +22,7 @@ export default class Data {
         const row = {};
 
         let i = 0;
-        for (const dropdown of document.getElementsByClassName("trainSelect")) {
+        for (const dropdown of this.form.getElementsByTagName("select")) {
             const attr = this.attributes[i];
             row[attr] = dropdown.value;
             i++;

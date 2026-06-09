@@ -23,6 +23,17 @@ export default class TreeRenderer {
         this._drawEdges(graph.edges);
         this._drawNodes(graph.nodes);
 
+        const xs = graph.nodes.map(n => n.x);
+        const ys = graph.nodes.map(n => n.y);
+        const padding = 120;
+        const minX = Math.min(...xs) - padding;
+        const minY = Math.min(...ys) - padding;
+        const maxX = Math.max(...xs) + padding;
+        const maxY = Math.max(...ys) + padding;
+        this.svg.setAttribute("viewBox", `${minX} ${minY} ${maxX - minX} ${maxY - minY}`);
+        this.svg.setAttribute("width", "100%");
+        this.svg.setAttribute("height", "100%");
+
         this.info.textContent =
             "Decision tree trained successfully.";
     }

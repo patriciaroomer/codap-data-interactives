@@ -44,7 +44,7 @@ button:hover {
 }
 
 #btnTrain {
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
 .hint { 
@@ -70,6 +70,7 @@ pre {
 	padding: 2px 8px; 
 	border:1px solid #ddd; 
 	border-radius:999px; 
+	margin-left: 10px;
 }
 
 input, select { 
@@ -82,6 +83,7 @@ input {
 }
 
 select {
+	max-width: 68px;
 	padding: 4px;
 	margin-left: 3px;
 	margin-right: 3px;
@@ -155,4 +157,14 @@ label {
 .locked input, .locked select, .locked button {
 	pointer-events: none;
 	background-color: #eee;
+}
+
+#inputFormTrain, #inputFormTest {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 5px;
+}
+
+#log {
+	visibility: hidden;
 }

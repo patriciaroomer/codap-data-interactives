@@ -23,7 +23,9 @@ export default class TrainingData extends Data {
 
     addData() {
         const row = super.addData();
-        row.targetClass = classValue;
+
+        const selectedClass = document.getElementById("classSelect").value;
+        row.targetClass = selectedClass;
         this.data.push(row);
     }
 }
