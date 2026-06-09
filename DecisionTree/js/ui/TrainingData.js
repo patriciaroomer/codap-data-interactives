@@ -1,67 +1,29 @@
 import ID3 from "../decision-tree/ID3.js";
+import Data from "./Data.js";
 
-export default class TrainingData {
+export default class TrainingData extends Data {
     constructor() {
-        this.classes = [];
-        this.attributes = [];
+        super();
+        this.card = document.getElementById("trainCard");
+        this.form = document.getElementById("inputFormTrain");
         this.data = [];
-        this.id3 = new ID3();
     }
 
     addClass() {
         const name = document.getElementById("className").value;
-        if (!name) return;
+        if (!name || this.classes.includes(name)) return;
         this.classes.push(name);
-    }
 
-    addAttribute() {
-        const name = document.getElementById("attrName").value;
-        if (!name) return;
-        this.attributes.push(name);
+        const options = document.getElementById("classSelect");
+        const dropdown = document.getElementById("classDropdown");
+        
+        options.innerHTML = options.innerHTML + `<option>${name}</option>`;
+        dropdown.style.visibility = "visible";
     }
 
     addData() {
-        const name = document.getElementById("dataName").value;
-        const classValue = document.getElementById("classSelect").value;
-        const row = {};
-
-        let i = 0;
-        for (const dropdown of document.getElementsByClassName("trainSelect")) {
-            const attr = this.attributes[i];
-            row[attr] = dropdown.value;
-            i++;
-        }
-
+        const row = super.addData();
         row.targetClass = classValue;
         this.data.push(row);
-
-        console.log(this.data);
-    }
-
-    applyAttributes() {
-        const form = document.getElementById("inputFormTrain");
-    
-        let i = 1;
-
-        for (const attr of this.attributes) {
-
-            form.innerHTML += 
-                `<label class="trainLabel">${attr}</label>` +
-                `<select class="trainSelect">` +
-                `<option value="no">No</option>` +
-                `<option value="yes">Yes</option>` +
-                `</select>`
-        }
-
-    }
-
-    applyClasses() {
-        const options = document.getElementById("classSelect");
-        const dropdown = document.getElementById("classDropdown");
-        dropdown.style.visibility = "visible";
-
-        for (const c of this.classes) {
-            options.innerHTML += `<option>${c}</option>`;
-        }
     }
 }

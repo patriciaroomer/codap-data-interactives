@@ -5,16 +5,20 @@ import FeatureMapping from "./decision-tree/FeatureMapping.js";
 import ID3 from "./decision-tree/ID3.js";
 import GameFormController from "./games/GameFormController.js";
 import GameRepository from "./games/GameRepository.js";
+import CardController from "./ui/CardController.js";
 import Logger from "./ui/Logger.js";
 import TrainingData from "./ui/TrainingData.js";
-import TreeLayout from "./ui/TreeLayout.js";
+import TreeLayout from "./decision-tree/TreeLayout.js";
 import TreeRenderer from "./ui/TreeRenderer.js";
+import Data from "./ui/Data.js";
+import TestData from "./ui/TestData.js";
 
 export default class App {
   constructor() {
     this.logger   = new Logger();
 
     this.trainingData = new TrainingData();
+    this.testData = new TestData();
 
     this.mapping  = new FeatureMapping();
     this.repo     = new GameRepository();
@@ -28,6 +32,8 @@ export default class App {
     );
     this.graphs   = new Graphs(this.mapping, this.logger);
 
+    this.cardController = new CardController();
+
     this.gameSelect = document.getElementById('gameSelect');
   }
 
@@ -39,12 +45,24 @@ export default class App {
   }
 
   bindEvents() {
-    this.on('btnAddAttr', () => this.trainingData.addAttribute());
-    this.on('btnApplyAttr', () => this.trainingData.applyAttributes());
-    this.on('btnAddClass', () => this.trainingData.addClass());
-    this.on('btnApplyClass', () => this.trainingData.applyClasses());
-    this.on('btnAddTrainData', () => this.trainingData.addData());
-    this.on('btnTrain', () => this.handleTrain());
+    this.on('btnAddAttr', () => {
+      this.trainingData.addAttribute();
+      this.testData.addAttribute();
+    });
+
+    this.on('btnAddClass', () => {
+      this.trainingData.addClass();
+    });
+
+    this.on('btnAddTrainData', () => {
+      this.trainingData.addData();
+      this.testData.addData();
+    });
+
+    this.on('btnTrain', () => {
+      const tree = this.id3.train(this.trainingData.data);
+      this.renderer.render(tree);
+    });
 
     /*
     this.on('btnSetup',          () => this.handleSetup());
@@ -122,11 +140,6 @@ export default class App {
       GameRepository.COLLNAME
     );
     this.logger.log('Mapping aktualisiert. (Falls Graphs schon existieren: ggf. neu erstellen.)');
-  }
-
-  handleTrain() {
-    const tree = this.id3.train(this.trainingData.data);
-    this.renderer.render(tree);
   }
 
   async handleClassify() {

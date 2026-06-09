@@ -9,36 +9,29 @@
   </head>
 
   <body>
-    <h1>Spiele klassifizieren (Decision Tree + Merkmals-Tabelle) <span class="pill">CODAP Plugin</span></h1>
-
-    <div class="row" style="margin-bottom:8px;">
-        <button id="btnSetup">1) Datensätze anlegen</button>
-        <button id="btnSample">2) Beispieldaten schreiben</button>
-        <button id="btnApplyMapping">3) Merkmalsnamen anwenden</button>
-        <button id="btnClassify">4) Klassifizieren</button>
-        <button id="btnGraphs">5) Kleine Graphs erzeugen</button>
-    </div>
+    <h1>Decision Tree<span class="pill">CODAP Plugin</span></h1>
 
     <div class="row" style="margin-bottom:6px;">
-        <label>Spiel auswählen (Pfad markieren):</label>
+        <label>Select path</label>
         <select id="gameSelect"><option value="">—</option></select>
-        <button id="btnRefreshList">Liste aktualisieren</button>
-        <button id="btnRefreshMapping">Merkmale neu laden</button>
     </div>
     </header>
 
     <main>
-    <div class="grid">
+    
+        <div>
         <div class="card">
-            <div class="cardTitle">Decision Tree</div>
             <svg id="treeSvg" width="100%" viewBox="0 0 920 320" style="display:block;"></svg>
             <div id="treeInfo" class="hint" style="margin-top:6px;"></div>
         </div>
+        </div>
 
+        <div class="grid">
+        <div>
         <div><h1>Training</h1></div>
 
-        <div class="card">
-            <div class="taskTitle">Set attributes</div>
+        <div class="card" id="attrCard">
+            <div class="taskTitle">◌  Attributes</div>
             
             <div class="row" style="margin-bottom:8px;">
                 <label id="attrLabel" style="min-width:110px;">Name</label>
@@ -47,11 +40,10 @@
                 <button id="btnAddAttr">Add</button>
                 <div class="attrList"></div>
             </div>
-            <div class="row"><button id="btnApplyAttr">Apply attributes</div>
         </div>
 
-        <div class="card">
-            <div class="taskTitle">Set classes</div>
+        <div class="card" id="classCard">
+            <div class="taskTitle">◌  Classes</div>
     
             <div class="row" style="margin-bottom:8px">
                 <label id="classLabel" style="min-width:110px;">Name</label>
@@ -60,19 +52,14 @@
                 <button id="btnAddClass">Add</button>
                 <div class="classList"></div>
             </div>
-            <div class="row"><button id="btnApplyClass">Apply classes</div>
         </div>
 
-        <div class="card">
-            <div class="taskTitle">Set training data</div>
+        <div class="card locked" id="trainCard">
+            <div class="taskTitle">🔒 Training data</div>
 
             <div class="row" style="margin-bottom:8px;">
-                <label id="dataLabel" style="min-width:110px;">Name</label>
-                <input id="dataName" placeholder="z.B. Schach" style="min-width:220px;">
-                
-            </div>
-            
-            <div class="row" id="inputFormTrain" style="margin-bottom:8px;">
+                <label class="dataLabel" style="min-width:110px;">Name</label>
+                <input class="dataName" style="min-width:220px;">
                 
                 <div id="classDropdown">
                     <label id="classLabel" style="min-width:110px;">Class</label>
@@ -80,54 +67,33 @@
                 </div>
             </div>
             
-            <button id="btnAddTrainData">Add</button>
+            <div class="row" id="inputFormTrain" style="margin-bottom:8px;"></div>
+            
+            <button class="locked" id="btnAddTrainData">Add</button>
         </div>
         <div class="row">
-            <button id="btnTrain">Train</button>
+            <button class="locked" id="btnTrain">Train</button>
+        </div>
         </div>
         
+        <div>
         <div><h1>Testing</h1></div>
 
-        <div class="card">
-        <div class="taskTitle">Test data</div>
+        <div class="card locked" id="testCard">
+        <div class="taskTitle">🔒 Testing data</div>
 
             <div class="row" style="margin-bottom:8px;">
-                <label id="lblName" style="min-width:110px;">Name</label>
-                <input id="inName" placeholder="z.B. Schach" style="min-width:220px;">
+                <label class="dataLabel" style="min-width:110px;">Name</label>
+                <input class="dataName" style="min-width:220px;">
             </div>
 
-            <div class="row" style="margin-bottom:8px;">
-                <label id="lblM1" style="min-width:110px;">Attribute1</label>
-                <select id="inM1">
-                <option value="nein">no</option>
-                <option value="ja">yes</option>
-                </select>
+            <div class="row" id="inputFormTest" style="margin-bottom:8px;"></div>
 
-                <label id="lblM2" style="min-width:110px;">Attribute2</label>
-                <select id="inM2">
-                <option value="nein">no</option>
-                <option value="ja">yes</option>
-                </select>
-
-                <label id="lblM3" style="min-width:110px;">Attribute3</label>
-                <select id="inM3">
-                <option value="nein">no</option>
-                <option value="ja">yes</option>
-                </select>
+            <div class="row">
+                <button class="locked" id="btnTest">Test</button>
             </div>
-
-                <div class="row" style="margin-bottom:8px;">
-                    <label id="lblM4" style="min-width:110px;">Attribute4</label>
-                    <select id="inM4">
-                    <option value="nein">no</option>
-                    <option value="ja">yes</option>
-                    </select>
-                </div>
-
-                <div class="row">
-                    <button id="btnAddOne">Add</button>
-                </div>
             </div>
+        </div>
         </div>
     </div>
 
