@@ -112,7 +112,6 @@ export default class Clustering {
 
     State.iteration++;
 
-    await Slider.setSliderValue(State.iteration);
     
     this.snapshots.set(State.iteration, {
       points: this.clonePoints(State.points),
@@ -120,9 +119,9 @@ export default class Clustering {
       centroids: this.cloneCentroids(State.centroids)
     });
     Slider.clustering = this;
-
-    await CaseTable.showIteration(State.iteration, this.snapshots.get(State.iteration));
-
+    
+    await Slider.setSliderValue(State.iteration);
+    
     State.phase = "Update";
     this.computeTargets();
     ControlPanel.update();
@@ -243,9 +242,12 @@ export default class Clustering {
     return true;
   }
 
-  showIteration(iteration) {
+  async showIteration(iteration) {
     const snapshot = this.snapshots.get(iteration);
-    if (!snapshot) return;
+    if (!snapshot) {
+      console.log("No snapshot found!");
+      return;
+    }
 
     State.labels = snapshot.labels.slice();
     State.centroids = this.cloneCentroids(snapshot.centroids);

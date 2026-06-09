@@ -22,10 +22,13 @@ export default class CaseTable {
 	static async showIteration(iteration, snapshot) {
     await this.deleteAllCases();
 
+    const points = snapshot.points.slice();
+    const labels = snapshot.labels.slice();
+
     const cases = [];
-    for (let i = 0; i < snapshot.points.length; i++) {
-      const point = snapshot.points[i];
-      const label = snapshot.labels[i];
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      const label = labels[i];
       cases.push({
         values: {
           pid: i,

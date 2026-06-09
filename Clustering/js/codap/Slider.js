@@ -11,9 +11,9 @@ export default class Slider {
 	static sliderUpdateScheduled = false;
 
 	static async create() {
-		const lower = 0;
+		const lower = 1;
 		const upper = State.maxIter;
-		const start = 0;
+		const start = 1;
 
 		// Create global object
 		await CODAPConnect.sendRequest({
@@ -44,7 +44,7 @@ export default class Slider {
     return request.action === "notify" &&
            request.resource === "component" &&
            request.values?.operation === "change slider value" &&
-           request.values?.type === "DG.SliderView";
+           request.values?.type === "DG.SliderView";                                                                                                        
   }
 
 	static async queueSliderRead() {
@@ -71,8 +71,8 @@ export default class Slider {
 		const rounded = Math.round(value);
 		const lastIteration = Slider.clustering.snapshots.size - 1;
 
-		if (rounded < 0) return 0;
-		if (rounded > lastIteration) return lastIteration;
+		if (rounded <= 1) return 1;
+		if (rounded >= lastIteration) return lastIteration;
 		
 		return rounded;
 	}	
@@ -85,7 +85,8 @@ export default class Slider {
 				value: iteration
 			}
 		});
-		CaseTable.showIteration(iteration, Slider.clustering.snapshots.get(iteration));
+		const snapshot = Slider.clustering.snapshots.get(iteration);
+		await CaseTable.showIteration(iteration, snapshot);
 	}
 
 	static scheduleIterationRendering(iteration) {
@@ -94,10 +95,10 @@ export default class Slider {
 		if (Slider.sliderUpdateScheduled) return;
 		Slider.sliderUpdateScheduled = true;
 
-		requestAnimationFrame(() => {
+		requestAnimationFrame(async () => {
 			Slider.sliderUpdateScheduled = false;
 			const iter = Slider.pendingIteration;
-			Slider.clustering.showIteration(iter);
+			await Slider.clustering.showIteration(iter);
 		});
 	}
 }
