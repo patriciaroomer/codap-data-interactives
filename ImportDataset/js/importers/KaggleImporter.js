@@ -22,7 +22,7 @@ export default class KaggleImporter extends Importer {
     const parts = this.url.split("/");
     const index = parts.indexOf("datasets");
     const user = parts[index + 1];
-    return `http://localhost:3000/api/kaggle/${user}/${this.datasetName}`;
+    return `http://localhost:3000/api/datasets/kaggle/${user}/${this.datasetName}`;
   }
 
   async getResource(response) {

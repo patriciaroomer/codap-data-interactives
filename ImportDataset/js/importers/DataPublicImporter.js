@@ -18,7 +18,7 @@ export default class DataPublicImporter extends Importer {
   }
 
   constructApiCall() {
-    return `http://localhost:3000/api/datapubliclu/${encodeURIComponent(this.datasetName)}/`;
+    return `http://localhost:3000/api/datasets/datapubliclu/${encodeURIComponent(this.datasetName)}/`;
   }
 
   async getResource(response) {

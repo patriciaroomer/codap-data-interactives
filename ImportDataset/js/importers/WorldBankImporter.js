@@ -18,7 +18,7 @@ export default class WorldBankImporter extends Importer {
   }
 
   constructApiCall() {
-    return `http://localhost:3000/api/worldbank/${this.datasetName}`;
+    return `http://localhost:3000/api/datasets/worldbank/${this.datasetName}`;
   }
 
   async getResource(response) {
