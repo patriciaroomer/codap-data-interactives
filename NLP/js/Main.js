@@ -4,6 +4,7 @@ import TextPreprocessingListener from './ui/TextPreprocessingListener.js';
 import BagOfWordsListener from './ui/BagOfWordsListener.js';
 import TextClassificationListener from './ui/TextClassificationListener.js';
 import PromptListener from './ui/PromptListener.js';
+import AiDeclaration from './ai/AiDeclaration.js';
 
 const title = "Natural Language Processing";
 const version = "v0.1";
@@ -35,6 +36,8 @@ async function main() {
   if (!localStorage.getItem("language")) {
     localStorage.setItem("language", "en");
   }
+
+  await AiDeclaration.create();
 }
 
 main();
