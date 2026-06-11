@@ -35,7 +35,7 @@ export default class TreeLayout {
                     visit(child, depth + 1);
 
                 childPositions.push(childPos);
-                childEdges.push({ to: childPos, label: value });
+                childEdges.push({ to: childPos, label: value, childNode: child });
             }
 
             const x =
@@ -55,7 +55,7 @@ export default class TreeLayout {
             });
 
             for (const edge of childEdges) {
-                edges.push({ from: pos, to: edge.to, label: edge.label });
+                edges.push({ from: pos, to: edge.to, label: edge.label, fromNode: node, toNode: edge.childNode });
             }
 
             return pos;

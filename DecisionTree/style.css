@@ -168,3 +168,6 @@ label {
 #log {
 	visibility: hidden;
 }
+
+.edge--highlight { stroke: #f59e0b; stroke-width: 3; }
+.node--highlight { fill: #fef3c7; stroke: #f59e0b; stroke-width: 2; }

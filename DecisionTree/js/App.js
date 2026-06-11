@@ -113,6 +113,7 @@ export default class App {
 
   handleTraining() {
     this.tree = this.id3.train(this.trainingData.data);
+    ID3.assignIds(this.tree);
     this.renderer.render(this.tree);
     const testCard = document.getElementById("testCard");
     this.cardController.unlock(testCard);
@@ -121,8 +122,8 @@ export default class App {
   handleTesting() {
     this.testingData.addData();
     const data = this.testingData.getCurrentData();
-    const prediction = this.id3.predict(this.tree, data);
-    console.log(prediction);
+    const { class: prediction, path } = this.id3.predict(this.tree, data);
+    this.renderer.render(this.tree, path);
     this.cardController.handleTestCard();
   }
 

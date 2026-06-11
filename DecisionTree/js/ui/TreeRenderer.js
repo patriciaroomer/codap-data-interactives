@@ -7,21 +7,22 @@ export default class TreeRenderer {
         this.info = infoEl;
     }
 
-    render(root) {
+    render(root, highlightPath = []) {
 
         this.svg.innerHTML = "";
 
         if (!root) {
-            this.info.textContent =
-                "No decision tree available.";
+            this.info.textContent = "No decision tree available.";
             return;
         }
 
-        const graph =
-            TreeLayout.generate(root);
+        const graph = TreeLayout.generate(root);
 
-        this._drawEdges(graph.edges);
-        this._drawNodes(graph.nodes);
+        const pathEdges = new Set(highlightPath.filter(p => p.edgeTo).map(p => `${p.node.id}-${p.edgeTo.id}`));
+        const pathNodes = new Set(highlightPath.map(p => p.node));
+
+        this._drawEdges(graph.edges, pathEdges);
+        this._drawNodes(graph.nodes, pathNodes);
 
         const xs = graph.nodes.map(n => n.x);
         const ys = graph.nodes.map(n => n.y);
@@ -38,18 +39,17 @@ export default class TreeRenderer {
             "Decision tree trained successfully.";
     }
 
-    _drawEdges(edges) {
+    _drawEdges(edges, pathEdges = new Set()) {
 
         for (const edge of edges) {
+            const key = `${edge.fromNode.id}-${edge.toNode.id}`;
+            const isHighlighted = pathEdges.has(key);
 
             const A = edge.from;
             const B = edge.to;
 
-            const mx =
-                (A.x + B.x) / 2;
-
-            const path =
-                this._el("path");
+            const mx = (A.x + B.x) / 2;
+            const path = this._el("path");
 
             path.setAttribute(
                 "d",
@@ -59,122 +59,55 @@ export default class TreeRenderer {
                    ${B.x} ${B.y}`
             );
 
-            path.setAttribute(
-                "class",
-                "edge"
-            );
-
+            path.setAttribute("class", "edge");
             this.svg.appendChild(path);
 
-            const text =
-                this._el("text");
-
-            text.setAttribute(
-                "x",
-                (A.x + B.x) / 2
-            );
-
-            text.setAttribute(
-                "y",
-                (A.y + B.y) / 2 - 8
-            );
-
-            text.setAttribute(
-                "text-anchor",
-                "middle"
-            );
-
-            text.setAttribute(
-                "class",
-                "badge"
-            );
-
-            text.textContent =
-                edge.label;
+            const text = this._el("text");
+            text.setAttribute("x", (A.x + B.x) / 2);
+            text.setAttribute("y", (A.y + B.y) / 2 - 8);
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("class", "badge");
+            text.textContent = edge.label;
 
             this.svg.appendChild(text);
+
+            path.setAttribute("class", isHighlighted ? "edge edge--highlight" : "edge");
         }
     }
 
-    _drawNodes(nodes) {
+    _drawNodes(nodes, pathNodes = new Set()) {
 
         for (const node of nodes) {
+            const isHighlighted = pathNodes.has(node.node);
 
             const width = 220;
             const height = 40;
 
-            const g =
-                this._el("g");
+            const g = this._el("g");
+            const rect = this._el("rect");
 
-            const rect =
-                this._el("rect");
-
-            rect.setAttribute(
-                "x",
-                node.x - width / 2
-            );
-
-            rect.setAttribute(
-                "y",
-                node.y - height / 2
-            );
-
-            rect.setAttribute(
-                "width",
-                width
-            );
-
-            rect.setAttribute(
-                "height",
-                height
-            );
-
-            rect.setAttribute(
-                "rx",
-                10
-            );
-
-            rect.setAttribute(
-                "ry",
-                10
-            );
-
-            rect.setAttribute(
-                "class",
-                "node"
-            );
+            rect.setAttribute("x", node.x - width / 2);
+            rect.setAttribute("y", node.y - height / 2);
+            rect.setAttribute("width",width);
+            rect.setAttribute("height", height);
+            rect.setAttribute("rx", 10);
+            rect.setAttribute("ry", 10);
+            rect.setAttribute("class", "node");
 
             g.appendChild(rect);
 
-            const text =
-                this._el("text");
-
-            text.setAttribute(
-                "x",
-                node.x
-            );
-
-            text.setAttribute(
-                "y",
-                node.y + 4
-            );
-
-            text.setAttribute(
-                "text-anchor",
-                "middle"
-            );
-
-            text.setAttribute(
-                "class",
-                "nodeText"
-            );
-
-            text.textContent =
-                node.label;
+            const text = this._el("text");
+            text.setAttribute("x", node.x);
+            text.setAttribute("y", node.y + 4);
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("class", "nodeText");
+            text.textContent = node.label;
 
             g.appendChild(text);
 
             this.svg.appendChild(g);
+
+            rect.setAttribute('class', isHighlighted ? 'node node--highlight' : 'node')
         }
     }
 

@@ -140,19 +140,22 @@ export default class ID3 {
             .sort((a, b) => b[1] - a[1])[0][0];
     }
 
-    predict(tree, sample) {
+    predict(tree, sample, path = []) {
         if (tree.type === 'leaf') {
-            return tree.class;
+            path.push({ node: tree });
+            return { class: tree.class, path };
         }
 
         const value = sample[tree.attribute];
         const child = tree.children[value];
 
+        path.push({ node: tree, edgeTo: child, edgeLabel: value });
+
         if (!child) {
-            return null;
+            return { class: null, path };
         }
 
-        return this.predict(child, sample);
+        return this.predict(child, sample, path);
     }
 
     static assignIds(node, counter = { value: 0 }) {
