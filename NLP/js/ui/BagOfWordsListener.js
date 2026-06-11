@@ -14,14 +14,13 @@ export default class BagOfWordsListener extends UIListener {
   async addListener() {
     this.button.addEventListener("click", async () => {
       const promptId = localStorage.getItem("promptId");
-      const language = PromptListener.currentLanguage;
+      const language = localStorage.getItem("language");
 
       const response = await fetch(`http://localhost:3000/api/nlp/bagofwords?id=${promptId}&language=${language}`);
-      console.log(response);
       const bagOfWords = await response.json();
 
       const codapAttributes = ["Word", "Count"].map(name => ({name, type: "nominal"}));
-      const codapEntries = bagOfWords.map(([word, count]) => ({ values: [word, count] }));
+      const codapEntries = bagOfWords.map(([word, count]) => ({ values: { Word: word, Count: count }}));
       
       await CODAPConnect.createDataContext("Bag of Words", codapAttributes);
       await new CaseTable("Bag of Words", codapEntries).create();

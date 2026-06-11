@@ -54,7 +54,7 @@ export default class TextClassificationListener extends UIListener {
     console.log(results);
 
     const codapAttributes = this.getLabelNames(results).map(name => ({ name, type: "nominal" }));
-    const codapEntries = { values: this.getLabelScores(results) };
+    const codapEntries = { values: this.getLabelValues(results) };
     await CODAPConnect.createDataContext(title, codapAttributes);
     await new CaseTable(title, codapEntries).create();
   }
@@ -77,11 +77,11 @@ export default class TextClassificationListener extends UIListener {
     return names;
   }
 
-  getLabelScores(labels) {
-    const scores = [];
+  getLabelValues(labels) {
+    const values = {};
     for (const label of labels) {
-      scores.push(label.score);
+      values[label.label] = label.score;
     }
-    return scores;
+    return values;
   }
 }
