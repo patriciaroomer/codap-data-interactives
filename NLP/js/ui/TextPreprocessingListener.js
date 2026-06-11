@@ -1,7 +1,5 @@
 import Prompts from './PromptListener.js';
-import TextPreprocesser from '../nlp/TextPreprocesser.js';
 import UIListener from './UIListener.js';
-import Prompt from '../nlp/Prompt.js';
 import PromptListener from './PromptListener.js';
 
 export default class TextPreprocessingListener extends UIListener {

@@ -1,6 +1,5 @@
 import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
-import BagOfWords from '../nlp/BagOfWords.js';
 import PromptListener from './PromptListener.js';
 import UIListener from './UIListener.js';
 

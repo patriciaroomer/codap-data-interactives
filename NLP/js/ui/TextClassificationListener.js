@@ -1,6 +1,5 @@
 import CaseTable from '../codap/CaseTable.js';
 import CODAPConnect from '../codap/CODAPConnect.js';
-import TextClassificator from '../nlp/TextClassificator.js';
 import Logger from './Logger.js';
 import UIListener from './UIListener.js';
 
@@ -18,12 +17,10 @@ export default class TextClassificationListener extends UIListener {
       try {
         Logger.displayMessage("Loading...");
 
-        const classificator = new TextClassificator(this.outputField.value);
-
         await Promise.all([
-          this.handleSentiment(classificator),
-          this.handleEmotion(classificator),
-          this.handleTopic(classificator),
+          this.handleSentiment(),
+          this.handleEmotion(),
+          this.handleTopic(),
         ]);
 
         Logger.removeMessage();
@@ -33,15 +30,15 @@ export default class TextClassificationListener extends UIListener {
     })
   }
 
-  async handleSentiment(classificator) {
+  async handleSentiment() {
     this.handleClassification("sentimentBox", "sentiment", "Sentiments");
   }
 
-  async handleEmotion(classificator) {
+  async handleEmotion() {
     this.handleClassification("emotionBox", "emotion", "Emotions");
   }
 
-  async handleTopic(classificator) {
+  async handleTopic() {
     this.handleClassification("topicBox", "topic", "Topics");
   }
   

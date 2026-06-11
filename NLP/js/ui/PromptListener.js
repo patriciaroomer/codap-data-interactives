@@ -94,12 +94,14 @@ export default class PromptListener extends UIListener {
         this.frTable.classList.add("hidden");
         this.deTable.classList.remove("hidden");
         topicBox.disabled = true;
+        topicBox.checked = false;
         break;
       case "fr":
         this.enTable.classList.add("hidden");
         this.deTable.classList.add("hidden");
         this.frTable.classList.remove("hidden");
         topicBox.disabled = true;
+        topicBox.checked = false;
         break;
       default:
         return;
