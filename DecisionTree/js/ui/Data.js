@@ -27,7 +27,12 @@ export default class Data {
             row[attr] = dropdown.value;
             i++;
         }
-        
         return row;
+    }
+
+    getCurrentData() {
+        if (!this.data || !this.data.length) return null;
+        const last = this.data.length - 1;
+        return this.data[last];
     }
 }

@@ -5,51 +5,46 @@ export default class CardController {
         this.trainCard = document.getElementById("trainCard");
         this.testCard = document.getElementById("testCard");
 
+        this.classInput = document.getElementById("className");
+        this.attrInput = document.getElementById("attrName");
+        this.trainInput = document.getElementById("trainDataName");
+        this.testInput = document.getElementById("testDataName");
+
         this.unfinishedIcon = "◌ ";
         this.finishedIcon = "✓ ";
         this.lockedIcon = "🔒";
 
         this.attrApplied = false;
         this.classApplied = false;
-
-        this.addListeners();
     }
 
-    addListeners() {
-        const attrButton = document.getElementById("btnAddAttr");
-        const classButton = document.getElementById("btnAddClass");
-        const addTrainButton = document.getElementById("btnAddTrainData");
-        const trainButton = document.getElementById("btnTrain");
-        const testButton = document.getElementById("btnTest");
+    handleAttributeCard() {
+        this.attrApplied = true;
+        this.finish(this.attrCard);
+        this.attrInput.value = "";
 
-        attrButton.addEventListener("click", () => {
-            this.attrApplied = true;
-            this.finish(this.attrCard);    
-            if (this.classApplied) {
-                this.unlock(this.trainCard);
-            }
-        });
+        if (!this.classApplied) return;
+        this.unlock(this.trainCard);
+    }
 
-        classButton.addEventListener("click", () => {
-            this.classApplied = true;
-            this.finish(this.classCard);
-            if (this.attrApplied) {
-                this.unlock(this.trainCard);
-            }
-        });
+    handleClassCard() {
+        this.classApplied = true;
+        this.finish(this.classCard);
+        this.classInput.value = "";
 
-        addTrainButton.addEventListener("click", () => {
-            this.changeIcon(this.trainCard, this.finishedIcon);
-        });
+        if (!this.attrApplied) return;
+        this.unlock(this.trainCard);
+    }
 
-        trainButton.addEventListener("click", () => {
-            this.unlock(this.testCard);
-        });
+    handleTrainCard() {
+        this.trainInput.value = "";
+        this.changeIcon(this.trainCard, this.finishedIcon);
+    }
 
-        testButton.addEventListener("click", () => {
-            this.changeIcon(this.testCard, this.unfinishedIcon);
-            this.changeIcon(this.testCard, this.finishedIcon);
-        }); 
+    handleTestCard() {
+        this.testInput.value = "";
+        this.changeIcon(this.testCard, this.unfinishedIcon);
+        this.changeIcon(this.testCard, this.finishedIcon);
     }
     
     unlock(card) {

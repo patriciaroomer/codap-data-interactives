@@ -30,6 +30,18 @@
         <div>
         <div><h1>Training</h1></div>
 
+        <div class="card" id="classCard">
+            <div class="taskTitle">◌  Classes</div>
+    
+            <div class="row" style="margin-bottom:8px">
+                <label id="classLabel" style="min-width:110px;">Name</label>
+                <input id="className" style="min-width:220px;">
+                
+                <button id="btnAddClass">Add</button>
+                <div class="classList"></div>
+            </div>
+        </div>
+        
         <div class="card" id="attrCard">
             <div class="taskTitle">◌  Attributes</div>
             
@@ -42,24 +54,13 @@
             </div>
         </div>
 
-        <div class="card" id="classCard">
-            <div class="taskTitle">◌  Classes</div>
-    
-            <div class="row" style="margin-bottom:8px">
-                <label id="classLabel" style="min-width:110px;">Name</label>
-                <input id="className" style="min-width:220px;">
-                
-                <button id="btnAddClass">Add</button>
-                <div class="classList"></div>
-            </div>
-        </div>
 
         <div class="card locked" id="trainCard">
             <div class="taskTitle">🔒 Training data</div>
 
             <div class="row" style="margin-bottom:8px;">
                 <label class="dataLabel" style="min-width:110px;">Name</label>
-                <input class="dataName" style="min-width:220px;">
+                <input class="dataName" id="trainDataName" style="min-width:220px;">
                 
                 <div id="classDropdown">
                     <label id="classLabel" style="min-width:110px;">Class</label>
@@ -84,7 +85,7 @@
 
             <div class="row" style="margin-bottom:8px;">
                 <label class="dataLabel" style="min-width:110px;">Name</label>
-                <input class="dataName" style="min-width:220px;">
+                <input class="dataName" id="testDataName" style="min-width:220px;">
             </div>
 
             <div id="inputFormTest" style="margin-bottom:8px;"></div>

@@ -3,8 +3,6 @@ import Graphs from "./codap/Graphs.js";
 import DecisionTree from "./decision-tree/DecisionTree.js";
 import FeatureMapping from "./decision-tree/FeatureMapping.js";
 import ID3 from "./decision-tree/ID3.js";
-import GameFormController from "./games/GameFormController.js";
-import GameRepository from "./games/GameRepository.js";
 import CardController from "./ui/CardController.js";
 import Logger from "./ui/Logger.js";
 import TrainingData from "./ui/TrainingData.js";
@@ -18,11 +16,11 @@ export default class App {
     this.logger   = new Logger();
 
     this.trainingData = new TrainingData();
-    this.testData = new TestData();
+    this.testingData = new TestData();
 
     this.mapping  = new FeatureMapping();
-    this.repo     = new GameRepository();
-    this.tree     = new DecisionTree(this.mapping);
+    //this.tree     = new DecisionTree(this.mapping);
+    this.tree = null;
     this.id3      = new ID3();
 
     this.renderer = new TreeRenderer(
@@ -30,11 +28,23 @@ export default class App {
       document.getElementById('treeInfo'),
       this.mapping
     );
-    this.graphs   = new Graphs(this.mapping, this.logger);
 
     this.cardController = new CardController();
+    this.graphs   = new Graphs(this.mapping, this.logger);
 
-    this.gameSelect = document.getElementById('gameSelect');
+    // --- UI elements ---
+    this.classInput = document.getElementById("className");
+    this.classButton = document.getElementById("btnAddClass");
+
+    this.attrInput = document.getElementById("attrName");
+    this.attrButton = document.getElementById("btnAddAttr");
+
+    this.trainingInput = document.getElementById("trainDataName");
+    this.trainButton = document.getElementById("btnTrain");
+    this.addTrainButton = document.getElementById("btnAddTrainData");
+
+    this.testInput = document.getElementById("testDataName");
+    this.testButton = document.getElementById("btnTest");
   }
 
   async start() {
@@ -45,44 +55,75 @@ export default class App {
   }
 
   bindEvents() {
-    this.on('btnAddAttr', () => {
-      this.trainingData.addAttribute();
-      this.testData.addAttribute();
-    });
+    // Classes
+    this.onEnter(this.classInput, () => this.handleClass());
+    this.onEnter(this.classButton, () => this.handleClass());
+    this.onClick(this.classButton, () => this.handleClass());
+    
+    // Attributes
+    this.onEnter(this.attrInput, () => this.handleAttribute());
+    this.onEnter(this.attrButton, () => this.handleAttribute());
+    this.onClick(this.attrButton, () => this.handleAttribute());
+    
+    // Training data
+    this.onEnter(this.trainingInput, () => this.handleTrainingData());
+    this.onEnter(this.addTrainButton, () => this.handleTrainingData());
+    this.onClick(this.addTrainButton, () => this.handleTrainingData());
 
-    this.on('btnAddClass', () => {
-      this.trainingData.addClass();
-    });
+    // Training
+    this.onEnter(this.trainButton, () => this.handleTraining());
+    this.onClick(this.trainButton, () => this.handleTraining());
 
-    this.on('btnAddTrainData', () => {
-      this.trainingData.addData();
-      this.testData.addData();
-    });
-
-    this.on('btnTrain', () => {
-      const tree = this.id3.train(this.trainingData.data);
-      this.renderer.render(tree);
-    });
-
-    /*
-    this.on('btnSetup',          () => this.handleSetup());
-    this.on('btnSample',         () => this.handleSample());
-    this.on('btnApplyMapping',   () => this.handleApplyMapping());
-    this.on('btnClassify',       () => this.handleClassify());
-    this.on('btnGraphs',         () => this.graphs.createSmallGraphs());
-    this.on('btnRefreshList',    () => this.refreshGameList());
-    this.on('btnRefreshMapping', () => this.refreshMapping());
-    this.on('btnAddOne',         () => this.handleAddGame());
-
-    this.gameSelect.addEventListener('change', () => this.highlightSelected());
-    */
+    // Testing
+    this.onEnter(this.testInput, () => this.handleTesting());
+    this.onEnter(this.testButton, () => this.handleTesting());
+    this.onClick(this.testButton, () => this.handleTesting());
   }
 
-  on(id, fn) {
-    document.getElementById(id).addEventListener('click', async () => {
+  onClick(el, fn) {
+    el.addEventListener("click", async () => {
       try { await fn(); }
-      catch (e) { this.logger.log(`Fehler (${id}):`, e); }
+      catch (e) { console.log(e); }
     });
+  }
+
+  onEnter(el, fn) {
+    el.addEventListener("keydown", async (event) => {
+      if (event.keyCode !== 13) return;
+      try { await fn(); }
+      catch (e) { console.log(e); }
+    });
+  }
+
+  handleClass() {
+    this.trainingData.addClass();
+    this.cardController.handleClassCard();
+  }
+
+  handleAttribute() {
+    this.trainingData.addAttribute();
+    this.testingData.addAttribute();
+    this.cardController.handleAttributeCard();
+  }
+
+  handleTrainingData() {
+    this.trainingData.addData();
+    this.cardController.handleTrainCard();
+  }
+
+  handleTraining() {
+    this.tree = this.id3.train(this.trainingData.data);
+    this.renderer.render(this.tree);
+    const testCard = document.getElementById("testCard");
+    this.cardController.unlock(testCard);
+  }
+  
+  handleTesting() {
+    this.testingData.addData();
+    const data = this.testingData.getCurrentData();
+    const prediction = this.id3.predict(this.tree, data);
+    console.log(prediction);
+    this.cardController.handleTestCard();
   }
 
   async handleSetup() {
