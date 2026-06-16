@@ -39,6 +39,9 @@ export default class App {
     this.attrInput = document.getElementById("attrName");
     this.attrButton = document.getElementById("btnAddAttr");
 
+    this.lockButton = document.getElementById("btnLockParam");
+    this.resetButton = document.getElementById("btnResetParam");
+
     this.trainingInput = document.getElementById("trainDataName");
     this.trainButton = document.getElementById("btnTrain");
     this.addTrainButton = document.getElementById("btnAddTrainData");
@@ -64,6 +67,12 @@ export default class App {
     this.onEnter(this.attrInput, () => this.handleAttribute());
     this.onEnter(this.attrButton, () => this.handleAttribute());
     this.onClick(this.attrButton, () => this.handleAttribute());
+
+    // Parameters
+    this.onEnter(this.lockButton, () => this.handleLockButton());
+    this.onClick(this.lockButton, () => this.handleLockButton());
+    this.onEnter(this.resetButton, () => this.handleResetButton());
+    this.onClick(this.resetButton, () => this.handleResetButton());
     
     // Training data
     this.onEnter(this.trainingInput, () => this.handleTrainingData());
@@ -104,6 +113,16 @@ export default class App {
     this.trainingData.addAttribute();
     this.testingData.addAttribute();
     this.cardController.handleAttributeCard();
+  }
+
+  handleLockButton() {
+    this.cardController.handleLockButton();
+  }
+
+  handleResetButton() {
+    this.trainingData = new TrainingData();
+    this.testingData = new TestData();
+    this.cardController.handleResetButton();
   }
 
   handleTrainingData() {

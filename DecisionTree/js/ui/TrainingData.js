@@ -6,6 +6,13 @@ export default class TrainingData extends Data {
         super();
         this.card = document.getElementById("trainCard");
         this.form = document.getElementById("inputFormTrain");
+        this.form.innerHTML = "";
+
+        this.options = document.getElementById("classSelect");
+        this.options.innerHTML = "";
+        this.dropdown = document.getElementById("classDropdown");
+        this.dropdown.style.visibility = "hidden";
+        
         this.data = [];
     }
 
@@ -13,12 +20,10 @@ export default class TrainingData extends Data {
         const name = document.getElementById("className").value;
         if (!name || this.classes.includes(name)) return;
         this.classes.push(name);
-
-        const options = document.getElementById("classSelect");
-        const dropdown = document.getElementById("classDropdown");
         
-        options.innerHTML = options.innerHTML + `<option>${name}</option>`;
-        dropdown.style.visibility = "visible";
+        this.options.innerHTML = this.options.innerHTML + `<option>${name}</option>`;
+        this.dropdown.style.visibility = "visible";
+        this.options.value = name;
     }
 
     addData() {

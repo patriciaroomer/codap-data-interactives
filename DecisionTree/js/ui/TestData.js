@@ -5,6 +5,7 @@ export default class TestData extends Data {
         super();
         this.card = document.getElementById("testCard"); 
         this.form = document.getElementById("inputFormTest"); 
+        this.form.innerHTML = "";
         this.data = [];
     }
 

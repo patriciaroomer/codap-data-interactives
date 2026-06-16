@@ -30,23 +30,19 @@
         <div>
         <div><h1>Training</h1></div>
 
-        <div class="card" id="classCard">
-            <div class="taskTitle">◌  Classes</div>
-    
+        <div class="card" id="paramCard">
+            <div class="taskTitle">◌ Parameters</div>
+            
             <div class="row" style="margin-bottom:8px">
-                <label id="classLabel" style="min-width:110px;">Name</label>
+                <label id="classLabel" style="min-width:110px;">Class</label>
                 <input id="className" style="min-width:220px;">
                 
                 <button id="btnAddClass">Add</button>
                 <div class="classList"></div>
             </div>
-        </div>
         
-        <div class="card" id="attrCard">
-            <div class="taskTitle">◌  Attributes</div>
-            
             <div class="row" style="margin-bottom:8px;">
-                <label id="attrLabel" style="min-width:110px;">Name</label>
+                <label id="attrLabel" style="min-width:110px;">Attribute</label>
                 <input id="attrName" style="min-width:220px;">
                 
                 <button id="btnAddAttr">Add</button>
@@ -54,6 +50,10 @@
             </div>
         </div>
 
+        <div id="row">
+            <button id="btnLockParam" class="locked">Lock</button>
+            <button id="btnResetParam" class="locked">Reset</button>
+        </div>
 
         <div class="card locked" id="trainCard">
             <div class="taskTitle">🔒 Training data</div>
