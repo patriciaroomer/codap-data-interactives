@@ -21,6 +21,7 @@ export default class Data {
     addData() {
         const name = this.card.querySelector(".dataName").value;
         const row = {};
+        row.Name = name;
 
         let i = 0;
         for (const dropdown of this.form.getElementsByTagName("select")) {

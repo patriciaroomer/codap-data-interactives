@@ -1,5 +1,5 @@
 export default class ID3 {
-    constructor(targetAttribute = 'targetClass') {
+    constructor(targetAttribute = 'Class') {
         this.targetAttribute = targetAttribute;
     }
 

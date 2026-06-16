@@ -77,6 +77,10 @@ export default class CaseTable {
     }
 
     static toEntries(items, key = "name") {
-        return items.map(item => ({ values: { [key]: item }}));
+        return items.map(item =>
+            typeof item === "string"
+                ? { values: { [key]: item } }
+                : { values: item }
+        );
     }
 }

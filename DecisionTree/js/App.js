@@ -9,7 +9,7 @@ import TrainingData from "./data/TrainingData.js";
 import TreeLayout from "./decision-tree/TreeLayout.js";
 import TreeRenderer from "./decision-tree/TreeRenderer.js";
 import Data from "./data/Data.js";
-import TestData from "./data/TestData.js";
+import TestingData from "./data/TestingData.js";
 import CaseTable from "./codap/CaseTable.js";
 
 export default class App {
@@ -17,7 +17,7 @@ export default class App {
     this.logger   = new Logger();
 
     this.trainingData = new TrainingData();
-    this.testingData = new TestData();
+    this.testingData = new TestingData();
 
     this.mapping  = new FeatureMapping();
     //this.tree     = new DecisionTree(this.mapping);
@@ -70,19 +70,19 @@ export default class App {
     this.onClick(this.attrButton, () => this.handleAttribute());
 
     // Parameters
-    this.onClick(this.lockButton, () => this.handleLockButton());
-    this.onClick(this.resetButton, async () => this.handleResetButton());
+    this.onClick(this.lockButton, async () => await this.handleLockButton());
+    this.onClick(this.resetButton, async () => await this.handleResetButton());
     
     // Training data
-    this.onEnter(this.trainingInput, () => this.handleTrainingData());
-    this.onClick(this.addTrainButton, () => this.handleTrainingData());
+    this.onEnter(this.trainingInput, async () => await this.handleTrainingData());
+    this.onClick(this.addTrainButton, async () => await this.handleTrainingData());
 
     // Training
     this.onClick(this.trainButton, () => this.handleTraining());
 
     // Testing
-    this.onEnter(this.testInput, () => this.handleTesting());
-    this.onClick(this.testButton, () => this.handleTesting());
+    this.onEnter(this.testInput, async () => await this.handleTesting());
+    this.onClick(this.testButton, async () => await this.handleTesting());
   }
 
   onClick(el, fn) {
@@ -111,21 +111,23 @@ export default class App {
     this.cardController.handleAttributeCard();
   }
 
-  handleLockButton() {
+  async handleLockButton() {
     this.cardController.handleLockButton();
-    this.trainingData.parameters.persist();
+    await this.trainingData.parameters.persist();
   }
 
   async handleResetButton() {
     this.trainingData = new TrainingData();
-    this.testingData = new TestData();
+    this.testingData = new TestingData();
     this.cardController.handleResetButton();
     await CaseTable.hideAll();
   }
 
-  handleTrainingData() {
+  async handleTrainingData() {
     this.trainingData.addData();
     this.cardController.handleTrainCard();
+
+    await this.trainingData.persist();
   }
 
   handleTraining() {
@@ -136,12 +138,16 @@ export default class App {
     this.cardController.unlock(testCard);
   }
   
-  handleTesting() {
+  async handleTesting() {
     this.testingData.addData();
     const data = this.testingData.getCurrentData();
+
     const { class: prediction, path } = this.id3.predict(this.tree, data);
     this.renderer.render(this.tree, path);
     this.cardController.handleTestCard();
+    
+    this.testingData.setPrediction(prediction);
+    await this.testingData.persist();
   }
 
   async handleSetup() {

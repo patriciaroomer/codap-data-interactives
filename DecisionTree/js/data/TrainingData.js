@@ -1,3 +1,4 @@
+import CaseTable from "../codap/CaseTable.js";
 import CODAPConnect from "../codap/CODAPConnect.js";
 import ID3 from "../decision-tree/ID3.js";
 import Data from "./Data.js";
@@ -19,6 +20,12 @@ export default class TrainingData extends Data {
         this.data = [];
     }
 
+    addData() {
+        const row = super.addData();
+        row.Class = document.getElementById("classSelect").value;
+        this.data.push(row);
+    }
+
     addClass() {
         const name = document.getElementById("className").value;
         if (!name || this.parameters.classes.includes(name)) return;
@@ -29,10 +36,19 @@ export default class TrainingData extends Data {
         this.options.value = name;
     }
 
-    addData() {
-        const row = super.addData();
-        const selectedClass = document.getElementById("classSelect").value;
-        row.targetClass = selectedClass;
-        this.data.push(row);
+    async persist() {
+        const dataContext = "Training data"
+        
+        const attributes = [];
+        attributes.push("Name");
+        for (const a of this.parameters.attributes) {
+            attributes.push(a);
+        }
+        attributes.push("Class");
+        
+        const dimensions = { width: 500, height: 300 };
+
+        await CODAPConnect.createDataContext(dataContext, attributes);
+        await new CaseTable(dataContext, this.data, dimensions).create();
     }
 }
