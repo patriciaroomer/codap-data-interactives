@@ -2,7 +2,7 @@ import CODAPConnect from "./CODAPConnect.js";
 
 export default class CaseTable {
 
-    static tables = [ "Classes", "Attributes" ];
+    static tables = [ "Classes", "Attributes", "Training data", "Testing data" ];
 
     constructor(dataContext, entries, dimensions) {
         this.dataContext = dataContext;
