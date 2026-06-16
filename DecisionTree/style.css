@@ -43,7 +43,15 @@ button:hover {
 	background: #f6f6f6; 
 }
 
-#btnLockParam, #btnTrain {
+#btnReset {
+	margin-top: 30px;
+}
+
+#btnLockParam, #btnResetParam {
+	margin-top: 10px;
+}
+
+#btnTrain {
 	margin-top: 20px;
 }
 

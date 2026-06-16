@@ -10,11 +10,6 @@
 
   <body>
     <h1>Decision Tree<span class="pill">CODAP Plugin</span></h1>
-
-    <div class="row" style="margin-bottom:6px;">
-        <label>Select path</label>
-        <select id="gameSelect"><option value="">—</option></select>
-    </div>
     </header>
 
     <main>
@@ -25,6 +20,8 @@
             <div id="treeInfo" class="hint" style="margin-top:6px;"></div>
         </div>
         </div>
+
+        <button id="btnReset">Reset</button>
 
         <div class="grid">
         <div>
@@ -48,12 +45,12 @@
                 <button id="btnAddAttr">Add</button>
                 <div class="attrList"></div>
             </div>
+
+            <div class="row">
+                <button id="btnLockParam" class="locked">Lock</button>
+            </div>
         </div>
 
-        <div id="row">
-            <button id="btnLockParam" class="locked">Lock</button>
-            <button id="btnResetParam" class="locked">Reset</button>
-        </div>
 
         <div class="card locked" id="trainCard">
             <div class="taskTitle">🔒 Training data</div>
@@ -70,7 +67,10 @@
             
             <div id="inputFormTrain" style="margin-bottom:8px;"></div>
             
-            <button class="locked" id="btnAddTrainData">Add</button>
+            <div class="row">
+                <button class="locked" id="btnAddTrainData">Add</button>
+                <button class="locked" id="btnResetTrainData">Reset</button>
+            </div>
         </div>
         <div class="row">
             <button class="locked" id="btnTrain">Train</button>

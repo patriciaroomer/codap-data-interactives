@@ -12,9 +12,9 @@ export default class CardController {
         this.testInput = document.getElementById("testDataName");
 
         this.lockButton = document.getElementById("btnLockParam");
-        this.resetButton = document.getElementById("btnResetParam");
+        this.resetButton = document.getElementById("btnReset");
         this.trainButton = document.getElementById("btnTrain");
-
+        
         this.unfinishedIcon = "◌ ";
         this.finishedIcon = "✓ ";
         this.lockedIcon = "🔒";
@@ -48,6 +48,7 @@ export default class CardController {
     handleTrainCard() {
         this.trainInput.value = "";
         this.changeIcon(this.trainCard, this.finishedIcon);
+        this.trainButton.classList.remove("locked");
     }
     
     handleTestCard() {
@@ -68,7 +69,13 @@ export default class CardController {
         this.lock(this.testCard);
         this.unlock(this.paramCard);
         this.lockButton.classList.add("locked");
-        this.resetButton.classList.add("locked");
+        this.trainButton.classList.add("locked");
+    }
+
+    handleTrainingReset() {
+        this.unfinish(this.trainCard);
+        this.unfinish(this.testCard);
+        this.lock(this.testCard);
         this.trainButton.classList.add("locked");
     }
 

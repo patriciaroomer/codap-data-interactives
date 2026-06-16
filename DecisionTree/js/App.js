@@ -25,15 +25,16 @@ export default class App {
     this.cardController = new CardController();
 
     // --- Interactive UI elements ---
+    this.resetButton = document.getElementById("btnReset");
     this.classInput = document.getElementById("className");
     this.classButton = document.getElementById("btnAddClass");
     this.attrInput = document.getElementById("attrName");
     this.attrButton = document.getElementById("btnAddAttr");
     this.lockButton = document.getElementById("btnLockParam");
-    this.resetButton = document.getElementById("btnResetParam");
     this.trainingInput = document.getElementById("trainDataName");
     this.trainButton = document.getElementById("btnTrain");
     this.addTrainButton = document.getElementById("btnAddTrainData");
+    this.resetTrainButton = document.getElementById("btnResetTrainData");
     this.testInput = document.getElementById("testDataName");
     this.testButton = document.getElementById("btnTest");
   }
@@ -44,26 +45,22 @@ export default class App {
   }
 
   bindEvents() {
-    // Classes
+    this.onClick(this.resetButton, async () => await this.handleResetButton());
+    
+    // Parameters
     this.onEnter(this.classInput, () => this.handleClass());
     this.onEnter(this.classButton, () => this.handleClass());
     this.onClick(this.classButton, () => this.handleClass());
-    
-    // Attributes
     this.onEnter(this.attrInput, () => this.handleAttribute());
     this.onEnter(this.attrButton, () => this.handleAttribute());
     this.onClick(this.attrButton, () => this.handleAttribute());
-
-    // Parameters
     this.onClick(this.lockButton, async () => await this.handleLockButton());
-    this.onClick(this.resetButton, async () => await this.handleResetButton());
     
-    // Training data
+    // Training
     this.onEnter(this.trainingInput, async () => await this.handleTrainingData());
     this.onClick(this.addTrainButton, async () => await this.handleTrainingData());
-
-    // Training
     this.onClick(this.trainButton, () => this.handleTraining());
+    this.onClick(this.resetTrainButton, async () => await this.handleTrainingReset());
 
     // Testing
     this.onEnter(this.testInput, async () => await this.handleTesting());
@@ -85,6 +82,14 @@ export default class App {
     });
   }
 
+  async handleResetButton() {
+    this.trainingData = new TrainingData();
+    this.testingData = new TestingData();
+    this.cardController.handleResetButton();
+    await CaseTable.hideAll();
+    this.resetTree();
+  }
+
   handleClass() {
     this.trainingData.addClass();
     this.cardController.handleClassCard();
@@ -101,19 +106,18 @@ export default class App {
     await this.trainingData.parameters.persist();
   }
 
-  async handleResetButton() {
-    this.trainingData = new TrainingData();
-    this.testingData = new TestingData();
-    this.cardController.handleResetButton();
-    await CaseTable.hideAll();
-    this.resetTree();
-  }
-
   async handleTrainingData() {
     this.trainingData.addData();
     this.cardController.handleTrainCard();
 
     await this.trainingData.persist();
+  }
+
+  async handleTrainingReset() {
+    this.trainingData.data = [];
+    this.cardController.handleTrainingReset();
+    await CaseTable.hide("Training data");
+    this.resetTree();
   }
 
   handleTraining() {
