@@ -1,13 +1,14 @@
+import Parameters from "./Parameters.js";
+
 export default class Data {
     constructor() {
-        this.classes = [];
-        this.attributes = [];
+        this.parameters = new Parameters();
     }
 
     addAttribute() {
         const name = document.getElementById("attrName").value;
-        if (!name || this.attributes.includes(name)) return;
-        this.attributes.push(name);
+        if (!name || this.parameters.attributes.includes(name)) return;
+        this.parameters.addAttribute(name);
 
         this.form.innerHTML +=
             `<label>${name}</label>` +
@@ -23,7 +24,7 @@ export default class Data {
 
         let i = 0;
         for (const dropdown of this.form.getElementsByTagName("select")) {
-            const attr = this.attributes[i];
+            const attr = this.parameters.attributes[i];
             row[attr] = dropdown.value;
             i++;
         }

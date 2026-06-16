@@ -1,4 +1,4 @@
-import TreeLayout from "../decision-tree/TreeLayout.js";
+import TreeLayout from "./TreeLayout.js";
 
 export default class TreeRenderer {
 

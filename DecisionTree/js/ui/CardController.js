@@ -31,7 +31,6 @@ export default class CardController {
         if (!this.classApplied) return;
         
         this.lockButton.classList.remove("locked");
-        this.handleParameterCard();
         this.finish(this.paramCard);
     }
 
@@ -43,7 +42,6 @@ export default class CardController {
         if (!this.attrApplied) return;
         
         this.lockButton.classList.remove("locked");
-        this.handleParameterCard();
         this.finish(this.paramCard);
     }
     
@@ -60,6 +58,7 @@ export default class CardController {
     
     handleLockButton() {
         this.finish(this.paramCard);
+        this.lock(this.paramCard);
         this.unlock(this.trainCard);
     }
 
@@ -67,6 +66,7 @@ export default class CardController {
         this.unfinish(this.paramCard);
         this.lock(this.trainCard);
         this.lock(this.testCard);
+        this.unlock(this.paramCard);
         this.lockButton.classList.add("locked");
         this.resetButton.classList.add("locked");
         this.trainButton.classList.add("locked");

@@ -5,11 +5,11 @@ import FeatureMapping from "./decision-tree/FeatureMapping.js";
 import ID3 from "./decision-tree/ID3.js";
 import CardController from "./ui/CardController.js";
 import Logger from "./ui/Logger.js";
-import TrainingData from "./ui/TrainingData.js";
+import TrainingData from "./data/TrainingData.js";
 import TreeLayout from "./decision-tree/TreeLayout.js";
-import TreeRenderer from "./ui/TreeRenderer.js";
-import Data from "./ui/Data.js";
-import TestData from "./ui/TestData.js";
+import TreeRenderer from "./decision-tree/TreeRenderer.js";
+import Data from "./data/Data.js";
+import TestData from "./data/TestData.js";
 
 export default class App {
   constructor() {
@@ -69,23 +69,18 @@ export default class App {
     this.onClick(this.attrButton, () => this.handleAttribute());
 
     // Parameters
-    this.onEnter(this.lockButton, () => this.handleLockButton());
     this.onClick(this.lockButton, () => this.handleLockButton());
-    this.onEnter(this.resetButton, () => this.handleResetButton());
     this.onClick(this.resetButton, () => this.handleResetButton());
     
     // Training data
     this.onEnter(this.trainingInput, () => this.handleTrainingData());
-    this.onEnter(this.addTrainButton, () => this.handleTrainingData());
     this.onClick(this.addTrainButton, () => this.handleTrainingData());
 
     // Training
-    this.onEnter(this.trainButton, () => this.handleTraining());
     this.onClick(this.trainButton, () => this.handleTraining());
 
     // Testing
     this.onEnter(this.testInput, () => this.handleTesting());
-    this.onEnter(this.testButton, () => this.handleTesting());
     this.onClick(this.testButton, () => this.handleTesting());
   }
 
@@ -117,6 +112,7 @@ export default class App {
 
   handleLockButton() {
     this.cardController.handleLockButton();
+    this.trainingData.parameters.persist();
   }
 
   handleResetButton() {
