@@ -10,6 +10,7 @@ import TreeLayout from "./decision-tree/TreeLayout.js";
 import TreeRenderer from "./decision-tree/TreeRenderer.js";
 import Data from "./data/Data.js";
 import TestData from "./data/TestData.js";
+import CaseTable from "./codap/CaseTable.js";
 
 export default class App {
   constructor() {
@@ -70,7 +71,7 @@ export default class App {
 
     // Parameters
     this.onClick(this.lockButton, () => this.handleLockButton());
-    this.onClick(this.resetButton, () => this.handleResetButton());
+    this.onClick(this.resetButton, async () => this.handleResetButton());
     
     // Training data
     this.onEnter(this.trainingInput, () => this.handleTrainingData());
@@ -115,10 +116,11 @@ export default class App {
     this.trainingData.parameters.persist();
   }
 
-  handleResetButton() {
+  async handleResetButton() {
     this.trainingData = new TrainingData();
     this.testingData = new TestData();
     this.cardController.handleResetButton();
+    await CaseTable.hideAll();
   }
 
   handleTrainingData() {

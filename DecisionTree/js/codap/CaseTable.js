@@ -1,6 +1,9 @@
 import CODAPConnect from "./CODAPConnect.js";
 
 export default class CaseTable {
+
+    static tables = [ "Classes", "Attributes" ];
+
     constructor(dataContext, entries, dimensions) {
         this.dataContext = dataContext;
         this.entries = CaseTable.toEntries(entries);
@@ -47,6 +50,30 @@ export default class CaseTable {
             }
         });
         return response?.success === true;
+    }
+
+    static async exists(name) {
+        const response = await CODAPConnect.sendRequest({
+            action: "get",
+            resource: `component[${name}]`
+        });
+        return response?.success === true;
+    }
+
+    static async hide(name) {
+        await CODAPConnect.sendRequest({
+            action: "update",
+            resource: `component[${name}]`,
+            values: {
+                isVisible: false
+            }
+        });
+    }
+
+    static async hideAll() {
+        for (const t of CaseTable.tables) {
+            await CaseTable.hide(t);
+        }
     }
 
     static toEntries(items, key = "name") {

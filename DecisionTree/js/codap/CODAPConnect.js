@@ -53,4 +53,12 @@ export default class CODAPConnect {
 	static toAttrs(names, type = "nominal") {
     	return names.map(name => ({ name, type }));	
 	}
+
+	static async dataContextExists(name) {
+		const response = await this.sendRequest({
+			action: "get",
+			resource: `dataContext[${name}]`
+		});
+		return response?.success === true;
+	}
 }
