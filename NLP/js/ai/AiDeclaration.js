@@ -24,7 +24,6 @@ export default class AiDeclaration {
                     `(sentiment, emotion, topic), a different language model is used. These models are ` +
                     `linked in the info boxes, which you can find next to the checkboxes of the respective classification tasks. The preprocessed text, ` +
                     `displayed in the second text box, is sent to the responsible language models. ` +
-                    `Any manipulated text will be explicitly ignored and not be sent to a language model. ` +
                     `The models have each been trained on specific data and calculate scores for different classes. ` +
                     `These scores are then ranked from highest to lowest and the best five classes are sent ` +
                     `to this plugin to display in the case table.`
