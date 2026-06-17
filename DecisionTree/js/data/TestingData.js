@@ -14,8 +14,8 @@ export default class TestingData extends Data {
         this.prediction = "";
     }
 
-    addData() {
-        this.data.push(super.addData());
+    addData(name) {
+        this.data.push(super.addData(name));
     }
 
     async persist() {

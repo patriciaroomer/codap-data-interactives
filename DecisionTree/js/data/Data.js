@@ -5,8 +5,7 @@ export default class Data {
         this.parameters = new Parameters();
     }
 
-    addAttribute() {
-        const name = document.getElementById("attrName").value;
+    addAttribute(name) {
         if (!name || this.parameters.attributes.includes(name)) return;
         this.parameters.addAttribute(name);
 
@@ -18,8 +17,7 @@ export default class Data {
             `</select>`
     }
 
-    addData() {
-        const name = this.card.querySelector(".dataName").value;
+    addData(name) {
         const row = {};
         row.Name = name;
 

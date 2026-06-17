@@ -1,7 +1,7 @@
+import State from "../codap/State.js";
+
 export default class CardController {
     constructor() {
-        this.attrCard = document.getElementById("attrCard");
-        this.classCard = document.getElementById("classCard");
         this.paramCard = document.getElementById("paramCard");
         this.trainCard = document.getElementById("trainCard");
         this.testCard = document.getElementById("testCard");
@@ -21,6 +21,49 @@ export default class CardController {
 
         this.attrApplied = false;
         this.classApplied = false;
+    }
+
+    lock(card) {
+        card.classList.add("locked");
+
+        const buttons = card.getElementsByTagName("button");
+        const inputs = card.getElementsByTagName("input");
+        const selects = card.getElementsByTagName("select");
+
+        for (const button of buttons) button.classList.add("locked");
+        for (const input of inputs) input.classList.add("locked");
+        for (const select of selects) select.classList.add("locked");
+
+        document.getElementById("btnTrain").classList.add("locked");
+        this.changeIcon(card, this.lockedIcon);
+    }
+
+    unlock(card) {
+        card.classList.remove("locked");
+        const buttons = card.getElementsByTagName("button");
+        const inputs = card.getElementsByTagName("input");
+        const selects = card.getElementsByTagName("select");
+        
+        for (const button of buttons) button.classList.remove("locked");
+        for (const input of inputs) input.classList.remove("locked");
+        for (const select of selects) select.classList.remove("locked");
+        
+        document.getElementById("btnTrain").classList.remove("locked");
+        this.changeIcon(card, this.unfinishedIcon);
+    }
+
+    finish(card) {
+        card.classList.remove("locked");
+        this.changeIcon(card, this.finishedIcon);
+    }
+
+    unfinish(card) {
+        this.changeIcon(card, this.unfinishedIcon);
+    }
+
+    changeIcon(card, icon) {
+        const titleElement = card.querySelector(".taskTitle");
+        titleElement.textContent = icon + titleElement.textContent.slice(2);
     }
 
     handleAttributeCard() {
@@ -79,47 +122,75 @@ export default class CardController {
         this.trainButton.classList.add("locked");
     }
 
-    lock(card) {
-        card.classList.add("locked");
+    reload() {
+        const state = State.state;
+        if (!state) return;
 
-        const buttons = card.getElementsByTagName("button");
-        const inputs = card.getElementsByTagName("input");
-        const selects = card.getElementsByTagName("select");
-
-        for (const button of buttons) button.classList.add("locked");
-        for (const input of inputs) input.classList.add("locked");
-        for (const select of selects) select.classList.add("locked");
-
-        document.getElementById("btnTrain").classList.add("locked");
-        this.changeIcon(card, this.lockedIcon);
+        switch (state) {
+            case "UNINITIALIZED":
+                this.setUninitializedState();
+                break;
+            case "INITIALIZED":
+                this.setInitializedState();
+                break;
+            case "TRAINING":
+                this.setTrainingState();
+                break;
+            case "TRAINED":
+                this.setTrainedState();
+                break;
+            case "TESTING":
+                this.setTestingState();
+                break;
+            default:
+                return;     
+        }
     }
 
-    unlock(card) {
-        card.classList.remove("locked");
-        const buttons = card.getElementsByTagName("button");
-        const inputs = card.getElementsByTagName("input");
-        const selects = card.getElementsByTagName("select");
-        
-        for (const button of buttons) button.classList.remove("locked");
-        for (const input of inputs) input.classList.remove("locked");
-        for (const select of selects) select.classList.remove("locked");
-        
-        document.getElementById("btnTrain").classList.remove("locked");
-        this.changeIcon(card, this.unfinishedIcon);
+    setUninitializedState() {
+        this.unlock(this.paramCard);
+        this.unfinish(this.paramCard);
+        this.lock(this.trainCard);
+        this.lock(this.testCard);
+        this.lockButton.classList.add("locked");
+        this.trainButton.classList.add("locked");
     }
 
-    finish(card) {
-        card.classList.remove("locked");
-        this.changeIcon(card, this.finishedIcon);
+    setInitializedState() {
+        this.lock(this.paramCard);
+        this.unlock(this.trainCard);
+        this.lock(this.testCard);
+        this.lockButton.classList.add("locked");
+        this.trainButton.classList.add("locked");
     }
 
-    unfinish(card) {
-        this.changeIcon(card, this.unfinishedIcon);
+    setTrainingState() {
+        this.lock(this.paramCard);
+        this.unlock(this.trainCard);
+        this.unfinish(this.trainCard);
+        this.lock(this.testCard);
+        this.lockButton.classList.add("locked");
+        this.trainButton.classList.remove("locked");
     }
 
-    changeIcon(card, icon) {
-        const titleElement = card.querySelector(".taskTitle");
-        titleElement.textContent = icon + titleElement.textContent.slice(2);
+    setTrainedState() {
+        this.lock(this.paramCard);
+        this.unlock(this.trainCard);
+        this.finish(this.trainCard);
+        this.unlock(this.testCard);
+        this.unfinish(this.testCard);
+        this.lockButton.classList.add("locked");
+        this.trainButton.classList.remove("locked");
+    }
+
+    setTestingState() {
+        this.lock(this.paramCard);
+        this.unlock(this.trainCard);
+        this.finish(this.trainCard);
+        this.unlock(this.testCard);
+        this.finish(this.testCard);
+        this.lockButton.classList.add("locked");
+        this.trainButton.classList.remove("locked");
     }
 
 }

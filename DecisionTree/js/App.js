@@ -8,6 +8,7 @@ import TreeRenderer from "./decision-tree/TreeRenderer.js";
 import Data from "./data/Data.js";
 import TestingData from "./data/TestingData.js";
 import CaseTable from "./codap/CaseTable.js";
+import State from "./codap/State.js";
 
 export default class App {
   constructor() {
@@ -37,11 +38,54 @@ export default class App {
     this.resetTrainButton = document.getElementById("btnResetTrainData");
     this.testInput = document.getElementById("testDataName");
     this.testButton = document.getElementById("btnTest");
+
+    this.trainCard = document.getElementById("trainCard");
+    this.testCard = document.getElementById("testCard");
+
+    this.reloadState();
   }
 
   async start() {
     this.bindEvents();
     this.renderer.render();
+  }
+
+  async reloadState() {
+    const classes = State.classes;
+    if (classes) {
+      for (const c of classes) {
+        this.trainingData.addClass(c);
+      }
+    }
+
+    const attributes = State.attributes;
+    if (attributes) {
+      for (const a of attributes) {
+        this.trainingData.addAttribute(a);
+        this.testingData.addAttribute(a);
+      }
+    }
+
+    const trainingData = State.trainingData;
+    if (trainingData) {
+      for (const d of trainingData) {
+        this.trainingData.data.push(d);
+      }
+    }
+
+    const testingData = State.testingData;
+    if (testingData) {
+      for (const d of testingData) {
+        this.testingData.data.push(d);
+      }
+    }
+
+    const trained = await CODAPConnect.getGlobal("TRAINED");
+    if (trained === 1) {
+      await this.handleTraining();
+    }
+
+    this.cardController.reload();
   }
 
   bindEvents() {
@@ -59,7 +103,7 @@ export default class App {
     // Training
     this.onEnter(this.trainingInput, async () => await this.handleTrainingData());
     this.onClick(this.addTrainButton, async () => await this.handleTrainingData());
-    this.onClick(this.trainButton, () => this.handleTraining());
+    this.onClick(this.trainButton, async () => await this.handleTraining());
     this.onClick(this.resetTrainButton, async () => await this.handleTrainingReset());
 
     // Testing
@@ -91,13 +135,15 @@ export default class App {
   }
 
   handleClass() {
-    this.trainingData.addClass();
+    const input = this.getClassInput();
+    this.trainingData.addClass(input);
     this.cardController.handleClassCard();
   }
 
   handleAttribute() {
-    this.trainingData.addAttribute();
-    this.testingData.addAttribute();
+    const input = this.getAttrInput();
+    this.trainingData.addAttribute(input);
+    this.testingData.addAttribute(input);
     this.cardController.handleAttributeCard();
   }
 
@@ -107,7 +153,7 @@ export default class App {
   }
 
   async handleTrainingData() {
-    this.trainingData.addData();
+    this.trainingData.addData(this.getDataInput(this.trainCard));
     this.cardController.handleTrainCard();
 
     await this.trainingData.persist();
@@ -120,16 +166,17 @@ export default class App {
     this.resetTree();
   }
 
-  handleTraining() {
+  async handleTraining() {
     this.tree = this.id3.train(this.trainingData.data);
     ID3.assignIds(this.tree);
     this.renderer.render(this.tree);
     const testCard = document.getElementById("testCard");
     this.cardController.unlock(testCard);
+    await CODAPConnect.updateGlobal("TRAINED", 1);
   }
   
   async handleTesting() {
-    this.testingData.addData();
+    this.testingData.addData(this.getDataInput(this.testCard));
     const data = this.testingData.getCurrentData();
 
     const { class: prediction, path } = this.id3.predict(this.tree, data);
@@ -147,6 +194,18 @@ export default class App {
     tree.viewBox.baseVal.height = 320;
     tree.viewBox.animVal.width = 920;
     tree.viewBox.animVal.height = 320;
+  }
+
+  getClassInput() {
+    return document.getElementById("className").value;
+  }
+
+  getAttrInput() {
+    return document.getElementById("attrName").value;
+  }
+
+  getDataInput(card) {
+    return card.querySelector(".dataName").value;
   }
 
 }

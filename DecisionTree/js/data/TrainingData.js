@@ -20,14 +20,13 @@ export default class TrainingData extends Data {
         this.data = [];
     }
 
-    addData() {
-        const row = super.addData();
+    addData(name) {
+        const row = super.addData(name);
         row.Class = document.getElementById("classSelect").value;
         this.data.push(row);
     }
 
-    addClass() {
-        const name = document.getElementById("className").value;
+    addClass(name) {
         if (!name || this.parameters.classes.includes(name)) return;
         this.parameters.addClass(name);
         
