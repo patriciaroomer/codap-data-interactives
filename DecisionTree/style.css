@@ -97,6 +97,13 @@ select {
 	margin-right: 3px;
 }
 
+.form {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 8px;
+	align-items: center;
+}
+
 label { 
 	font-size: 12px; 
 	color: #444; 
@@ -161,11 +168,13 @@ label {
 	background-color: #eee;
 	color: #888;
 	pointer-events: none;
+	user-select: none;
 }
 
 .locked input, .locked select, .locked button {
 	pointer-events: none;
 	background-color: #eee;
+	user-select: none;
 }
 
 #inputFormTrain, #inputFormTest {

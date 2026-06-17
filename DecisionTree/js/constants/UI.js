@@ -25,4 +25,12 @@ export default class UI {
     static TREE = document.getElementById("treeSvg");
     static TREE_WIDTH = 920;
     static TREE_HEIGHT = 320;
+
+    // --- Forms ---
+    static TRAIN_FORM = document.getElementById("trainForm");
+    static TEST_FORM = document.getElementById("testForm");
+
+    // --- Selects ---
+    static CLASS_DROPDOWN = document.getElementById("classDropdown");
+    static CLASS_SELECT = document.getElementById("classSelect");
 }

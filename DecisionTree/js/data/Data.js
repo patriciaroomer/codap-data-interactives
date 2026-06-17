@@ -9,12 +9,13 @@ export default class Data {
         if (!name || this.parameters.attributes.includes(name)) return;
         this.parameters.addAttribute(name);
 
-        this.form.innerHTML +=
-            `<label>${name}</label>` +
-            `<select>` +
-                `<option value="yes">Yes</option>` +
-                `<option value="no">No</option>` +
-            `</select>`
+        this.form.insertAdjacentHTML('beforeend', `
+            <label>${name}</label>
+            <select>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        `);
     }
 
     addData(name) {

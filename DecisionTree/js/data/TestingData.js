@@ -1,16 +1,14 @@
 import CaseTable from "../codap/CaseTable.js";
 import CODAPConnect from "../codap/CODAPConnect.js";
 import Codap from "../constants/Codap.js";
+import UI from "../constants/UI.js";
 import Data from "./Data.js";
 
 export default class TestingData extends Data {
     constructor() {
         super();
-        
-        this.card = document.getElementById("testCard"); 
-        this.form = document.getElementById("inputFormTest"); 
+        this.form = UI.TEST_FORM
         this.form.innerHTML = "";
-
         this.data = [];
         this.prediction = "";
     }
