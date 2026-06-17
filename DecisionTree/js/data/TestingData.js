@@ -27,8 +27,8 @@ export default class TestingData extends Data {
 
         const dimensions = { width: Codap.CT_DATA_WIDTH, height: Codap.CT_DATA_HEIGHT };
 
-        await CODAPConnect.createDataContext(Codap.DC_TRAIN, attributes);
-        await new CaseTable(Codap.DC_TRAIN, this.data, dimensions).create();
+        await CODAPConnect.createDataContext(Codap.DC_TEST, attributes);
+        await new CaseTable(Codap.DC_TEST, this.data, dimensions).create();
     }
 
     setPrediction(prediction) {

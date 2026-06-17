@@ -171,7 +171,7 @@ export default class CardController {
 
     setTrainingState() {
         this.lock(UI.PARAM_CARD);
-        this.unlock(UI.TRAIN_BUTTON);
+        this.unlock(UI.TRAIN_CARD);
         this.lock(UI.TEST_CARD);
         this.lockElement(UI.LOCK_BUTTON);
         this.unlockElement(UI.TRAIN_BUTTON);
