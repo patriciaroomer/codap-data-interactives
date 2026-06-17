@@ -9,6 +9,7 @@ import Data from "./data/Data.js";
 import TestingData from "./data/TestingData.js";
 import CaseTable from "./codap/CaseTable.js";
 import State from "./codap/State.js";
+import UI from "./constants/UI.js";
 
 export default class App {
   constructor() {
@@ -24,24 +25,6 @@ export default class App {
     );
 
     this.cardController = new CardController();
-
-    // --- Interactive UI elements ---
-    this.resetButton = document.getElementById("btnReset");
-    this.classInput = document.getElementById("className");
-    this.classButton = document.getElementById("btnAddClass");
-    this.attrInput = document.getElementById("attrName");
-    this.attrButton = document.getElementById("btnAddAttr");
-    this.lockButton = document.getElementById("btnLockParam");
-    this.trainingInput = document.getElementById("trainDataName");
-    this.trainButton = document.getElementById("btnTrain");
-    this.addTrainButton = document.getElementById("btnAddTrainData");
-    this.resetTrainButton = document.getElementById("btnResetTrainData");
-    this.testInput = document.getElementById("testDataName");
-    this.testButton = document.getElementById("btnTest");
-
-    this.trainCard = document.getElementById("trainCard");
-    this.testCard = document.getElementById("testCard");
-
     this.reloadState();
   }
 
@@ -51,6 +34,8 @@ export default class App {
   }
 
   async reloadState() {
+    
+    // Reload classes from dataContext
     const classes = State.classes;
     if (classes) {
       for (const c of classes) {
@@ -58,6 +43,7 @@ export default class App {
       }
     }
 
+    // Reload attributes from dataContext
     const attributes = State.attributes;
     if (attributes) {
       for (const a of attributes) {
@@ -66,6 +52,7 @@ export default class App {
       }
     }
 
+    // Reload training data from dataContext
     const trainingData = State.trainingData;
     if (trainingData) {
       for (const d of trainingData) {
@@ -73,6 +60,7 @@ export default class App {
       }
     }
 
+    // Reload testing data from dataContext
     const testingData = State.testingData;
     if (testingData) {
       for (const d of testingData) {
@@ -80,35 +68,40 @@ export default class App {
       }
     }
 
+    // Render tree if it was trained in the previous save.
+    // For this, we store a CODAP global value,
+    // 1 meaning the tree was trained and should be rendered again,
+    // 0 meaning the tree was not trained yet.
     const trained = await CODAPConnect.getGlobal("TRAINED");
     if (trained === 1) {
       await this.handleTraining();
     }
 
+    // Lock/unlock cards
     this.cardController.reload();
   }
 
   bindEvents() {
-    this.onClick(this.resetButton, async () => await this.handleResetButton());
+    this.onClick(UI.RESET_BUTTON, async () => await this.handleResetButton());
     
     // Parameters
-    this.onEnter(this.classInput, () => this.handleClass());
-    this.onEnter(this.classButton, () => this.handleClass());
-    this.onClick(this.classButton, () => this.handleClass());
-    this.onEnter(this.attrInput, () => this.handleAttribute());
-    this.onEnter(this.attrButton, () => this.handleAttribute());
-    this.onClick(this.attrButton, () => this.handleAttribute());
-    this.onClick(this.lockButton, async () => await this.handleLockButton());
+    this.onEnter(UI.CLASS_INPUT, () => this.handleClass());
+    this.onEnter(UI.CLASS_BUTTON, () => this.handleClass());
+    this.onClick(UI.CLASS_BUTTON, () => this.handleClass());
+    this.onEnter(UI.ATTR_INPUT, () => this.handleAttribute());
+    this.onEnter(UI.ATTR_BUTTON, () => this.handleAttribute());
+    this.onClick(UI.ATTR_BUTTON, () => this.handleAttribute());
+    this.onClick(UI.LOCK_BUTTON, async () => await this.handleLockButton());
     
     // Training
-    this.onEnter(this.trainingInput, async () => await this.handleTrainingData());
-    this.onClick(this.addTrainButton, async () => await this.handleTrainingData());
-    this.onClick(this.trainButton, async () => await this.handleTraining());
-    this.onClick(this.resetTrainButton, async () => await this.handleTrainingReset());
+    this.onEnter(UI.TRAIN_INPUT, async () => await this.handleTrainingData());
+    this.onClick(UI.ADD_TRAIN_BUTTON, async () => await this.handleTrainingData());
+    this.onClick(UI.TRAIN_BUTTON, async () => await this.handleTraining());
+    this.onClick(UI.RESET_TRAIN_BUTTON, async () => await this.handleTrainingReset());
 
     // Testing
-    this.onEnter(this.testInput, async () => await this.handleTesting());
-    this.onClick(this.testButton, async () => await this.handleTesting());
+    this.onEnter(UI.TEST_INPUT, async () => await this.handleTesting());
+    this.onClick(UI.TEST_BUTTON, async () => await this.handleTesting());
   }
 
   onClick(el, fn) {
@@ -153,7 +146,7 @@ export default class App {
   }
 
   async handleTrainingData() {
-    this.trainingData.addData(this.getDataInput(this.trainCard));
+    this.trainingData.addData(this.getDataInput(UI.TRAIN_CARD));
     this.cardController.handleTrainCard();
 
     await this.trainingData.persist();
@@ -170,13 +163,12 @@ export default class App {
     this.tree = this.id3.train(this.trainingData.data);
     ID3.assignIds(this.tree);
     this.renderer.render(this.tree);
-    const testCard = document.getElementById("testCard");
-    this.cardController.unlock(testCard);
+    this.cardController.handleTraining();
     await CODAPConnect.updateGlobal("TRAINED", 1);
   }
   
   async handleTesting() {
-    this.testingData.addData(this.getDataInput(this.testCard));
+    this.testingData.addData(this.getDataInput(UI.TEST_CARD));
     const data = this.testingData.getCurrentData();
 
     const { class: prediction, path } = this.id3.predict(this.tree, data);
@@ -189,23 +181,21 @@ export default class App {
 
   resetTree() {
     this.renderer.render(null);
-    const tree = document.getElementById("treeSvg");
-    tree.viewBox.baseVal.width = 920;
-    tree.viewBox.baseVal.height = 320;
-    tree.viewBox.animVal.width = 920;
-    tree.viewBox.animVal.height = 320;
+    UI.TREE.viewBox.baseVal.width = UI.TREE_WIDTH;
+    UI.TREE.viewBox.animVal.width = UI.TREE_WIDTH;
+    UI.TREE.viewBox.baseVal.height = UI.TREE_HEIGHT;
+    UI.TREE.viewBox.animVal.height = UI.TREE_HEIGHT;
   }
 
   getClassInput() {
-    return document.getElementById("className").value;
+    return UI.CLASS_INPUT.value;
   }
 
   getAttrInput() {
-    return document.getElementById("attrName").value;
+    return UI.ATTR_INPUT.value;
   }
 
   getDataInput(card) {
-    return card.querySelector(".dataName").value;
+    return card.getElementsByTagName("input")[0].value;
   }
-
 }

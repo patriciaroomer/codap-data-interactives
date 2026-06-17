@@ -1,19 +1,11 @@
 import State from "../codap/State.js";
+import UI from "../constants/UI.js";
 
 export default class CardController {
     constructor() {
-        this.paramCard = document.getElementById("paramCard");
-        this.trainCard = document.getElementById("trainCard");
-        this.testCard = document.getElementById("testCard");
-
-        this.classInput = document.getElementById("className");
-        this.attrInput = document.getElementById("attrName");
-        this.trainInput = document.getElementById("trainDataName");
-        this.testInput = document.getElementById("testDataName");
-
-        this.lockButton = document.getElementById("btnLockParam");
-        this.resetButton = document.getElementById("btnReset");
-        this.trainButton = document.getElementById("btnTrain");
+        this.paramCard = UI.PARAM_CARD;
+        this.trainCard = UI.TRAIN_CARD;
+        this.testCard = UI.TEST_CARD;
         
         this.unfinishedIcon = "◌ ";
         this.finishedIcon = "✓ ";
@@ -34,7 +26,7 @@ export default class CardController {
         for (const input of inputs) input.classList.add("locked");
         for (const select of selects) select.classList.add("locked");
 
-        document.getElementById("btnTrain").classList.add("locked");
+        UI.TRAIN_BUTTON.classList.add("locked");
         this.changeIcon(card, this.lockedIcon);
     }
 
@@ -48,8 +40,8 @@ export default class CardController {
         for (const input of inputs) input.classList.remove("locked");
         for (const select of selects) select.classList.remove("locked");
         
-        document.getElementById("btnTrain").classList.remove("locked");
-        this.changeIcon(card, this.unfinishedIcon);
+        UI.TRAIN_BUTTON.classList.remove("locked");
+        this.unfinish(card);
     }
 
     finish(card) {
@@ -68,58 +60,56 @@ export default class CardController {
 
     handleAttributeCard() {
         this.attrApplied = true;
-        this.attrInput.value = "";
-        this.resetButton.classList.remove("locked");        
-
+        UI.ATTR_INPUT.value = "";        
         if (!this.classApplied) return;
-        
-        this.lockButton.classList.remove("locked");
-        this.finish(this.paramCard);
+        UI.LOCK_BUTTON.classList.remove("locked");
+        this.finish(UI.PARAM_CARD);
     }
 
     handleClassCard() {
         this.classApplied = true;
-        this.classInput.value = "";
-        this.resetButton.classList.remove("locked");
-        
+        UI.CLASS_INPUT.value = "";
         if (!this.attrApplied) return;
-        
-        this.lockButton.classList.remove("locked");
-        this.finish(this.paramCard);
+        UI.LOCK_BUTTON.classList.remove("locked");
+        this.finish(UI.PARAM_CARD);
     }
     
     handleTrainCard() {
-        this.trainInput.value = "";
-        this.changeIcon(this.trainCard, this.finishedIcon);
-        this.trainButton.classList.remove("locked");
+        UI.TRAIN_INPUT.value = "";
+        this.changeIcon(UI.TRAIN_CARD, this.finishedIcon);
+        UI.TRAIN_BUTTON.classList.remove("locked");
+    }
+
+    handleTraining() {
+        this.finish(UI.TRAIN_CARD)
+        this.unlock(UI.TEST_CARD);
     }
     
     handleTestCard() {
-        this.testInput.value = "";
-        this.changeIcon(this.testCard, this.unfinishedIcon);
-        this.changeIcon(this.testCard, this.finishedIcon);
+        UI.TEST_INPUT.value = "";
+        this.changeIcon(UI.TEST_CARD, this.finishedIcon);
     }
     
     handleLockButton() {
-        this.finish(this.paramCard);
-        this.lock(this.paramCard);
-        this.unlock(this.trainCard);
+        this.finish(UI.PARAM_CARD);
+        this.lock(UI.PARAM_CARD);
+        this.unlock(UI.TRAIN_CARD);
     }
 
     handleResetButton() {
-        this.unfinish(this.paramCard);
-        this.lock(this.trainCard);
-        this.lock(this.testCard);
-        this.unlock(this.paramCard);
-        this.lockButton.classList.add("locked");
-        this.trainButton.classList.add("locked");
+        this.unfinish(UI.PARAM_CARD);
+        this.lock(UI.TRAIN_CARD);
+        this.lock(UI.TEST_CARD);
+        this.unlock(UI.PARAM_CARD);
+        UI.LOCK_BUTTON.classList.add("locked");
+        UI.TRAIN_BUTTON.classList.add("locked");
     }
 
     handleTrainingReset() {
-        this.unfinish(this.trainCard);
-        this.unfinish(this.testCard);
-        this.lock(this.testCard);
-        this.trainButton.classList.add("locked");
+        this.unfinish(UI.TRAIN_CARD);
+        this.unfinish(UI.TEST_CARD);
+        this.lock(UI.TEST_CARD);
+        UI.TRAIN_BUTTON.classList.add("locked");
     }
 
     reload() {
@@ -148,49 +138,46 @@ export default class CardController {
     }
 
     setUninitializedState() {
-        this.unlock(this.paramCard);
-        this.unfinish(this.paramCard);
-        this.lock(this.trainCard);
-        this.lock(this.testCard);
-        this.lockButton.classList.add("locked");
-        this.trainButton.classList.add("locked");
+        this.unlock(UI.PARAM_CARD);
+        this.lock(UI.TRAIN_CARD);
+        this.lock(UI.TEST_CARD);
+        UI.LOCK_BUTTON.classList.add("locked");
+        UI.TRAIN_BUTTON.classList.add("locked");
     }
 
     setInitializedState() {
-        this.lock(this.paramCard);
-        this.unlock(this.trainCard);
-        this.lock(this.testCard);
-        this.lockButton.classList.add("locked");
-        this.trainButton.classList.add("locked");
+        this.lock(UI.PARAM_CARD);
+        this.unlock(UI.TRAIN_CARD);
+        this.lock(UI.TEST_CARD);
+        UI.LOCK_BUTTON.classList.add("locked");
+        UI.TRAIN_BUTTON.classList.add("locked");
     }
 
     setTrainingState() {
-        this.lock(this.paramCard);
-        this.unlock(this.trainCard);
-        this.unfinish(this.trainCard);
-        this.lock(this.testCard);
-        this.lockButton.classList.add("locked");
-        this.trainButton.classList.remove("locked");
+        this.lock(UI.PARAM_CARD);
+        this.unlock(UI.TRAIN_BUTTON);
+        this.lock(UI.TEST_CARD);
+        UI.LOCK_BUTTON.classList.add("locked");
+        UI.TRAIN_BUTTON.classList.remove("locked");
     }
 
     setTrainedState() {
-        this.lock(this.paramCard);
-        this.unlock(this.trainCard);
-        this.finish(this.trainCard);
-        this.unlock(this.testCard);
-        this.unfinish(this.testCard);
-        this.lockButton.classList.add("locked");
-        this.trainButton.classList.remove("locked");
+        this.lock(UI.PARAM_CARD);
+        this.unlock(UI.TRAIN_CARD);
+        this.finish(UI.TRAIN_CARD);
+        this.unlock(UI.TEST_CARD);
+        UI.LOCK_BUTTON.classList.add("locked");
+        UI.TRAIN_BUTTON.classList.remove("locked");
     }
 
     setTestingState() {
-        this.lock(this.paramCard);
-        this.unlock(this.trainCard);
-        this.finish(this.trainCard);
-        this.unlock(this.testCard);
-        this.finish(this.testCard);
-        this.lockButton.classList.add("locked");
-        this.trainButton.classList.remove("locked");
+        this.lock(UI.PARAM_CARD);
+        this.unlock(UI.TRAIN_CARD);
+        this.finish(UI.TRAIN_CARD);
+        this.unlock(UI.TEST_CARD);
+        this.finish(UI.TEST_CARD);
+        UI.LOCK_BUTTON.classList.add("locked");
+        UI.TRAIN_BUTTON.classList.remove("locked");
     }
 
 }

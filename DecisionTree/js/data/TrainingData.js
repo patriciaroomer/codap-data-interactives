@@ -1,5 +1,6 @@
 import CaseTable from "../codap/CaseTable.js";
 import CODAPConnect from "../codap/CODAPConnect.js";
+import Codap from "../constants/Codap.js";
 import ID3 from "../decision-tree/ID3.js";
 import Data from "./Data.js";
 import Parameters from "./Parameters.js";
@@ -36,8 +37,6 @@ export default class TrainingData extends Data {
     }
 
     async persist() {
-        const dataContext = "Training data"
-        
         const attributes = [];
         attributes.push("Name");
         for (const a of this.parameters.attributes) {
@@ -45,9 +44,9 @@ export default class TrainingData extends Data {
         }
         attributes.push("Class");
         
-        const dimensions = { width: 500, height: 300 };
+        const dimensions = { width: Codap.CT_DATA_WIDTH, height: Codap.CT_DATA_HEIGHT };
 
-        await CODAPConnect.createDataContext(dataContext, attributes);
-        await new CaseTable(dataContext, this.data, dimensions).create();
+        await CODAPConnect.createDataContext(Codap.DC_TRAIN, attributes);
+        await new CaseTable(Codap.DC_TRAIN, this.data, dimensions).create();
     }
 }
