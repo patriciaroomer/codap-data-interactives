@@ -10,299 +10,313 @@
 
 <body>
 
-  <div class="leftSection">
+  <div class="main">
+    <div class="leftSection">
 
-    <div class="languageButtons">
-      <p id="enButton">🇬🇧</p>
-      <p id="deButton">🇩🇪</p>
-      <p id="frButton">🇫🇷</p>
+      <div class="languageButtons">
+        <p id="enButton">🇬🇧</p>
+        <p id="deButton">🇩🇪</p>
+        <p id="frButton">🇫🇷</p>
+      </div>
+
+      <div class="tableContainer">
+        <table id="enPrompts">
+          <tbody>
+            <tr>
+              <td data-id="1">Advances in artificial intelligence are transforming industries such as healthcare, transportation, and finance. Experts continue debating the ethical implications of automation.</td>
+            </tr>
+            <tr>
+              <td data-id="2">The researchers were analyzing how children learn languages differently across cultures. Their findings suggest that environmental factors strongly influence communication skills.</td>
+            </tr>
+            <tr>
+              <td data-id="3">I’m soooo excited about the concert tonight!!! Everyone has been talking about it for weeks, and the energy online is incredible.</td>
+            </tr>
+            <tr>
+              <td data-id="4">Renewable energy companies are investing heavily in solar panel efficiency and long-term battery storage solutions. These technologies may reduce dependence on fossil fuels.</td>
+            </tr>
+            <tr>
+              <td data-id="5">I tried studying all night, but I still felt unprepared and anxious before the exam. My stress levels were extremely high.</td>
+            </tr>
+            <tr>
+              <td data-id="6">Not gonna lie, the “premium” headphones sounded cheap and broke within two days. Totally not worth the money.</td>
+            </tr>
+            <tr>
+              <td data-id="7">The workers had been protesting unfair wages and unsafe conditions for several months before negotiations finally began. Community organizations later supported their demands.</td>
+            </tr>
+            <tr>
+              <td data-id="8">The restaurant staff apologized repeatedly after forgetting our order, and they eventually offered free desserts as compensation. Even though the mistake was frustrating, the apology improved the experience.</td>
+            </tr>
+            <tr>
+              <td data-id="9">Online learning platforms allow students and professionals to access educational materials from anywhere. Their popularity increased significantly during remote work periods.</td>
+            </tr>
+            <tr>
+              <td data-id="10">Scientists are studying how climate change affects migration patterns in marine species. Rising ocean temperatures may disrupt entire ecosystems over time.</td>
+            </tr>
+            <tr>
+              <td data-id="11">The movie had stunning visual effects, but the storyline felt predictable and emotionally flat. Some viewers enjoyed the action scenes more than the character development.</td>
+            </tr>
+            <tr>
+              <td data-id="12">I regret purchasing the laptop because it overheats frequently and crashes during simple tasks. Customer service was slow to respond to my complaints.</td>
+            </tr>
+            <tr>
+              <td data-id="13">Volcanoes form when magma rises through cracks in the Earth's crust. Some eruptions can dramatically affect weather patterns and air travel.</td>
+            </tr>
+            <tr>
+              <td data-id="14">Bees are essential pollinators that contribute to global food production. Habitat loss and pesticide use have caused concerns about declining bee populations.</td>
+            </tr>
+            <tr>
+              <td data-id="15">Meh... the game was playable, I guess, but the graphics looked outdated and the controls felt awkwardly designed.</td>
+            </tr>
+            <tr>
+              <td data-id="16">Doctors recommend exercising regularly because active lifestyles are associated with lower risks of cardiovascular disease. Balanced nutrition also contributes to long-term health.</td>
+            </tr>
+            <tr>
+              <td data-id="17">Heavy rainfall caused flooding in several neighborhoods, forcing residents to evacuate their homes. Emergency crews worked through the night to assist affected families.</td>
+            </tr>
+            <tr>
+              <td data-id="18">I absolutely loved the café!!! The desserts were insanely good, but the service was kinda slow</td>
+            </tr>
+            <tr>
+              <td data-id="19">The kids were running, shouting, and laughing loudly throughout the entire museum visit. Some visitors seemed annoyed by the noise.</td>
+            </tr>
+            <tr>
+              <td data-id="20">Ugh, this phone keeps freezing, crashing, and restarting itself over and over again, it’s becoming unusable.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table id="dePrompts" class="hidden">
+          <tbody>
+            <tr>
+              <td data-id="1">Fortschritte in der künstlichen Intelligenz verändern Branchen wie das Gesundheitswesen, den Transport und die Finanzwelt. Experten diskutieren weiterhin über die ethischen Auswirkungen der Automatisierung.</td>
+            </tr>
+            <tr>
+              <td data-id="2">Die Forscher analysierten, wie Kinder in verschiedenen Kulturen unterschiedlich Sprachen lernen. Ihre Ergebnisse deuten darauf hin, dass Umweltfaktoren Kommunikationsfähigkeiten stark beeinflussen.</td>
+            </tr>
+            <tr>
+              <td data-id="3">Ich bin soooo aufgeregt wegen des Konzerts heute Abend!!! Alle reden seit Wochen darüber, und die Stimmung online ist unglaublich.</td>
+            </tr>
+            <tr>
+              <td data-id="4">Unternehmen im Bereich erneuerbarer Energien investieren stark in die Effizienz von Solarpanels und langfristige Batteriespeicherlösungen. Diese Technologien könnten die Abhängigkeit von fossilen Brennstoffen verringern.</td>
+            </tr>
+            <tr>
+              <td data-id="5">Ich habe versucht, die ganze Nacht zu lernen, aber ich fühlte mich vor der Prüfung trotzdem unvorbereitet und ängstlich. Mein Stresslevel war extrem hoch.</td>
+            </tr>
+            <tr>
+              <td data-id="6">Ganz ehrlich, die „Premium“-Kopfhörer klangen billig und gingen innerhalb von zwei Tagen kaputt. Das Geld absolut nicht wert.</td>
+            </tr>
+            <tr>
+              <td data-id="7">Die Arbeiter protestierten mehrere Monate lang gegen unfairen Lohn und unsichere Arbeitsbedingungen, bevor die Verhandlungen schließlich begannen. Gemeinschaftsorganisationen unterstützten später ihre Forderungen.</td>
+            </tr>
+            <tr>
+              <td data-id="8">Das Restaurantpersonal entschuldigte sich wiederholt, nachdem sie unsere Bestellung vergessen hatten, und bot schließlich kostenlose Desserts als Entschädigung an. Obwohl der Fehler frustrierend war, verbesserte die Entschuldigung die Erfahrung.</td>
+            </tr>
+            <tr>
+              <td data-id="9">Online-Lernplattformen ermöglichen es Studenten und Berufstätigen, von überall auf Bildungsmaterialien zuzugreifen. Ihre Beliebtheit nahm während der Zeit des Remote-Arbeitens deutlich zu.</td>
+            </tr>
+            <tr>
+              <td data-id="10">Wissenschaftler untersuchen, wie der Klimawandel die Migrationsmuster mariner Arten beeinflusst. Steigende Meerestemperaturen könnten ganze Ökosysteme im Laufe der Zeit stören.</td>
+            </tr>
+            <tr>
+              <td data-id="11">Der Film hatte beeindruckende visuelle Effekte, aber die Handlung wirkte vorhersehbar und emotional flach. Einige Zuschauer mochten die Actionszenen mehr als die Charakterentwicklung.</td>
+            </tr>
+            <tr>
+              <td data-id="12">Ich bereue den Kauf des Laptops, weil er häufig überhitzt und bei einfachen Aufgaben abstürzt. Der Kundenservice reagierte nur langsam auf meine Beschwerden.</td>
+            </tr>
+            <tr>
+              <td data-id="13">Vulkane entstehen, wenn Magma durch Risse in der Erdkruste aufsteigt. Manche Ausbrüche können Wettermuster und den Flugverkehr drastisch beeinflussen.</td>
+            </tr>
+            <tr>
+              <td data-id="14">Bienen sind essenzielle Bestäuber, die zur globalen Lebensmittelproduktion beitragen. Lebensraumverlust und der Einsatz von Pestiziden haben Sorgen über den Rückgang der Bienenpopulationen ausgelöst.</td>
+            </tr>
+            <tr>
+              <td data-id="15">Meh... das Spiel war spielbar, schätze ich, aber die Grafik sah veraltet aus und die Steuerung fühlte sich irgendwie umständlich an.</td>
+            </tr>
+            <tr>
+              <td data-id="16">Ärzte empfehlen regelmäßige Bewegung, weil aktive Lebensweisen mit geringeren Risiken für Herz-Kreislauf-Erkrankungen verbunden sind. Eine ausgewogene Ernährung trägt ebenfalls zur langfristigen Gesundheit bei.</td>
+            </tr>
+            <tr>
+              <td data-id="17">Starker Regen verursachte Überschwemmungen in mehreren Stadtteilen und zwang Bewohner dazu, ihre Häuser zu evakuieren. Rettungskräfte arbeiteten die ganze Nacht, um betroffenen Familien zu helfen.</td>
+            </tr>
+            <tr>
+              <td data-id="18">Ich habe das Café absolut geliebt!!! Die Desserts waren unglaublich gut, aber der Service war irgendwie langsam</td>
+            </tr>
+            <tr>
+              <td data-id="19">Die Kinder rannten, schrien und lachten laut während des gesamten Museumsbesuchs. Einige Besucher wirkten genervt von dem Lärm.</td>
+            </tr>
+            <tr>
+              <td data-id="20">Ugh, dieses Handy friert ständig ein, stürzt ab und startet sich immer wieder neu, es wird unbenutzbar.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table id="frPrompts" class="hidden">
+          <tbody>
+            <tr>
+              <td data-id="1">Les progrès de l’intelligence artificielle transforment des secteurs comme la santé, les transports et la finance. Les experts continuent de débattre des implications éthiques de l’automatisation.</td>
+            </tr>
+            <tr>
+              <td data-id="2">Les chercheurs analysaient comment les enfants apprennent les langues différemment selon les cultures. Leurs résultats suggèrent que les facteurs environnementaux influencent fortement les compétences en communication.</td>
+            </tr>
+            <tr>
+              <td data-id="3">Je suis troooop excité(e) pour le concert de ce soir !!! Tout le monde en parle depuis des semaines, et l’ambiance en ligne est incroyable.</td>
+            </tr>
+            <tr>
+              <td data-id="4">Les entreprises d’énergie renouvelable investissent massivement dans l’efficacité des panneaux solaires et les solutions de stockage d’énergie à long terme. Ces technologies pourraient réduire la dépendance aux combustibles fossiles.</td>
+            </tr>
+            <tr>
+              <td data-id="5">J’ai essayé d’étudier toute la nuit, mais je me sentais quand même mal préparé(e) et anxieux(se) avant l’examen. Mon niveau de stress était extrêmement élevé.</td>
+            </tr>
+            <tr>
+              <td data-id="6">Franchement, les écouteurs « premium » avaient un son cheap et se sont cassés en deux jours. Ça ne vaut absolument pas le prix.</td>
+            </tr>
+            <tr>
+              <td data-id="7">Les travailleurs protestaient contre des salaires injustes et des conditions dangereuses depuis plusieurs mois avant que les négociations ne commencent enfin. Des organisations communautaires ont ensuite soutenu leurs revendications.</td>
+            </tr>
+            <tr>
+              <td data-id="8">Le personnel du restaurant s’est excusé à plusieurs reprises après avoir oublié notre commande, et ils ont finalement offert des desserts gratuits en compensation. Même si l’erreur était frustrante, les excuses ont amélioré l’expérience.</td>
+            </tr>
+            <tr>
+              <td data-id="9">Les plateformes d’apprentissage en ligne permettent aux étudiants et aux professionnels d’accéder à des ressources éducatives depuis n’importe où. Leur popularité a considérablement augmenté pendant les périodes de travail à distance.</td>
+            </tr>
+            <tr>
+              <td data-id="10">Les scientifiques étudient comment le changement climatique affecte les schémas migratoires des espèces marines. L’augmentation des températures océaniques pourrait perturber des écosystèmes entiers au fil du temps.</td>
+            </tr>
+            <tr>
+              <td data-id="11">Le film avait des effets visuels impressionnants, mais l’histoire semblait prévisible et émotionnellement plate. Certains spectateurs ont davantage apprécié les scènes d’action que le développement des personnages.</td>
+            </tr>
+            <tr>
+              <td data-id="12">Je regrette d’avoir acheté cet ordinateur portable parce qu’il surchauffe fréquemment et plante même pendant des tâches simples. Le service client a été lent à répondre à mes plaintes.</td>
+            </tr>
+            <tr>
+              <td data-id="13">Les volcans se forment lorsque le magma remonte à travers des fissures dans la croûte terrestre. Certaines éruptions peuvent fortement affecter les conditions météorologiques et le trafic aérien.</td>
+            </tr>
+            <tr>
+              <td data-id="14">Les abeilles sont des pollinisateurs essentiels qui contribuent à la production alimentaire mondiale. La perte d’habitat et l’utilisation de pesticides ont suscité des inquiétudes concernant le déclin des populations d’abeilles.</td>
+            </tr>
+            <tr>
+              <td data-id="15">Bof... le jeu était jouable, je suppose, mais les graphismes semblaient dépassés et les contrôles étaient maladroits.</td>
+            </tr>
+            <tr>
+              <td data-id="16">Les médecins recommandent de faire de l’exercice régulièrement parce qu’un mode de vie actif est associé à des risques plus faibles de maladies cardiovasculaires. Une alimentation équilibrée contribue également à la santé à long terme.</td>
+            </tr>
+            <tr>
+              <td data-id="17">De fortes pluies ont provoqué des inondations dans plusieurs quartiers, forçant les habitants à évacuer leurs maisons. Les équipes de secours ont travaillé toute la nuit pour aider les familles touchées.</td>
+            </tr>
+            <tr>
+              <td data-id="18">J’ai absolument adoré le café !!! Les desserts étaient incroyablement bons, mais le service était un peu lent :(</td>
+            </tr>
+            <tr>
+              <td data-id="19">Les enfants couraient, criaient et riaient bruyamment pendant toute la visite du musée. Certains visiteurs semblaient agacés par le bruit.</td>
+            </tr>
+            <tr>
+              <td data-id="20">Ugh, ce téléphone n’arrête pas de se bloquer, planter et redémarrer encore et encore, il devient inutilisable.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-    <div class="tableContainer">
-      <table id="enPrompts">
-        <tbody>
-          <tr>
-            <td data-id="1">Advances in artificial intelligence are transforming industries such as healthcare, transportation, and finance. Experts continue debating the ethical implications of automation.</td>
-          </tr>
-          <tr>
-            <td data-id="2">The researchers were analyzing how children learn languages differently across cultures. Their findings suggest that environmental factors strongly influence communication skills.</td>
-          </tr>
-          <tr>
-            <td data-id="3">I’m soooo excited about the concert tonight!!! Everyone has been talking about it for weeks, and the energy online is incredible.</td>
-          </tr>
-          <tr>
-            <td data-id="4">Renewable energy companies are investing heavily in solar panel efficiency and long-term battery storage solutions. These technologies may reduce dependence on fossil fuels.</td>
-          </tr>
-          <tr>
-            <td data-id="5">I tried studying all night, but I still felt unprepared and anxious before the exam. My stress levels were extremely high.</td>
-          </tr>
-          <tr>
-            <td data-id="6">Not gonna lie, the “premium” headphones sounded cheap and broke within two days. Totally not worth the money.</td>
-          </tr>
-          <tr>
-            <td data-id="7">The workers had been protesting unfair wages and unsafe conditions for several months before negotiations finally began. Community organizations later supported their demands.</td>
-          </tr>
-          <tr>
-            <td data-id="8">The restaurant staff apologized repeatedly after forgetting our order, and they eventually offered free desserts as compensation. Even though the mistake was frustrating, the apology improved the experience.</td>
-          </tr>
-          <tr>
-            <td data-id="9">Online learning platforms allow students and professionals to access educational materials from anywhere. Their popularity increased significantly during remote work periods.</td>
-          </tr>
-          <tr>
-            <td data-id="10">Scientists are studying how climate change affects migration patterns in marine species. Rising ocean temperatures may disrupt entire ecosystems over time.</td>
-          </tr>
-          <tr>
-            <td data-id="11">The movie had stunning visual effects, but the storyline felt predictable and emotionally flat. Some viewers enjoyed the action scenes more than the character development.</td>
-          </tr>
-          <tr>
-            <td data-id="12">I regret purchasing the laptop because it overheats frequently and crashes during simple tasks. Customer service was slow to respond to my complaints.</td>
-          </tr>
-          <tr>
-            <td data-id="13">Volcanoes form when magma rises through cracks in the Earth's crust. Some eruptions can dramatically affect weather patterns and air travel.</td>
-          </tr>
-          <tr>
-            <td data-id="14">Bees are essential pollinators that contribute to global food production. Habitat loss and pesticide use have caused concerns about declining bee populations.</td>
-          </tr>
-          <tr>
-            <td data-id="15">Meh... the game was playable, I guess, but the graphics looked outdated and the controls felt awkwardly designed.</td>
-          </tr>
-          <tr>
-            <td data-id="16">Doctors recommend exercising regularly because active lifestyles are associated with lower risks of cardiovascular disease. Balanced nutrition also contributes to long-term health.</td>
-          </tr>
-          <tr>
-            <td data-id="17">Heavy rainfall caused flooding in several neighborhoods, forcing residents to evacuate their homes. Emergency crews worked through the night to assist affected families.</td>
-          </tr>
-          <tr>
-            <td data-id="18">I absolutely loved the café!!! The desserts were insanely good, but the service was kinda slow</td>
-          </tr>
-          <tr>
-            <td data-id="19">The kids were running, shouting, and laughing loudly throughout the entire museum visit. Some visitors seemed annoyed by the noise.</td>
-          </tr>
-          <tr>
-            <td data-id="20">Ugh, this phone keeps freezing, crashing, and restarting itself over and over again, it’s becoming unusable.</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="rightSection">
 
-      <table id="dePrompts" class="hidden">
-        <tbody>
-          <tr>
-            <td data-id="1">Fortschritte in der künstlichen Intelligenz verändern Branchen wie das Gesundheitswesen, den Transport und die Finanzwelt. Experten diskutieren weiterhin über die ethischen Auswirkungen der Automatisierung.</td>
-          </tr>
-          <tr>
-            <td data-id="2">Die Forscher analysierten, wie Kinder in verschiedenen Kulturen unterschiedlich Sprachen lernen. Ihre Ergebnisse deuten darauf hin, dass Umweltfaktoren Kommunikationsfähigkeiten stark beeinflussen.</td>
-          </tr>
-          <tr>
-            <td data-id="3">Ich bin soooo aufgeregt wegen des Konzerts heute Abend!!! Alle reden seit Wochen darüber, und die Stimmung online ist unglaublich.</td>
-          </tr>
-          <tr>
-            <td data-id="4">Unternehmen im Bereich erneuerbarer Energien investieren stark in die Effizienz von Solarpanels und langfristige Batteriespeicherlösungen. Diese Technologien könnten die Abhängigkeit von fossilen Brennstoffen verringern.</td>
-          </tr>
-          <tr>
-            <td data-id="5">Ich habe versucht, die ganze Nacht zu lernen, aber ich fühlte mich vor der Prüfung trotzdem unvorbereitet und ängstlich. Mein Stresslevel war extrem hoch.</td>
-          </tr>
-          <tr>
-            <td data-id="6">Ganz ehrlich, die „Premium“-Kopfhörer klangen billig und gingen innerhalb von zwei Tagen kaputt. Das Geld absolut nicht wert.</td>
-          </tr>
-          <tr>
-            <td data-id="7">Die Arbeiter protestierten mehrere Monate lang gegen unfairen Lohn und unsichere Arbeitsbedingungen, bevor die Verhandlungen schließlich begannen. Gemeinschaftsorganisationen unterstützten später ihre Forderungen.</td>
-          </tr>
-          <tr>
-            <td data-id="8">Das Restaurantpersonal entschuldigte sich wiederholt, nachdem sie unsere Bestellung vergessen hatten, und bot schließlich kostenlose Desserts als Entschädigung an. Obwohl der Fehler frustrierend war, verbesserte die Entschuldigung die Erfahrung.</td>
-          </tr>
-          <tr>
-            <td data-id="9">Online-Lernplattformen ermöglichen es Studenten und Berufstätigen, von überall auf Bildungsmaterialien zuzugreifen. Ihre Beliebtheit nahm während der Zeit des Remote-Arbeitens deutlich zu.</td>
-          </tr>
-          <tr>
-            <td data-id="10">Wissenschaftler untersuchen, wie der Klimawandel die Migrationsmuster mariner Arten beeinflusst. Steigende Meerestemperaturen könnten ganze Ökosysteme im Laufe der Zeit stören.</td>
-          </tr>
-          <tr>
-            <td data-id="11">Der Film hatte beeindruckende visuelle Effekte, aber die Handlung wirkte vorhersehbar und emotional flach. Einige Zuschauer mochten die Actionszenen mehr als die Charakterentwicklung.</td>
-          </tr>
-          <tr>
-            <td data-id="12">Ich bereue den Kauf des Laptops, weil er häufig überhitzt und bei einfachen Aufgaben abstürzt. Der Kundenservice reagierte nur langsam auf meine Beschwerden.</td>
-          </tr>
-          <tr>
-            <td data-id="13">Vulkane entstehen, wenn Magma durch Risse in der Erdkruste aufsteigt. Manche Ausbrüche können Wettermuster und den Flugverkehr drastisch beeinflussen.</td>
-          </tr>
-          <tr>
-            <td data-id="14">Bienen sind essenzielle Bestäuber, die zur globalen Lebensmittelproduktion beitragen. Lebensraumverlust und der Einsatz von Pestiziden haben Sorgen über den Rückgang der Bienenpopulationen ausgelöst.</td>
-          </tr>
-          <tr>
-            <td data-id="15">Meh... das Spiel war spielbar, schätze ich, aber die Grafik sah veraltet aus und die Steuerung fühlte sich irgendwie umständlich an.</td>
-          </tr>
-          <tr>
-            <td data-id="16">Ärzte empfehlen regelmäßige Bewegung, weil aktive Lebensweisen mit geringeren Risiken für Herz-Kreislauf-Erkrankungen verbunden sind. Eine ausgewogene Ernährung trägt ebenfalls zur langfristigen Gesundheit bei.</td>
-          </tr>
-          <tr>
-            <td data-id="17">Starker Regen verursachte Überschwemmungen in mehreren Stadtteilen und zwang Bewohner dazu, ihre Häuser zu evakuieren. Rettungskräfte arbeiteten die ganze Nacht, um betroffenen Familien zu helfen.</td>
-          </tr>
-          <tr>
-            <td data-id="18">Ich habe das Café absolut geliebt!!! Die Desserts waren unglaublich gut, aber der Service war irgendwie langsam</td>
-          </tr>
-          <tr>
-            <td data-id="19">Die Kinder rannten, schrien und lachten laut während des gesamten Museumsbesuchs. Einige Besucher wirkten genervt von dem Lärm.</td>
-          </tr>
-          <tr>
-            <td data-id="20">Ugh, dieses Handy friert ständig ein, stürzt ab und startet sich immer wieder neu, es wird unbenutzbar.</td>
-          </tr>
-        </tbody>
-      </table>
+      <h3>Text Preprocessing
+        <div class="info">
+          &#9432
+          <div class="infoBubbleRight" style="font-weight: normal;">More information can be found in the paper at <a target="_blank" rel="noopener noreferrer" href="https://www.sciencedirect.com/science/article/pii/S0306437923001783">ScienceDirect</a> (external link)</div>
+        </div>
+      </h3>
 
-      <table id="frPrompts" class="hidden">
-        <tbody>
-          <tr>
-            <td data-id="1">Les progrès de l’intelligence artificielle transforment des secteurs comme la santé, les transports et la finance. Les experts continuent de débattre des implications éthiques de l’automatisation.</td>
-          </tr>
-          <tr>
-            <td data-id="2">Les chercheurs analysaient comment les enfants apprennent les langues différemment selon les cultures. Leurs résultats suggèrent que les facteurs environnementaux influencent fortement les compétences en communication.</td>
-          </tr>
-          <tr>
-            <td data-id="3">Je suis troooop excité(e) pour le concert de ce soir !!! Tout le monde en parle depuis des semaines, et l’ambiance en ligne est incroyable.</td>
-          </tr>
-          <tr>
-            <td data-id="4">Les entreprises d’énergie renouvelable investissent massivement dans l’efficacité des panneaux solaires et les solutions de stockage d’énergie à long terme. Ces technologies pourraient réduire la dépendance aux combustibles fossiles.</td>
-          </tr>
-          <tr>
-            <td data-id="5">J’ai essayé d’étudier toute la nuit, mais je me sentais quand même mal préparé(e) et anxieux(se) avant l’examen. Mon niveau de stress était extrêmement élevé.</td>
-          </tr>
-          <tr>
-            <td data-id="6">Franchement, les écouteurs « premium » avaient un son cheap et se sont cassés en deux jours. Ça ne vaut absolument pas le prix.</td>
-          </tr>
-          <tr>
-            <td data-id="7">Les travailleurs protestaient contre des salaires injustes et des conditions dangereuses depuis plusieurs mois avant que les négociations ne commencent enfin. Des organisations communautaires ont ensuite soutenu leurs revendications.</td>
-          </tr>
-          <tr>
-            <td data-id="8">Le personnel du restaurant s’est excusé à plusieurs reprises après avoir oublié notre commande, et ils ont finalement offert des desserts gratuits en compensation. Même si l’erreur était frustrante, les excuses ont amélioré l’expérience.</td>
-          </tr>
-          <tr>
-            <td data-id="9">Les plateformes d’apprentissage en ligne permettent aux étudiants et aux professionnels d’accéder à des ressources éducatives depuis n’importe où. Leur popularité a considérablement augmenté pendant les périodes de travail à distance.</td>
-          </tr>
-          <tr>
-            <td data-id="10">Les scientifiques étudient comment le changement climatique affecte les schémas migratoires des espèces marines. L’augmentation des températures océaniques pourrait perturber des écosystèmes entiers au fil du temps.</td>
-          </tr>
-          <tr>
-            <td data-id="11">Le film avait des effets visuels impressionnants, mais l’histoire semblait prévisible et émotionnellement plate. Certains spectateurs ont davantage apprécié les scènes d’action que le développement des personnages.</td>
-          </tr>
-          <tr>
-            <td data-id="12">Je regrette d’avoir acheté cet ordinateur portable parce qu’il surchauffe fréquemment et plante même pendant des tâches simples. Le service client a été lent à répondre à mes plaintes.</td>
-          </tr>
-          <tr>
-            <td data-id="13">Les volcans se forment lorsque le magma remonte à travers des fissures dans la croûte terrestre. Certaines éruptions peuvent fortement affecter les conditions météorologiques et le trafic aérien.</td>
-          </tr>
-          <tr>
-            <td data-id="14">Les abeilles sont des pollinisateurs essentiels qui contribuent à la production alimentaire mondiale. La perte d’habitat et l’utilisation de pesticides ont suscité des inquiétudes concernant le déclin des populations d’abeilles.</td>
-          </tr>
-          <tr>
-            <td data-id="15">Bof... le jeu était jouable, je suppose, mais les graphismes semblaient dépassés et les contrôles étaient maladroits.</td>
-          </tr>
-          <tr>
-            <td data-id="16">Les médecins recommandent de faire de l’exercice régulièrement parce qu’un mode de vie actif est associé à des risques plus faibles de maladies cardiovasculaires. Une alimentation équilibrée contribue également à la santé à long terme.</td>
-          </tr>
-          <tr>
-            <td data-id="17">De fortes pluies ont provoqué des inondations dans plusieurs quartiers, forçant les habitants à évacuer leurs maisons. Les équipes de secours ont travaillé toute la nuit pour aider les familles touchées.</td>
-          </tr>
-          <tr>
-            <td data-id="18">J’ai absolument adoré le café !!! Les desserts étaient incroyablement bons, mais le service était un peu lent :(</td>
-          </tr>
-          <tr>
-            <td data-id="19">Les enfants couraient, criaient et riaient bruyamment pendant toute la visite du musée. Certains visiteurs semblaient agacés par le bruit.</td>
-          </tr>
-          <tr>
-            <td data-id="20">Ugh, ce téléphone n’arrête pas de se bloquer, planter et redémarrer encore et encore, il devient inutilisable.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <p>Prepares the text for NLP tasks like text classification. <br> <b>Choose one of the prompts on the left.</b></p>
 
-  </div>
+      <textarea id="inputField" name="inputField" rows="5" cols="33" readonly="true"></textarea>
 
-  <div class="rightSection">
+      <div class="checkboxes">
+        <input type="checkbox" class="preprocessingBox" id="cleanBox" name="cleanBox" checked="true" readonly="true">
+        <label for="cleanBox">Clean</label>
 
-    <h3>Text Preprocessing
-      <div class="info">
-        &#9432
-        <div class="infoBubbleRight" style="font-weight: normal;">More information can be found in <a target="_blank" rel="noopener noreferrer" href="https://www.sciencedirect.com/science/article/pii/S0306437923001783">this</a> paper</div>
-      </div>
-    </h3>
+        <div class="info">
+          &#9432
+          <div class="infoBubble">Converts noisy text into a lowercase format without punctuation marks, emojis, URLs, or HTML tags.</div>
+        </div>
 
-    <p>Prepares the text for NLP tasks like text classification. <br> <b>Choose one of the prompts on the left.</b></p>
+        <input type="checkbox" class="preprocessingBox" id="stopwordsBox" name="stopwordsBox" checked="true">
+        <label for="stopwordsBox">Remove stopwords</label>
 
-    <textarea id="inputField" name="inputField" rows="5" cols="33" readonly="true"></textarea>
+        <div class="info">
+          &#9432
+          <div class="infoBubble">Stopwords are words that are used so often ("the", "is", "and") that they carry little unique meaning.</div>
+        </div>
 
-    <div class="checkboxes">
-      <input type="checkbox" class="preprocessingBox" id="cleanBox" name="cleanBox" checked="true" readonly="true">
-      <label for="cleanBox">Clean</label>
+        <input type="checkbox" class="preprocessingBox" id="lemmaBox" name="lemmaBox" checked="true">
+        <label for="lemmaBox">Lemmatize</label>
 
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Converts noisy text into a lowercase format without punctuation marks, emojis, URLs, or HTML tags.</div>
+        <div class="info">
+          &#9432
+          <div class="infoBubble">Reduces words to their dictionary form, e.g "better" becomes "good" and "is" becomes "be".</div>
+        </div>
+
+        <input type="checkbox" class="preprocessingBox" id="stemBox" name="stemBox">
+        <label for="stemBox">Stem</label>
+
+        <div class="info">
+          &#9432
+          <div class="infoBubble">Reduces words to their root form (stem), e.g "running", "runs", and "runner" all become "run".</div>
+        </div>
       </div>
 
-      <input type="checkbox" class="preprocessingBox" id="stopwordsBox" name="stopwordsBox" checked="true">
-      <label for="stopwordsBox">Remove stopwords</label>
+      <textarea id="outputField" name="outputField" rows="5" cols="33" readonly="true"></textarea>
 
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Stopwords are words that are used so often ("the", "is", "and") that they carry little unique meaning.</div>
+      <hr/>
+
+      <h3>Bag of Words</h3>
+      <p>Splits the text into words and counts their occurrences, which can be very informative.<br> It helps language models to process text in a structured way.</p>
+      <button id="bagOfWordsButton">Create</button>
+
+      <hr/>
+
+      <h3>Text Classification</h3>
+      <p><span style="color: #7F77DD; font-weight: bold;">This feature uses artificial intelligence.</span> <br>Attempts to determine the best fitting category for the text.</p>
+      
+
+      <div class="checkboxes" style="margin-top: 0px">
+        <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
+        <label for="sentimentBox">Sentiment</label>
+
+        <div class="info">
+          &#9432
+          <div class="infoBubble"><a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/tabularisai/multilingual-sentiment-analysis">DistilBERT: multilingual-sentiment-analysis</a><br> (external link)<br><br>Classifies text into positive, neutral, or negative sentiments.</div>
+        </div>
+
+        <input type="checkbox" id="emotionBox" name="emotionBox">
+        <label for="emotionBox">Emotion</label>
+
+        <div class="info">
+          &#9432
+          <div class="infoBubble"><a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/AnasAlokla/multilingual_go_emotions_V1.2">BERT: multilingual-go-emotions</a><br> (external link)<br><br> Classifies text into emotion categories (e.g., joy, anger, sadness).</div>
+        </div>
+
+        <input type="checkbox" id="topicBox" name="topicBox">
+        <label for="topicBox">Topic</label>
+
+        <div class="info">
+          &#9432
+          <div class="infoBubble"><a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/dstefa/roberta-base_topic_classification_nyt_news">RoBERTa: topic-classification-nyt-news</a><br> (external link)<br><br> Classifies text by topic (e.g., sports, arts, business).</div>
+        </div>
+
+        <button id="classificationButton">Go</button>
       </div>
 
-      <input type="checkbox" class="preprocessingBox" id="lemmaBox" name="lemmaBox" checked="true">
-      <label for="lemmaBox">Lemmatize</label>
+      <p id="logger"></p>
 
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Reduces words to their dictionary form, e.g "better" becomes "good" and "is" becomes "be".</div>
-      </div>
-
-      <input type="checkbox" class="preprocessingBox" id="stemBox" name="stemBox">
-      <label for="stemBox">Stem</label>
-
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Reduces words to their root form (stem), e.g "running", "runs", and "runner" all become "run".</div>
+      <div class="aiInfo card">
+        <h3>How does this plugin use AI?</h3>
+        <p>Using the <b>Text Classification</b> feature involves sending requests to <b>Hugging Face</b> 🤗 language models for that specific classification task.</p>
+        <p>Each type of classification (sentiment, emotion, and topic) connects to a different language model.</p>
+        <p>The models have been trained on specific data to calculate scores for different classes. Scores are then ranked from highest to lowest and only the top five classes are returned to this plugin.</p>
+        <p>More information on the models can be found in the information &#9432 </p>
       </div>
     </div>
-
-    <textarea id="outputField" name="outputField" rows="5" cols="33" readonly="true"></textarea>
-
-    <h3>Bag of Words</h3>
-    <p>Splits the text into words and counts their occurrences, which can be very informative.<br> It helps language models to process text in a structured way.</p>
-    <button id="bagOfWordsButton">Create</button>
-
-    <h3>Text Classification</h3>
-    <p><span style="color: #7F77DD; font-weight: bold;">This feature uses artificial intelligence.</span> <br>Attempts to determine the best fitting category for the text.</p>
-    
-
-    <div class="checkboxes" style="margin-top: 0px">
-      <input type="checkbox" id="sentimentBox" name="sentimentBox" checked="true">
-      <label for="sentimentBox">Sentiment</label>
-
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Classifies text into positive, neutral, or negative sentiment. <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/tabularisai/multilingual-sentiment-analysis">(Link)</a></div>
-      </div>
-
-      <input type="checkbox" id="emotionBox" name="emotionBox">
-      <label for="emotionBox">Emotion</label>
-
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Classifies text into emotions like joy, anger, sadness, and more. <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/AnasAlokla/multilingual_go_emotions_V1.2">(Link)</a></div>
-      </div>
-
-      <input type="checkbox" id="topicBox" name="topicBox">
-      <label for="topicBox">Topic</label>
-
-      <div class="info">
-        &#9432
-        <div class="infoBubble">Classifies text into different topics like sports, arts, and business. <a target="_blank" rel="noopener noreferrer" href="https://huggingface.co/dstefa/roberta-base_topic_classification_nyt_news">(Link)</a></div>
-      </div>
-
-      <button id="classificationButton">Go</button>
-    </div>
-
-    <p id="logger"></p>
   </div>
 
   <script type="module" src="./js/Main.js"></script>
