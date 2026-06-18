@@ -8,7 +8,7 @@ import KaggleImporter from './importers/KaggleImporter.js';
 
 const title = 'Dataset Importer';
 const version = 'v0.1';
-const dimensions = { width: 440, height: 240 };
+const dimensions = { width: 500, height: 400 };
 const preventBringToFront = false;
 
 async function createFrame() {
