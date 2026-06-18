@@ -36,10 +36,7 @@ async function createDefaultDataContext() {
 }
 
 async function main() {
-  testServer();
-
   new CODAPConnect();
-
   await CODAPConnect.sendRequest({ action: "get", resource: "document" });
 
   await createDefaultDataContext();
@@ -52,12 +49,6 @@ async function main() {
     new WorldBankImporter(),
     new DataPublicImporter()
   ]);
-}
-
-async function testServer() {
-  const response = await fetch("http://localhost:3000/api/hello");
-  const data = await response.json();
-  console.log(data.message);
 }
 
 main();

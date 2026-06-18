@@ -11,8 +11,6 @@ export default class CaseTable {
   }
 
   async create() {
-    console.log("Creating caseTable");
-
     await this.clearExistingCases();
     await this.writeEntries();
     await this.createComponent();
@@ -26,8 +24,6 @@ export default class CaseTable {
   }
 
   async writeEntries() {
-    console.log("Writing fresh caseTable entries");
-
     const response = await CODAPConnect.sendRequest({
       action: "create",
       resource: this.resource,
@@ -38,8 +34,6 @@ export default class CaseTable {
   }
 
   async createComponent() {
-    console.log("Creating caseTable component");
-
     const response = await CODAPConnect.sendRequest({
       action: "create",
       resource: "component",

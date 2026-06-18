@@ -49,7 +49,6 @@ export default class CODAPConnect {
       action: "get",
       resource: "dataContextList"
     });
-    console.log(response?.values);
     return response?.values || [];
   }
 
@@ -65,11 +64,7 @@ export default class CODAPConnect {
   }
 
   static async createDataContext(name, attrs, callback) {
-    console.log("Removing previous dataContext:", this.currentDataContext);
-
     await this.removeDataContext(this.currentDataContext);
-
-    console.log("Creating dataContext:", name);
 
     const response = await this.sendRequest({
       action: "create",
@@ -83,11 +78,9 @@ export default class CODAPConnect {
 
     if (response?.success) {
       this.currentDataContext = name;
-      console.log("Created dataContext:", name);
     }
 
     if (callback) callback();
-
     return response?.success === true;
   }
 }
