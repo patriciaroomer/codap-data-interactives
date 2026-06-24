@@ -1,6 +1,7 @@
 import CaseTable from "../codap/CaseTable.js";
 import CODAPConnect from "../codap/CODAPConnect.js";
 import CSVParser from "../csv/CSVParser.js";
+import RatingsListener from "./RatingsListener.js";
 
 export default class DataListener {
 
@@ -8,6 +9,8 @@ export default class DataListener {
         this.loadCsvButton = document.getElementById("loadCsvButton");
         this.loadExampleButton = document.getElementById("loadExampleButton");
         this.csvInput = document.getElementById("csvInput");
+        this.userSelect = document.getElementById("userSelectRatings");
+        this.userSelects = document.getElementsByClassName("userSelect")
         this.addListeners();
     }
 
@@ -19,6 +22,8 @@ export default class DataListener {
     
     addLoadCsvListener() {
         this.loadCsvButton.addEventListener("click", async () => {
+            if (this.loadCsvButton.classList.contains("hidden")) return;
+
             const files = this.csvInput.files;
             if (!files) return;
 
@@ -64,6 +69,23 @@ export default class DataListener {
         
         await CODAPConnect.createDataContext("Data", attributes);
         await new CaseTable("Data", entries, { width: 500, height: 300 }).create();
+
+        RatingsListener.data = parser.data;
+        this.createUserSelects(parser.data.getUsers());
+    }
+
+    createUserSelects(users) {
+        const ratingSelect = document.getElementById("ratingSelect");
+        const recommendSelect = document.getElementById("recommendSelect");
+
+        for (const select of this.userSelects) {
+            select.replaceChildren();
+            select.classList.remove("hidden");
+            for (const user of users) {
+                select.add(new Option(user));
+            }
+        }
+        RatingsListener.showRatings();
     }
 
     async fetchExample() {

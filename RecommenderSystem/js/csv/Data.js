@@ -4,11 +4,21 @@ export default class Data {
         this.entries = [];
     }
 
-    setAttributes(attributes) {
-        this.attributes = attributes;
+    getUsers() {
+        const users = [];
+        for (const e of this.entries) {
+            if (!users.includes(e.User)) 
+                users.push(e.User);
+        }
+        return users;
     }
 
-    setEntries(entries) {
-        this.entries = entries.map(e => ({ values: e }));
+    getRatings(user) {
+        const ratings = new Map();
+        for (const e of this.entries) {
+            if (e.User != user) continue;
+            ratings.set(e.Item, e.Rating);
+        }
+        return ratings;
     }
 }

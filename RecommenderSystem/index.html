@@ -12,8 +12,10 @@
     <div class="left">
         <div class="card">
             <h1>Load data</h1>
-            <p>Semicolon separated file with header: User;Item;Rating</p>
-            <input id="csvInput" class="csvInput" type="file" accept=".csv"></input>
+            <p>Semicolon separated file with header: <b>User;Item;Rating</b></p>
+            <div class="card input">
+                <input id="csvInput" class="csvInput" type="file" accept=".csv"></input>
+            </div>
             <div class="row">
                 <button id="loadCsvButton" class="loadCsvButton locked">Load CSV</button>
                 <button id="loadExampleButton" class="loadExampleButton">Load example</button>
@@ -21,18 +23,58 @@
         </div>
 
         <div class="card">
-            <h1>Recommender</h1>
-            <select id="userSelect" class="userSelect"></select>
-            <div class="row">
-                <button id="showRatingsButton" class="showRatingsButton">Show ratings</button>
-                <button id="recommendButton" class="recommendButton">Recommend items</button>
-            </div>
+            <h1>Ratings</h1>
+            <select id="ratingSelect" class="userSelect hidden"></select>
+            <table id="ratingsTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Rating</th> 
+                    </tr>
+                </thead>
+                    <tr>
+                        <th scope="row" class="reset"></th>
+                        <th scope="row" class="reset"></th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="reset"></th>
+                        <th scope="row" class="reset"></th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="reset"></th>
+                        <th scope="row" class="reset"></th>
+                    </tr>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
     
     <div class="right">
         <div class="card">
             <h1>Results</h1>
+            <div class="row">
+                <select id="recommendSelect" class="userSelect hidden"></select>
+                <button id="recommendButton" class="recommendButton">Recommend</button>
+            </div>
+            <table id="recommendTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="reset"></th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="reset"></th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="reset"></th>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="card">
