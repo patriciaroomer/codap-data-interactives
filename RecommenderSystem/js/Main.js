@@ -1,4 +1,5 @@
 import CODAPConnect from "./codap/CODAPConnect.js";
+import CSVParser from "./csv/CSVParser.js";
 
 const title = "Recommender System";
 const version = "v0.1";
@@ -21,6 +22,12 @@ async function createFrame() {
 async function main() {
 	await CODAPConnect.sendRequest({ action: "get", resource: "document" });
 	await createFrame();
+
+	const response = await fetch("../RecommenderSystem/example.csv");
+	const file = await response.text();
+	const parser = new CSVParser();
+	await parser.parse(file, true);
+	console.log(parser.data);
 }
 
 main();
