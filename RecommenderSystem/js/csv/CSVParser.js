@@ -1,4 +1,4 @@
-import Data from "../recommender/Data.js"
+import Data from "./Data.js"
 
 export default class CSVParser {
     
@@ -14,8 +14,8 @@ export default class CSVParser {
                     skipEmptyLines: true,
                     
                     complete: (results) => {   
-                        this.data.setAttributes(results.meta.fields);   
-                        this.data.setEntries(results.data);
+                        this.data.attributes = results.meta.fields;   
+                        this.data.entries = results.data;
                         resolve(true);
                     },
 
