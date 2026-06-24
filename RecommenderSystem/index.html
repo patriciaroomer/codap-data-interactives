@@ -52,43 +52,52 @@
     
     <div class="right">
         <div class="card">
-            <h1>Results</h1>
-            <p>Recommend based on rating similarity of:</p>
+            <h1>Recommendations</h1>
+            
+            <p>
+                Recommend based on rating similarity of <b>Users</b>
+                    <span class="info">
+                        &#9432
+                        <span class="infoBubble"><b>Example</b>: Alice and Bob rate items similarly, so recommend items to Alice which Bob rates highly.</span>
+                    </span>
+                or <b>Items</b>
+                    <span class="info">
+                        &#9432
+                        <span class="infoBubble"><b>Example</b>: ItemA and ItemB receive similar ratings, so recommend similar items to those Alice rates highly.</span>
+                    </span>
+            </p>
             <div class="row">
-                <input type="checkbox">Users 
-                    <div class="info">
-                        &#9432
-                        <div class="infoBubble"><b>Example</b>: Alice and Bob rate items similarly, so recommend items to Alice which Bob rates highly.</div>
-                    </div>
-                </input>
-                <input type="checkbox">Items
-                    <div class="info">
-                        &#9432
-                        <div class="infoBubble"><b>Example</b>: ItemA and ItemB receive similar ratings, so recommend similar items to those Alice rates highly.</div>
-                    </div>
-                </input>
+                <select id="recommendSelect1" class="recommendSelect1">
+                    <option>Users</option>
+                    <option>Items</option>
+                </select>
             </div>
-            <p>Recommend with similarity measure:</p>
+        
+            <p>
+                Use similarity measure: <b>Cosine</b>
+                    <span class="info">
+                        &#9432
+                        <span class="infoBubble">Compares users or items based on their rating patterns, <b>ignoring</b> potentially more harsh or generous rating behaviour. It calculates the angle between two rating vectors.</span>
+                    </span>
+                , <b>Pearson</b>
+                    <span class="info">
+                        &#9432
+                        <span class="infoBubble">Compares users or items based on their rating patterns, <b>relative</b> to potentially more harsh or generous rating behaviour. It calculates the cosine similarity after subtracting the mean from each rating.</span>
+                    </span>
+                or <b>Euclidean</b>
+                    <span class="info">
+                        &#9432
+                        <span class="infoBubble">Compares users or items based on the distance between the <b>absolute values</b> of their ratings.</span>
+                    </span>
+            </p>
             <div class="row">
-                <input type="checkbox">Cosine
-                    <div class="info">
-                        &#9432
-                        <div class="infoBubble">Compares users or items based on their rating patterns, <b>ignoring</b> potentially more harsh or generous rating behaviour. It calculates the angle between two rating vectors.</div>
-                    </div>
-                </input>
-                <input type="checkbox">Pearson
-                    <div class="info">
-                        &#9432
-                        <div class="infoBubble">Compares users or items based on their rating patterns, <b>relative</b> to potentially more harsh or generous rating behaviour. It calculates the cosine similarity after subtracting the mean from each rating. </div>
-                    </div>
-                </input>
-                <input type="checkbox">Euclidean
-                    <div class="info">
-                        &#9432
-                        <div class="infoBubble">Compares users or items based on the distance between the <b>absolute values</b> of their ratings.</div>
-                    </div>
-                </input>
+                <select id="recommendSelect2 class="recommendSelect2">
+                    <option>Cosine</option>
+                    <option>Pearson</option>
+                    <option>Euclidean</option>
+                </select>                
             </div>
+
             <div class="row">
                 <select id="recommendSelect" class="userSelect hidden"></select>
                 <button id="recommendButton" class="recommendButton">Recommend</button>
