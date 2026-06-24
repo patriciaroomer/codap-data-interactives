@@ -19,6 +19,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     display: flex;
+    padding-right: 5px;
 }
 
 .left, .right {
@@ -55,6 +56,10 @@ button:hover {
     cursor: pointer;
 }
 
+input[type="checkbox"] {
+    margin-top: 4px;
+}
+
 input[type="checkbox"]:hover {
     cursor: pointer;
 }
@@ -86,7 +91,7 @@ select {
 }
 
 .recommendButton {
-    margin: 0px 0px 0px 0px;
+    margin: 10px 0px 0px 0px;
 }
 
 .row {
@@ -148,6 +153,50 @@ th, td {
 .hidden {
     display: none;
 }
+
+.info {
+  position: relative;
+  display: inline-block;
+  margin: 1px 3px 0px 0px;
+  cursor: help;
+}
+
+.infoBubble {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--snow);
+  padding: 10px 15px;
+  width: 190px;
+  border-radius: 5px;
+  z-index: 10;
+  font-size: 12px;
+  border: 2px solid var(--cloud);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.infoBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 8px solid transparent;
+  border-top-color: var(--codap);
+}
+
+.info:hover .infoBubble, 
+.infoBubble:hover, 
+.info:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 
 .ok {
     color: var(--parakeet);
