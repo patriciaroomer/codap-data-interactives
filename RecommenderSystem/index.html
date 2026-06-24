@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="../Common/js/iframe-phone.js" language="javascript"></script>
+    <script src="../Common/js/CodapInterface.js"></script>
+    <title>Decision Tree</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  
+  <body>
+    <div class="left">
+        <div class="card">
+            <h1>Load data</h1>
+            <input id="csvInput" class="csvInput" type="file"></input>
+            <div class="row">
+                <button id="loadCsvButton" class="loadCsvButton">Load CSV</button>
+                <button id="loadExampleButton" class="loadExampleButton">Load example</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h1>Recommender</h1>
+            <select id="userSelect" class="userSelect"></select>
+            <div class="row">
+                <button id="showRatingsButton" class="showRatingsButton">Show ratings</button>
+                <button id="recommendButton" class="recommendButton">Recommend items</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="right">
+        <div class="card">
+            <h1>Results</h1>
+        </div>
+
+        <div class="card">
+            <h1>Sociogram</h1>
+        </div>
+    </div>
+
+    <script type="module" src="./js/Main.js"></script>
+  </body>

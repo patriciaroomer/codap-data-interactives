@@ -1,0 +1,97 @@
+:root {
+    --snow: #f6f6f6;
+    --pearl: #f7f7f7;
+    --salt: #efefef;
+    --steam: #ddd;
+    --cloud: #ccc;
+    --graphite: #555;
+    --pebble: #333;
+    --sky: #9fd5ff;
+    --codap: #2596be;
+    --parakeet: #0a7;
+    --ginger: #b50;
+    --crimson: #b00;
+    --shadow: rgba(16, 82, 98, 0.25);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+}
+
+.left, .right {
+    width: 50%;
+    margin: 0px 10px;
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0 0 20px 0px;
+}
+
+.taskTitle {
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+button {
+    border: 1px solid var(--cloud);
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 10px;
+    margin: 10px 0px 0px 0px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--snow);
+    cursor: pointer;
+}
+
+input[type="checkbox"]:hover {
+    cursor: pointer;
+}
+
+input[type="checkbox"]:disabled {
+    cursor: default;
+    filter: invert(25%);
+}
+
+.csvInput {
+    margin: 0px 0px 10px 0px;
+}
+
+select {
+    margin: 0px 0px 10px 0px;
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.card {
+    border: 1px solid var(--steam);
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.ok {
+    color: var(--parakeet);
+}
+
+.warn {
+    color: var(--ginger);
+}
+
+.bad {
+    color: var(--crimson);
+}
