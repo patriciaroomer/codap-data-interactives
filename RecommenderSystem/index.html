@@ -12,9 +12,10 @@
     <div class="left">
         <div class="card">
             <h1>Load data</h1>
-            <input id="csvInput" class="csvInput" type="file"></input>
+            <p>Semicolon separated file with header: User;Item;Rating</p>
+            <input id="csvInput" class="csvInput" type="file" accept=".csv"></input>
             <div class="row">
-                <button id="loadCsvButton" class="loadCsvButton">Load CSV</button>
+                <button id="loadCsvButton" class="loadCsvButton locked">Load CSV</button>
                 <button id="loadExampleButton" class="loadExampleButton">Load example</button>
             </div>
         </div>

@@ -31,6 +31,10 @@ h1 {
     margin: 0 0 20px 0px;
 }
 
+p {
+    font-size: 14px;
+}
+
 .taskTitle {
 	font-size: 13px;
 	font-weight: 600;
@@ -83,6 +87,20 @@ select {
     padding: 10px;
     margin-top: 20px;
 }
+
+.locked {
+	background-color: #eee;
+	color: #888;
+	pointer-events: none;
+	user-select: none;
+}
+
+.locked button {
+	pointer-events: none;
+	background-color: #eee;
+	user-select: none;
+}
+
 
 .ok {
     color: var(--parakeet);
