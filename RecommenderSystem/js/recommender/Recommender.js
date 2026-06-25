@@ -9,12 +9,11 @@ export default class Recommender {
         this.itemLookup = interactionMatrix.itemLookup;
     }
 
-    recommend(user, measure) {
-        const similarities = this.computeSimilarities(user, measure);
-        
-        // TODO: Rank similarities, then return recommendations.
-        console.log(similarities);
-        return similarities;
+    recommend(target, measure) {
+        const similarities = this.computeSimilarities(target, measure);
+        const aggregated = this.aggregate(similarities);
+        const ranking = this.rank(aggregated);
+        return ranking;
     }
 
     computeSimilarity(targetRatings, otherRatings, measure) {
@@ -35,6 +34,49 @@ export default class Recommender {
         }
 
         return similarity;
+    }
+
+    aggregate(similarities) {
+        const aggregated = new Map();
+        
+        for (const [ pair, sim ] of similarities) {
+            const other = pair[1];
+            if (!aggregated.has(other)) {
+                aggregated.set(other, { total: 0, count: 0 });
+            }
+            aggregated.get(other).total += sim;
+            aggregated.get(other).count += 1;
+        }
+
+        const averaged = new Map();
+        for (const [ other, { total, count }] of aggregated) {
+            averaged.set(other, total / count);
+        }
+        return averaged;
+    }
+    
+    rank(similarities) {
+        const sims = Array.from(similarities.values());
+        const pairs = Array.from(similarities.keys());
+        const [ sortedSims, sortedPairs ] = this.reverseInsertionSort(sims, pairs);
+        return sortedPairs;
+    }
+
+    reverseInsertionSort(sims, pairs) {
+        for (let i = 1; i < sims.length; i++) {
+            let keySim = sims[i];
+            let keyPair = pairs[i];
+            let j = i - 1;
+
+            while (j >= 0 && sims[j] < keySim) {
+                sims[j+1] = sims[j];
+                pairs[j+1] = pairs[j];
+                j--;
+            }
+            sims[j+1] = keySim;
+            pairs[j+1] = keyPair;
+        }
+        return [ sims, pairs ];
     }
 
     
