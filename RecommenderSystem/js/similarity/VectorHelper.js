@@ -1,11 +1,7 @@
 export default class VectorHelper {
 
-    static common(v, w) {
-        
-    }
-
     static dot(v, w) {
-        const result = 0;
+        let result = 0;
         for (let i = 0; i < v.length; i++) {
             result += (v[i] * w[i]);
         }
@@ -13,7 +9,7 @@ export default class VectorHelper {
     }
 
     static length(v) {
-        const result = 0;
+        let result = 0;
         for (let i = 0; i < v.length; i++) {
             result += (v[i] * v[i]);
         }
@@ -21,7 +17,7 @@ export default class VectorHelper {
     }
 
     static mean(v) {
-        const result = 0;
+        let result = 0;
         const length = v.length;
         for (let i = 0; i < length; i++) {
             result += v[i];

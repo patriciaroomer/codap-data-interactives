@@ -24,7 +24,10 @@
 
         <div class="card">
             <h1>Ratings</h1>
-            <select id="ratingSelect" class="userSelect hidden"></select>
+            <div class="userSelection hidden">
+                <p>Show ratings for user: </p>
+                <select id="ratingSelect" class="userSelect"></select>
+            </div>
             <table id="ratingsTable">
                 <thead>
                     <tr>
@@ -67,7 +70,7 @@
                     </span>
             </p>
             <div class="row">
-                <select id="recommendSelect1" class="recommendSelect1">
+                <select id="subjectSelect">
                     <option>Users</option>
                     <option>Items</option>
                 </select>
@@ -91,17 +94,18 @@
                     </span>
             </p>
             <div class="row">
-                <select id="recommendSelect2 class="recommendSelect2">
+                <select id="similaritySelect">
                     <option>Cosine</option>
                     <option>Pearson</option>
                     <option>Euclidean</option>
                 </select>                
             </div>
 
-            <div class="row">
-                <select id="recommendSelect" class="userSelect hidden"></select>
-                <button id="recommendButton" class="recommendButton">Recommend</button>
+            <div class="userSelection hidden">
+                <p>Get recommendations for user:</p>
+                <select id="recommendSelect" class="userSelect"></select>
             </div>
+            <button id="recommendButton" class="recommendButton locked">Recommend</button>
             <table id="recommendTable">
                 <thead>
                     <tr>

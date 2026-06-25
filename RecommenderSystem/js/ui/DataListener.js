@@ -9,8 +9,7 @@ export default class DataListener {
         this.loadCsvButton = document.getElementById("loadCsvButton");
         this.loadExampleButton = document.getElementById("loadExampleButton");
         this.csvInput = document.getElementById("csvInput");
-        this.userSelect = document.getElementById("userSelectRatings");
-        this.userSelects = document.getElementsByClassName("userSelect")
+        this.userSelections = document.getElementsByClassName("userSelection")
         this.addListeners();
     }
 
@@ -72,17 +71,21 @@ export default class DataListener {
 
         RatingsListener.data = parser.data;
         this.createUserSelects(parser.data.getUsers());
+
+        const recommendButton = document.getElementById("recommendButton");
+        recommendButton.classList.remove("locked");
     }
 
     createUserSelects(users) {
-        const ratingSelect = document.getElementById("ratingSelect");
-        const recommendSelect = document.getElementById("recommendSelect");
+        for (const selection of this.userSelections) {
+            selection.classList.remove("hidden");
+            const selects = selection.getElementsByTagName("select");
 
-        for (const select of this.userSelects) {
-            select.replaceChildren();
-            select.classList.remove("hidden");
-            for (const user of users) {
-                select.add(new Option(user));
+            for (const select of selects) {
+                select.replaceChildren();
+                for (const user of users) {
+                    select.add(new Option(user));
+                }
             }
         }
         RatingsListener.showRatings();
