@@ -6,10 +6,22 @@ export default class ItemBasedRecommender extends Recommender {
         super(interactionMatrix);
     }
 
+    recommend(target, measure) {
+        const [ similarities, aggregated, alreadyRated ] = super.recommend(target, measure);
+        const predicted = new Map();
+
+        for (const [ item, sim ] of aggregated) {
+            if (!alreadyRated.has(item)) {
+                predicted.set(item, sim);
+            }
+        }
+        return this.rank(predicted);
+    }
+
     computeSimilarities(user, measure) {
         const similarities = new Map();
+        const seedItems = [...this.userLookup.get(user).keys()]
 
-        const seedItems = this.userLookup.get(user).keys();
         for (const item of seedItems) {
             const candidates = this.getCandidates(item);
 

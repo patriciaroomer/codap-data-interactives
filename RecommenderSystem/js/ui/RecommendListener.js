@@ -19,24 +19,38 @@ export default class RecommendListener {
 
     addButtonListener() {
         this.recommendButton.addEventListener("click", async () => {
-            
-            const cases = await CODAPConnect.getCases("Data");
-            if (!cases) return;
-            
-            const interactionMatrix = new InteractionMatrix(cases);
-            
-            const user = this.userSelect.value;
-            const subject = this.subjectSelect.value;
-            const measure = this.similaritySelect.value;
-            
-            let recommender;
-            if (subject === "Users") {
-                recommender = new UserBasedRecommender(interactionMatrix);
-            } else {
-                recommender = new ItemBasedRecommender(interactionMatrix);
-            }
-
-            const recommendations = recommender.recommend(user, measure);
+            const recommendations = await this.recommend();
+            this.showRecommendations(recommendations);
         });
     }
+
+    async recommend() {
+        const cases = await CODAPConnect.getCases("Data");
+        if (!cases) return [];
+        
+        const user = this.userSelect.value;
+        const subject = this.subjectSelect.value;
+        const measure = this.similaritySelect.value;
+        
+        let recommender;
+        const interactionMatrix = new InteractionMatrix(cases);
+
+        if (subject === "Users") recommender = new UserBasedRecommender(interactionMatrix);
+        else recommender = new ItemBasedRecommender(interactionMatrix);
+
+        return recommender.recommend(user, measure);
+    }
+
+    showRecommendations(recommendations) {
+        const tbody = document.querySelector("#recommendTable tbody");
+        tbody.replaceChildren();
+
+        for (const rec of recommendations) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${rec}</td>`;
+            tbody.appendChild(row);
+        }
+    }
+
+
 }

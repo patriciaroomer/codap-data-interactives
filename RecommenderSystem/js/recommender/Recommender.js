@@ -12,8 +12,8 @@ export default class Recommender {
     recommend(target, measure) {
         const similarities = this.computeSimilarities(target, measure);
         const aggregated = this.aggregate(similarities);
-        const ranking = this.rank(aggregated);
-        return ranking;
+        const alreadyRated = new Set(this.userLookup.get(target).keys());
+        return [ similarities, aggregated, alreadyRated ];
     }
 
     computeSimilarity(targetRatings, otherRatings, measure) {
