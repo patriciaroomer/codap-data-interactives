@@ -29,11 +29,7 @@ export default class InteractionMatrix {
     }
 
     getUsers() {
-        const users = [];
-        for (const { User } of this.table) {
-            users.push(User);
-        }
-        return users;
+        return [...new Set(this.table.map(row => row.User))];
     }
 
     getItems() {

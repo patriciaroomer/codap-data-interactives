@@ -9,126 +9,135 @@
   </head>
   
   <body>
-    <div class="left">
-        <div class="card">
-            <h1>Load data</h1>
-            <p>Semicolon separated file with header: <b>User;Item;Rating</b></p>
-            <div class="card input">
-                <input id="csvInput" class="csvInput" type="file" accept=".csv"></input>
+    <main>
+        <div class="left">
+            <div class="card">
+                <h1>Load data</h1>
+                <p>Semicolon separated file with header: <b>User;Item;Rating</b></p>
+                <div class="card input">
+                    <input id="csvInput" class="csvInput" type="file" accept=".csv"></input>
+                </div>
+                <div class="row">
+                    <button id="loadCsvButton" class="loadCsvButton locked">Load CSV</button>
+                    <button id="loadExampleButton" class="loadExampleButton">Load example</button>
+                </div>
             </div>
-            <div class="row">
-                <button id="loadCsvButton" class="loadCsvButton locked">Load CSV</button>
-                <button id="loadExampleButton" class="loadExampleButton">Load example</button>
-            </div>
-        </div>
 
-        <div class="card">
-            <h1>Ratings</h1>
-            <div class="userSelection hidden">
-                <p>Show ratings for user: </p>
-                <select id="ratingSelect" class="userSelect"></select>
+            <div class="card">
+                <h1>Ratings</h1>
+                <div class="userSelection hidden">
+                    <p>Show ratings for user: </p>
+                    <select id="ratingSelect" class="userSelect"></select>
+                </div>
+                <table id="ratingsTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Rating</th> 
+                        </tr>
+                    </thead>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-            <table id="ratingsTable">
-                <thead>
-                    <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Rating</th> 
-                    </tr>
-                </thead>
-                    <tr>
-                        <th scope="row" class="reset"></th>
-                        <th scope="row" class="reset"></th>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="reset"></th>
-                        <th scope="row" class="reset"></th>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="reset"></th>
-                        <th scope="row" class="reset"></th>
-                    </tr>
-                <tbody>
-                </tbody>
-            </table>
         </div>
-    </div>
-    
-    <div class="right">
-        <div class="card">
-            <h1>Recommendations</h1>
-            
-            <p>
-                Recommend based on rating similarity of <b>Users</b>
-                    <span class="info">
-                        &#9432
-                        <span class="infoBubble"><b>Example</b>: Alice and Bob rate items similarly, so recommend items to Alice which Bob rates highly.</span>
-                    </span>
-                or <b>Items</b>
-                    <span class="info">
-                        &#9432
-                        <span class="infoBubble"><b>Example</b>: ItemA and ItemB receive similar ratings, so recommend similar items to those Alice rates highly.</span>
-                    </span>
-            </p>
-            <div class="row">
-                <select id="subjectSelect">
-                    <option>Users</option>
-                    <option>Items</option>
-                </select>
-            </div>
         
-            <p>
-                Use similarity measure: <b>Cosine</b>
-                    <span class="info">
-                        &#9432
-                        <span class="infoBubble">Compares users or items based on their rating patterns, <b>ignoring</b> potentially more harsh or generous rating behaviour. It calculates the angle between two rating vectors.</span>
-                    </span>
-                , <b>Pearson</b>
-                    <span class="info">
-                        &#9432
-                        <span class="infoBubble">Compares users or items based on their rating patterns, <b>relative</b> to potentially more harsh or generous rating behaviour. It calculates the cosine similarity after subtracting the mean from each rating.</span>
-                    </span>
-                or <b>Euclidean</b>
-                    <span class="info">
-                        &#9432
-                        <span class="infoBubble">Compares users or items based on the distance between the <b>absolute values</b> of their ratings.</span>
-                    </span>
-            </p>
-            <div class="row">
-                <select id="similaritySelect">
-                    <option>Cosine</option>
-                    <option>Pearson</option>
-                    <option>Euclidean</option>
-                </select>                
-            </div>
+        <div class="right">
+            <div class="card">
+                <h1>Recommendations</h1>
+                
+                <p>
+                    Recommend based on rating similarity of <b>Users</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble"><b>Example</b>: Alice and Bob rate items similarly, so recommend items to Alice which Bob rates highly.</span>
+                        </span>
+                    or <b>Items</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble"><b>Example</b>: ItemA and ItemB receive similar ratings, so recommend similar items to those Alice rates highly.</span>
+                        </span>
+                </p>
+                <div class="row">
+                    <select id="subjectSelect">
+                        <option>Users</option>
+                        <option>Items</option>
+                    </select>
+                </div>
+            
+                <p>
+                    Use similarity measure: <b>Cosine</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble">Compares users or items based on their rating patterns, <b>ignoring</b> potentially more harsh or generous rating behaviour. It calculates the angle between two rating vectors.</span>
+                        </span>
+                    , <b>Pearson</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble">Compares users or items based on their rating patterns, <b>relative</b> to potentially more harsh or generous rating behaviour. It calculates the cosine similarity after subtracting the mean from each rating.</span>
+                        </span>
+                    or <b>Euclidean</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble">Compares users or items based on the distance between the <b>absolute values</b> of their ratings.</span>
+                        </span>
+                </p>
+                <div class="row">
+                    <select id="similaritySelect">
+                        <option>Cosine</option>
+                        <option>Pearson</option>
+                        <option>Euclidean</option>
+                    </select>                
+                </div>
 
-            <div class="userSelection hidden">
-                <p>Get recommendations for user:</p>
-                <select id="recommendSelect" class="userSelect"></select>
+                <div class="userSelection hidden">
+                    <p>Get recommendations for user:</p>
+                    <select id="recommendSelect" class="userSelect"></select>
+                </div>
+                <button id="recommendButton" class="recommendButton locked">Recommend</button>
+                <table id="recommendTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <button id="recommendButton" class="recommendButton locked">Recommend</button>
-            <table id="recommendTable">
-                <thead>
-                    <tr>
-                        <th scope="col">Item</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row" class="reset"></th>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="reset"></th>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="reset"></th>
-                    </tr>
-                </tbody>
-            </table>
         </div>
-
-        <div class="card">
+    </main>
+    <div class="card">
+        <div class="row">
             <h1>Sociogram</h1>
+            <select id="sociogramSelect">
+                <option>Cosine</option>
+                <option>Pearson</option>
+                <option>Euclidean</option>
+            </select>
         </div>
+        <svg id="sociogram" width="100%" viewBox="0 0 1000 600" style="display:block"></svg>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
