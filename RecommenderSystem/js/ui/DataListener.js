@@ -8,6 +8,7 @@ import EuclideanSociogram from "../sociogram/EuclideanSociogram.js";
 import PearsonSociogram from "../sociogram/PearsonSociogram.js";
 import Sociogram from "../sociogram/Sociogram.js";
 import RatingsListener from "./RatingsListener.js";
+import RecommendListener from "./RecommendListener.js";
 
 export default class DataListener {
 
@@ -15,7 +16,8 @@ export default class DataListener {
         this.loadCsvButton = document.getElementById("loadCsvButton");
         this.loadExampleButton = document.getElementById("loadExampleButton");
         this.csvInput = document.getElementById("csvInput");
-        this.userSelections = document.getElementsByClassName("userSelection")
+        this.userSelections = document.getElementsByClassName("userSelection");
+        this.kSelection = document.getElementById("kSelect");
         this.addListeners();
     }
 
@@ -77,10 +79,9 @@ export default class DataListener {
 
         RatingsListener.data = parser.data;
         this.createUserSelects(parser.data.getUsers());
+        this.createKSelect(parser.data.getItems());
 
-        const recommendButton = document.getElementById("recommendButton");
-        recommendButton.classList.remove("locked");
-
+        await RecommendListener.recommend();
         await this.drawSociogram();
     }
 
@@ -97,6 +98,13 @@ export default class DataListener {
             }
         }
         RatingsListener.showRatings();
+    }
+
+    createKSelect(items) {
+        this.kSelection.replaceChildren();
+        for (let i = 1; i <= items.size; i++) {
+            this.kSelection.add(new Option(i));
+        }
     }
 
     async fetchExample() {

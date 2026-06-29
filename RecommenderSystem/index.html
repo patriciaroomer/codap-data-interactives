@@ -95,7 +95,7 @@
                         </span>
                 </p>
                 <div class="row">
-                    <select id="similaritySelect">
+                    <select id="measureSelect">
                         <option>Cosine</option>
                         <option>Pearson</option>
                         <option>Euclidean</option>
@@ -103,10 +103,10 @@
                 </div>
 
                 <div class="userSelection hidden">
-                    <p>Get recommendations for user:</p>
+                    <p>Get first <b>k</b> recommendations for <b>user</b>:</p>
+                    <select id="kSelect"></select>
                     <select id="recommendSelect" class="userSelect"></select>
                 </div>
-                <button id="recommendButton" class="recommendButton locked">Recommend</button>
                 <table id="recommendTable">
                     <thead>
                         <tr>

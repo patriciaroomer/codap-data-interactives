@@ -6,8 +6,8 @@ export default class ItemBasedRecommender extends Recommender {
         super(interactionMatrix);
     }
 
-    recommend(target, measure) {
-        const [ similarities, aggregated, alreadyRated ] = super.recommend(target, measure);
+    recommend(target, measure, k) {
+        const [ similarities, aggregated, alreadyRated ] = super.recommend(target, measure, k);
         const predicted = new Map();
 
         for (const [ item, sim ] of aggregated) {
@@ -15,7 +15,7 @@ export default class ItemBasedRecommender extends Recommender {
                 predicted.set(item, sim);
             }
         }
-        return this.rank(predicted);
+        return this.rank(predicted, k);
     }
 
     computeSimilarities(user, measure) {

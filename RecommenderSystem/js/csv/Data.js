@@ -13,6 +13,14 @@ export default class Data {
         return users;
     }
 
+    getItems() {
+        const items = new Set();
+        for (const row of this.entries) {
+            items.add(row.Item);
+        }
+        return items;
+    }
+
     getRatings(user) {
         const ratings = new Map();
         for (const e of this.entries) {

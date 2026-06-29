@@ -6,8 +6,8 @@ export default class UserBasedRecommender extends Recommender {
         super(interactionMatrix);
     }
 
-    recommend(target, measure) {
-        const [ similarities, aggregated, alreadyRated ] = super.recommend(target, measure);
+    recommend(target, measure, k) {
+        const [ similarities, aggregated, alreadyRated ] = super.recommend(target, measure, k);
         const scores = new Map();
 
         for (const [ otherUser, sim ] of aggregated ) {
@@ -23,7 +23,7 @@ export default class UserBasedRecommender extends Recommender {
         for (const [ item, { total, simSum }] of scores) {
             predicted.set(item, total / simSum);
         }
-        return this.rank(predicted);
+        return this.rank(predicted, k);
     }
 
     computeSimilarities(user, measure) {

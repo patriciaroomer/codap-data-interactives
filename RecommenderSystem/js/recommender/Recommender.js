@@ -9,7 +9,7 @@ export default class Recommender {
         this.itemLookup = interactionMatrix.itemLookup;
     }
 
-    recommend(target, measure) {
+    recommend(target, measure, k) {
         const similarities = this.computeSimilarities(target, measure);
         const aggregated = this.aggregate(similarities);
         const alreadyRated = new Set(this.userLookup.get(target).keys());
@@ -55,10 +55,11 @@ export default class Recommender {
         return averaged;
     }
     
-    rank(similarities) {
+    rank(similarities, k) {
         const sims = Array.from(similarities.values());
         const pairs = Array.from(similarities.keys());
-        const [ sortedSims, sortedPairs ] = this.reverseInsertionSort(sims, pairs);
+        let [ sortedSims, sortedPairs ] = this.reverseInsertionSort(sims, pairs);
+        sortedPairs = sortedPairs.slice(0, k);
         return sortedPairs;
     }
 

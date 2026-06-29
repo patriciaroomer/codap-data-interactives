@@ -84,6 +84,7 @@ select {
     border-color: var(--cloud);
     padding: 5px 5px 5px 8px;
     height: 34px;
+    width: 90px;
 }
 
 #ratingSelect {
@@ -114,9 +115,10 @@ select {
 }
 
 .card .input {
-    width: 215px;
+    width: 165px;
     padding-top: 20px;
     margin-bottom: 10px;
+    overflow-x: scroll;
 }
 
 #ratingsTable {
