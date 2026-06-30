@@ -56,13 +56,7 @@ export default class Sociogram {
     }
 
     addNode(user) {
-        this.nodes.push({ 
-            user: user, 
-            x: Math.random() * this.width, 
-            y: Math.random() * this.height, 
-            vx: 0, 
-            vy: 0 
-        });
+        this.nodes.push({ user: user, x: 0, y: 0, vx: 0, vy: 0 });
     }
 
     addEdge(source, target, similarity) {

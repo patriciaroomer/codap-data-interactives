@@ -8,10 +8,22 @@ export default class SociogramLayout {
 
         this.scale = sociogram.similarityMeasure.scale;
 
+        this.initialize();
         for (let i = 0; i < iterations; i++) {
             this.repulse();
             this.attract();
             this.move();
+        }
+    }
+
+    initialize() {
+        const cols = Math.ceil(Math.sqrt(this.nodes.length));
+        for (let i = 0; i < this.nodes.length; i++) {
+            const row = Math.floor(i / cols);
+            const col = i % cols;
+
+            this.nodes[i].x = 100 + col * 80;
+            this.nodes[i].y = 100 + row * 80;
         }
     }
 
