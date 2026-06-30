@@ -2,6 +2,8 @@ import VectorHelper from "../VectorHelper.js";
 
 export default class CosineSimilarity {
 
+    static scale = 6;
+
     static compute(v, w) {
         // mathematically undefined
         if (v.length < 2 || w.length < 2) return 0;

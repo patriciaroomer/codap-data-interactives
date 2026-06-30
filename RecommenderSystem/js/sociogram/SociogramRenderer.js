@@ -1,14 +1,11 @@
 export default class SociogramRenderer {
     constructor(sociogram) {
-        this.sociogram = sociogram;
-        
+        this.nodes = sociogram.nodes;
+        this.edges = sociogram.edges;
+    
         this.canvas = document.getElementById("sociogram");
         this.canvas.innerHTML = "";
-        
-        const rect = this.canvas.getBoundingClientRect();
-        this.width = rect.width;
-        this.height = rect.height;
-        
+
         this.source = "http://www.w3.org/2000/svg";
         this.cFill = "#4a90e2";
         this.cStroke = "#2c5f9e";
@@ -26,16 +23,7 @@ export default class SociogramRenderer {
     }
 
     drawNodes() {
-        const nodes = this.sociogram.nodes;
-        const n = nodes.length;
-
-        for (let i = 0; i < n; i++) {
-            const node = nodes[i];
-            const angle = (2 * Math.PI * i) / n;
-            const x = this.width / 2 + Math.cos(angle) * 150;
-            const y = this.height / 2 + Math.sin(angle) * 150;
-            node.x = x;
-            node.y = y;
+        for (const node of this.nodes) {
             this.drawNode(node);
         }
     }
@@ -53,11 +41,8 @@ export default class SociogramRenderer {
     }
 
     drawEdges() {
-        const edges = this.sociogram.edges;
-        const n = edges.length;
-
-        for (let i = 0; i < n; i++) {
-            this.drawEdge(edges[i]);
+        for (let i = 0; i < this.edges.length; i++) {
+            this.drawEdge(this.edges[i]);
         }
     }
 
@@ -74,11 +59,8 @@ export default class SociogramRenderer {
     }
 
     drawTexts() {
-        const nodes = this.sociogram.nodes;
-        const n = nodes.length;
-
-        for (let i = 0; i < n; i++) {
-            this.drawText(nodes[i]);
+        for (let i = 0; i < this.nodes.length; i++) {
+            this.drawText(this.nodes[i]);
         }
     }
 

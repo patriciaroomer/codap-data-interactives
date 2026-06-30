@@ -1,3 +1,4 @@
+import SociogramLayout from "./SociogramLayout.js";
 import SociogramRenderer from "./SociogramRenderer.js";
 
 export default class Sociogram {
@@ -8,12 +9,17 @@ export default class Sociogram {
 
         this.nodes = [];
         this.edges = [];
-
+        
+        const rect = document.getElementById("sociogram").getBoundingClientRect();
+        this.width = rect.width;
+        this.height = rect.height;
+        
         this.createSimilarityMatrix();
         this.build();
     }
 
     draw() {
+        this.layout = new SociogramLayout(this, this.width, this.height);
         new SociogramRenderer(this).render();
     }
 
@@ -30,7 +36,7 @@ export default class Sociogram {
         }
     }
 
-    build(threshold = 0.9) {
+    build(threshold = 0.2) {
         // Nodes
         for (let i = 0; i < this.users.length; i++) {
             this.addNode(this.users[i]);
@@ -41,18 +47,24 @@ export default class Sociogram {
             for (let j = i + 1; j < this.users.length; j++) {
                 const similarity = this.similarityMatrix[i][j];
                 if (similarity >= threshold) {
-                    this.addEdge(this.nodes[i], this.nodes[j]);
+                    this.addEdge(this.nodes[i], this.nodes[j], similarity);
                 }
             }
         }
     }
 
     addNode(user) {
-        this.nodes.push({ user: user, x: 0, y: 0 });
+        this.nodes.push({ 
+            user: user, 
+            x: Math.random() * this.width, 
+            y: Math.random() * this.height, 
+            vx: 0, 
+            vy: 0 
+        });
     }
 
-    addEdge(source, target) {
-        this.edges.push({ source: source, target: target });
+    addEdge(source, target, similarity) {
+        this.edges.push({ source: source, target: target, similarity: similarity });
     }
 
 }

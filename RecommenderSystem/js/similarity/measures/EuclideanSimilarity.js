@@ -1,5 +1,7 @@
 export default class EuclideanSimilarity {
 
+    static scale = 2;
+
     static compute(v, w) {
         let result = 0;
         for (let i = 0; i < v.length; i++) {
