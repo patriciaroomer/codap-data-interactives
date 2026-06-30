@@ -2,11 +2,12 @@ import SociogramLayout from "./SociogramLayout.js";
 import SociogramRenderer from "./SociogramRenderer.js";
 
 export default class Sociogram {
-    constructor(interactionMatrix, similarityMeasure) {
+    constructor(interactionMatrix, similarityMeasure, threshold) {
         this.interactionMatrix = interactionMatrix;
         this.similarityMeasure = similarityMeasure;
-        this.users = interactionMatrix.getUsers();
+        this.threshold = threshold;
 
+        this.users = interactionMatrix.getUsers();
         this.nodes = [];
         this.edges = [];
         
@@ -36,7 +37,7 @@ export default class Sociogram {
         }
     }
 
-    build(threshold = 0.2) {
+    build() {
         // Nodes
         for (let i = 0; i < this.users.length; i++) {
             this.addNode(this.users[i]);
@@ -46,8 +47,9 @@ export default class Sociogram {
         for (let i = 0; i < this.users.length; i++) {
             for (let j = i + 1; j < this.users.length; j++) {
                 const similarity = this.similarityMatrix[i][j];
-                if (similarity >= threshold) {
-                    this.addEdge(this.nodes[i], this.nodes[j], similarity);
+                const strength = this.similarityMeasure.normalize(similarity);
+                if (strength >= this.threshold) {
+                    this.addEdge(this.nodes[i], this.nodes[j], strength);
                 }
             }
         }
@@ -64,7 +66,7 @@ export default class Sociogram {
     }
 
     addEdge(source, target, similarity) {
-        this.edges.push({ source: source, target: target, similarity: similarity });
+        this.edges.push({ source: source, target: target, strength: similarity });
     }
 
 }

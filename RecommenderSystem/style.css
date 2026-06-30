@@ -77,6 +77,14 @@ input[type="file"] {
     margin: 0px 0px 10px 2px;
 }
 
+input[type="number"] {
+    margin-top: 1.5px;
+    padding: 5px;
+    border-radius: 7px;
+    border-width: 1px;
+    border-color: var(--cloud);
+}
+
 select {
     background-color: var(--snow);
     border-radius: 10px;
@@ -85,6 +93,11 @@ select {
     padding: 5px 5px 5px 8px;
     height: 34px;
     width: 90px;
+}
+
+label {
+    margin-top: 6px;
+    font-size: 14px;
 }
 
 #ratingSelect {
@@ -202,7 +215,6 @@ th, td {
   opacity: 1;
   pointer-events: auto;
 }
-
 
 .ok {
     color: var(--parakeet);

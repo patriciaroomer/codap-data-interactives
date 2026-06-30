@@ -1,6 +1,7 @@
 export default class EuclideanSimilarity {
 
     static scale = 2;
+    static threshold = 0.3;
 
     static compute(v, w) {
         let result = 0;
@@ -10,5 +11,9 @@ export default class EuclideanSimilarity {
         }
         result = Math.sqrt(result);
         return 1 / (1 + result);
+    }
+
+    static normalize(similarity) {
+        return similarity;
     }
 }

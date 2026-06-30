@@ -2,7 +2,8 @@ import VectorHelper from "../VectorHelper.js";
 
 export default class CosineSimilarity {
 
-    static scale = 6;
+    static scale = 8;
+    static threshold = 0.9;
 
     static compute(v, w) {
         // mathematically undefined
@@ -16,5 +17,9 @@ export default class CosineSimilarity {
         if (denominator === 0) return 0;
 
         return dot / denominator;
+    }
+
+    static normalize(similarity) {
+        return similarity;
     }
 }

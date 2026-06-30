@@ -7,7 +7,6 @@ export default class SociogramLayout {
         this.height = height;
 
         this.scale = sociogram.similarityMeasure.scale;
-        this.equil = 250;
 
         for (let i = 0; i < iterations; i++) {
             this.repulse();
@@ -48,7 +47,7 @@ export default class SociogramLayout {
             const dy = edge.target.y - edge.source.y;
 
             const dist = Math.max(1, Math.hypot(dx, dy));
-            const idealDist = this.scale * 200 * (1 - edge.similarity);
+            const idealDist = this.scale * 200 * (1 - edge.strength);
             const force = (dist - idealDist) * 0.02;;
 
             edge.source.vx += dx / dist * force;
