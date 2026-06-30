@@ -29,25 +29,36 @@ export default class InteractionMatrix {
     }
 
     getUsers() {
-        return [...new Set(this.table.map(row => row.User))];
+        const users = [];
+        for (const { User } of this.table) {
+            if (users.includes(User)) continue;
+            users.push(User);
+        }
+        return users;
     }
 
     getItems() {
         const items = [];
         for (const { Item } of this.table) {
+            if (items.includes(Item)) continue;
             items.push(Item);
         }
         return items;
     }
 
-    getUserVectors(userA, userB) {
+    getUserRating(u) {
+        return this.userLookup.get(u);
+    }
+
+    getUserRatings(userA, userB) {
         const ratingsA = this.userLookup.get(userA);
         const ratingsB = this.userLookup.get(userB);
+
         const common = this.getCommonRatings(ratingsA, ratingsB);
         return this.getRatingVectors(ratingsA, ratingsB, common);
     }
 
-    getItemVectors(itemA, itemB) {
+    getItemRatings(itemA, itemB) {
         const ratingsA = this.itemLookup.get(itemA);
         const ratingsB = this.itemLookup.get(itemB);
         const common = this.getCommonRatings(ratingsA, ratingsB);
@@ -65,15 +76,24 @@ export default class InteractionMatrix {
         return common;
     }
 
+    getRatingVector(u) {
+        const rating = [];
+        const userRating = this.getUserRating(u);
+        for (const r of userRating) {
+            rating.push(r[1]);
+        }
+        return rating;
+    }
+
     getRatingVectors(ratingsA, ratingsB, commonRatings) {
-        const vecA = [];
-        const vecB = [];
+        const r1 = [];
+        const r2 = [];
         
         for (const r of commonRatings) {
-            vecA.push(ratingsA.get(r));
-            vecB.push(ratingsB.get(r));
+            r1.push(ratingsA.get(r));
+            r2.push(ratingsB.get(r));
         }
-        return [ vecA, vecB ];
+        return [ r1, r2 ];
     }
 
 

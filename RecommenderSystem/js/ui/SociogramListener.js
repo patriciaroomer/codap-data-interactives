@@ -1,8 +1,12 @@
 import CODAPConnect from "../codap/CODAPConnect.js";
 import InteractionMatrix from "../recommender/InteractionMatrix.js";
+import CosineSimilarity from "../similarity/measures/CosineSimilarity.js";
+import EuclideanSimilarity from "../similarity/measures/EuclideanSimilarity.js";
+import PearsonSimilarity from "../similarity/measures/PearsonSimilarity.js";
 import CosineSociogram from "../sociogram/CosineSociogram.js";
 import EuclideanSociogram from "../sociogram/EuclideanSociogram.js";
 import PearsonSociogram from "../sociogram/PearsonSociogram.js";
+import Sociogram from "../sociogram/Sociogram.js";
 
 export default class SociogramListener {
     constructor() {
@@ -12,27 +16,29 @@ export default class SociogramListener {
 
     addListener() {
         this.select.addEventListener("change", async () => {
-            const measure = this.select.value;
-            let sociogram;
+            await SociogramListener.drawSociogram();
+        });
+    }
 
-            const cases = await CODAPConnect.getCases("Data");
+    static async drawSociogram() {
+        const cases = await CODAPConnect.getCases("Data");
             if (!cases) return;
+
             const interactionMatrix = new InteractionMatrix(cases);
+            const measure = document.getElementById("sociogramSelect").value;
 
             switch (measure) {
                 case "Cosine":
-                    sociogram = new CosineSociogram(interactionMatrix);
+                    new Sociogram(interactionMatrix, CosineSimilarity).draw();
                     break;
                 case "Pearson":
-                    sociogram = new PearsonSociogram(interactionMatrix);
+                    new Sociogram(interactionMatrix, PearsonSimilarity).draw();
                     break;
                 case "Euclidean":
-                    sociogram = new EuclideanSociogram(interactionMatrix);
+                    new Sociogram(interactionMatrix, EuclideanSimilarity).draw();
                     break;
                 default:
                     return;
-            }   
-
-        });
+            }
     }
 }

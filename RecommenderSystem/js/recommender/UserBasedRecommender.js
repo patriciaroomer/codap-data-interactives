@@ -31,7 +31,7 @@ export default class UserBasedRecommender extends Recommender {
         const candidates = this.getCandidates(user);
         
         for (const otherUser of candidates) {
-            const [ ratings, otherRatings ] = this.interactionMatrix.getUserVectors(user, otherUser);
+            const [ ratings, otherRatings ] = this.interactionMatrix.getUserRatings(user, otherUser);
             const similarity = this.computeSimilarity(ratings, otherRatings, measure);
             similarities.set([ user, otherUser ], similarity);
         }

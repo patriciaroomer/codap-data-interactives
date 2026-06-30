@@ -2,13 +2,16 @@ import CaseTable from "../codap/CaseTable.js";
 import CODAPConnect from "../codap/CODAPConnect.js";
 import CSVParser from "../csv/CSVParser.js";
 import InteractionMatrix from "../recommender/InteractionMatrix.js";
+import CosineSimilarity from "../similarity/measures/CosineSimilarity.js";
 import EuclideanSimilarity from "../similarity/measures/EuclideanSimilarity.js";
+import PearsonSimilarity from "../similarity/measures/PearsonSimilarity.js";
 import CosineSociogram from "../sociogram/CosineSociogram.js";
 import EuclideanSociogram from "../sociogram/EuclideanSociogram.js";
 import PearsonSociogram from "../sociogram/PearsonSociogram.js";
 import Sociogram from "../sociogram/Sociogram.js";
 import RatingsListener from "./RatingsListener.js";
 import RecommendListener from "./RecommendListener.js";
+import SociogramListener from "./SociogramListener.js";
 
 export default class DataListener {
 
@@ -82,7 +85,7 @@ export default class DataListener {
         this.createKSelect(parser.data.getItems());
 
         await RecommendListener.recommend();
-        await this.drawSociogram();
+        await SociogramListener.drawSociogram();
     }
 
     createUserSelects(users) {
@@ -112,13 +115,5 @@ export default class DataListener {
         const response = await fetch(path);
         const content = await response.text();
         return content;
-    }
-
-    async drawSociogram() {
-        const cases = await CODAPConnect.getCases("Data");
-        if (!cases) return;
-
-        const interactionMatrix = new InteractionMatrix(cases);
-        const sociogram = new CosineSociogram(interactionMatrix);
     }
 }

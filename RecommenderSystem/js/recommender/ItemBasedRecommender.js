@@ -26,7 +26,7 @@ export default class ItemBasedRecommender extends Recommender {
             const candidates = this.getCandidates(item);
 
             for (const otherItem of candidates) {
-                const [ratings, otherRatings] = this.interactionMatrix.getItemVectors(item, otherItem);
+                const [ratings, otherRatings] = this.interactionMatrix.getItemRatings(item, otherItem);
                 const similarity = this.computeSimilarity(ratings, otherRatings, measure);
                 similarities.set([ item, otherItem ], similarity);
             }
