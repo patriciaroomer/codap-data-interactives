@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="../Common/js/iframe-phone.js" language="javascript"></script>
+    <script src="../Common/js/CodapInterface.js"></script>
+    <title>Decision Tree</title>
+    <link rel="stylesheet" href="../../../common.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  
+  <body>
+    <main>
+        <div class="left">
+            <div class="card">
+                <h1>Load data</h1>
+                <p>Semicolon separated file with header: <b>User;Item;Rating</b></p>
+                <div class="card input">
+                    <input id="csvInput" class="csvInput" type="file" accept=".csv"></input>
+                </div>
+                <div id="logger" class="logger hidden"></div>
+                <div class="row">
+                    <button id="loadCsvButton" class="loadCsvButton locked">Load CSV</button>
+                    <button id="loadExampleButton" class="loadExampleButton">Load example</button>
+                </div>
+            </div>
+
+            <div class="card ratingsCard">
+                <h1>Ratings</h1>
+                <div class="userSelection hidden">
+                    <p>Show ratings for user: </p>
+                    <select id="ratingSelect" class="userSelect"></select>
+                </div>
+                <table id="ratingsTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Rating</th> 
+                        </tr>
+                    </thead>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="right">
+            <div class="card recommendationsCard">
+                <h1>Recommendations</h1>
+                
+                <p>
+                    Recommend based on rating similarity of <b>Users</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble"><b>Example</b>: Alice and Bob rate items similarly, so recommend items to Alice which Bob rates highly.</span>
+                        </span>
+                    or <b>Items</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble"><b>Example</b>: ItemA and ItemB receive similar ratings, so recommend similar items to those Alice rates highly.</span>
+                        </span>
+                </p>
+                <div class="row">
+                    <select id="subjectSelect">
+                        <option>Users</option>
+                        <option>Items</option>
+                    </select>
+                </div>
+            
+                <p>
+                    Use similarity measure: <b>Cosine</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble">Compares users or items based on their rating patterns, <b>ignoring</b> potentially more harsh or generous rating behaviour. It calculates the angle between two rating vectors.</span>
+                        </span>
+                    , <b>Pearson</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble">Compares users or items based on their rating patterns, <b>relative</b> to potentially more harsh or generous rating behaviour. It calculates the cosine similarity after subtracting the mean from each rating.</span>
+                        </span>
+                    or <b>Euclidean</b>
+                        <span class="info">
+                            &#9432
+                            <span class="infoBubble">Compares users or items based on the distance between the <b>absolute values</b> of their ratings.</span>
+                        </span>
+                </p>
+                <div class="row">
+                    <select id="measureSelect">
+                        <option>Cosine</option>
+                        <option>Pearson</option>
+                        <option>Euclidean</option>
+                    </select>                
+                </div>
+
+                <div class="userSelection hidden">
+                    <p>Get first <b>k</b> recommendations for <b>user</b>:</p>
+                    <select id="kSelect"></select>
+                    <select id="recommendSelect" class="userSelect"></select>
+                </div>
+                <table id="recommendTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="reset"></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <div class="card">
+        <h1>Sociogram</h1>
+        <p>
+            Visual representation of the similarity between users, based on their item ratings. It uses a force-based layout, meaning similar nodes are pulled to each other while dissimilar nodes are pushed away from each other. The similarities are normalized to a value between 0.0 and 1.0. The similarity threshold determines whether an edge between two nodes is drawn.
+        </p>
+        <div class="row">
+            <label for="sociogramSelect">Similarity measure</label>
+            <select id="sociogramSelect">
+                <option>Cosine</option>
+                <option>Pearson</option>
+                <option>Euclidean</option>
+            </select>
+            <label for="threshold">Similarity threshold (0.0-1.0)</label>
+            <input type="number" id="threshold" class="threshold" min="0" max="1" step="0.1" value="0.8"/>
+        </div>
+        <svg id="sociogram" width="100%" viewBox="0 0 1000 400" style="display:block"></svg>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script type="module" src="./js/Main.js"></script>
+  </body>

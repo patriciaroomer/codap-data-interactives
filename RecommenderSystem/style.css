@@ -1,0 +1,201 @@
+body {
+    padding: 10px;
+    padding-right: 20px;
+}
+
+main {
+    display: flex;
+}
+
+.left {
+    width: 50%;
+    margin: 0px 10px 0px 0px;
+}
+
+.right {
+    width: 50%;
+    margin: 0px 0px 0px 10px;
+    
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0 0 20px 0px;
+}
+
+p {
+    font-size: 14px;
+}
+
+.taskTitle {
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+button {
+    border-radius: 10px;
+    margin: 10px 0px 0px 0px;
+    padding: 8px;
+}
+
+button:hover {
+    background: var(--snow);
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    margin-top: 4px;
+}
+
+input[type="file"] {
+    margin: 0px 0px 10px 2px;
+}
+
+input[type="number"] {
+    margin-top: 1.5px;
+    padding: 5px;
+    border-radius: 7px;
+    border-width: 1px;
+    border-color: var(--cloud);
+}
+
+select {
+    background-color: var(--snow);
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: var(--cloud);
+    padding: 5px 5px 5px 8px;
+    height: 34px;
+    width: 90px;
+}
+
+label {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+#ratingSelect {
+    margin: 0px 0px 15px 2px;    
+}
+
+#recommendSelect {
+    margin: 0px 0px 10px 2px;
+}
+
+.recommendButton {
+    margin: 10px 0px 0px 0px;
+}
+
+.row {
+    margin-bottom: 8px;
+}
+
+.card .input {
+    width: 165px;
+    padding-top: 20px;
+    margin-bottom: 10px;
+    overflow-x: scroll;
+}
+
+.ratingsCard {
+    padding-bottom: 23px;
+}
+
+.recommendationsCard {
+    padding-bottom: 25px;
+}
+
+#ratingsTable {
+    width: 235px;
+}
+
+#recommendTable {
+    width: 185px;
+    margin-top: 48px;
+}
+
+tr {
+    text-align: center;
+}
+
+tr .reset {
+    padding: 10px;
+}
+
+th, td {
+    border: 1px solid var(--graphite);
+    padding: 2px;
+}
+
+.locked {
+	background-color: #eee;
+	color: #888;
+	pointer-events: none;
+	user-select: none;
+}
+
+.locked button {
+	pointer-events: none;
+	background-color: #eee;
+	user-select: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.info {
+  position: relative;
+  display: inline-block;
+  margin: 5px 0px 0px 0px;
+  cursor: help;
+}
+
+.infoBubble {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--snow);
+  padding: 10px 15px;
+  width: 190px;
+  border-radius: 5px;
+  z-index: 10;
+  font-size: 12px;
+  border: 2px solid var(--cloud);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.infoBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 8px solid transparent;
+  border-top-color: var(--cloud);
+}
+
+.info:hover .infoBubble, 
+.infoBubble:hover, 
+.info:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.logger {
+    visibility: visible;
+    display: block;
+    color: var(--crimson);
+    font-size: 12px;
+}
+
+.logger .hidden {
+    visibility: hidden;
+    display: none;
+}

@@ -1,0 +1,86 @@
+export default class SociogramLayout {
+    constructor(sociogram, width, height, iterations = 300) {
+        this.nodes = sociogram.nodes;
+        this.edges = sociogram.edges;
+        
+        this.width = width;
+        this.height = height;
+
+        this.scale = sociogram.similarityMeasure.scale;
+
+        this.initialize();
+        for (let i = 0; i < iterations; i++) {
+            this.repulse();
+            this.attract();
+            this.move();
+        }
+    }
+
+    initialize() {
+        const cols = Math.ceil(Math.sqrt(this.nodes.length));
+        for (let i = 0; i < this.nodes.length; i++) {
+            const row = Math.floor(i / cols);
+            const col = i % cols;
+
+            this.nodes[i].x = 100 + col * 80;
+            this.nodes[i].y = 100 + row * 80;
+        }
+    }
+
+    repulse() {
+        const wall = 2000;
+        for (const n1 of this.nodes) {
+            for (const n2 of this.nodes) {
+                if (n1 === n2) continue;
+                const dx = n1.x - n2.x;
+                const dy = n1.y - n2.y;
+                const dist = Math.max(10, Math.hypot(dx, dy));
+                const force = 4000 / (dist * dist);
+                n1.vx += dx / dist * force;
+                n1.vy += dy / dist * force;
+            }
+            const distLeft = Math.max(10, n1.x + 1);
+            const distRight = Math.max(10, this.width - n1.x + 1);
+            const distTop = Math.max(10, n1.y + 1);
+            const distBottom = Math.max(10, this.height - n1.y + 1);
+
+            n1.vx += wall / (distLeft ** 2);
+            n1.vx -= wall / (distRight ** 2);
+            n1.vy += wall / (distTop ** 2);
+            n1.vy -= wall / (distBottom ** 2);
+        }
+    }
+
+    attract() {
+        for (const edge of this.edges) {
+            
+            const dx = edge.target.x - edge.source.x;
+            const dy = edge.target.y - edge.source.y;
+
+            const dist = Math.max(1, Math.hypot(dx, dy));
+            const idealDist = this.scale * 200 * (1 - edge.strength);
+            const force = (dist - idealDist) * 0.02;;
+
+            edge.source.vx += dx / dist * force;
+            edge.source.vy += dy / dist * force;
+
+            edge.target.vx -= dx / dist * force;
+            edge.target.vy -= dy / dist * force;
+        }
+    }
+
+    move() {
+        const maxSpeed = 50;
+        for (const node of this.nodes) {
+            const speed = Math.hypot(node.vx, node.vy);
+            if (speed > maxSpeed) {
+                node.vx = (node.vx / speed) * maxSpeed;
+                node.vy = (node.vy / speed) * maxSpeed;
+            }
+            node.x += node.vx;
+            node.y += node.vy;
+            node.vx *= 0.85;
+            node.vy *= 0.85;
+        }
+    }
+}
