@@ -19,36 +19,4 @@ export default class CODAPConnect {
       });
     });
   }
-
-  static async createDataContext(name, attrs) {
-    await this.removeDataContext(name);
-
-    const response = await this.sendRequest({
-      action: "create",
-      resource: "dataContext",
-      values: {
-        name: name,
-        label: name,
-        collections: [{ name: name, attrs: attrs }]
-      }
-    });
-
-    if (response?.success) {
-      this.currentDataContext = name;
-    }
-  }
-
-  static async getDataContext(name) {
-    await this.sendRequest({
-      action: "get",
-      resource: `dataContext[${name}]`
-    })
-  }
-
-  static async removeDataContext(name) {
-    await this.sendRequest({
-      action: "delete",
-      resource: `dataContext[${name}]`
-    });
-  }
 }

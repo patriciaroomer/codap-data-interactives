@@ -1,9 +1,10 @@
 import CODAPConnect from './CODAPConnect.js';
 
 export default class CaseTable {
-  constructor(dataContext, entries) {
+  constructor(dataContext, entries, dimensions = { width: 1000, height: 300 }) {
     this.dataContext = dataContext;
     this.entries = entries;
+    this.dimensions = dimensions;
   }
 
   get resource() {
@@ -19,8 +20,9 @@ export default class CaseTable {
   async clearExistingCases() {
     const response = await CODAPConnect.sendRequest({
       action: "delete",
-      resource: `dataContext[${this.dataContext}].case`
+      resource: `dataContext[${this.dataContext}].collection[${this.dataContext}].allCases`
     });
+    console.log(response);
   }
 
   async writeEntries() {
@@ -40,10 +42,7 @@ export default class CaseTable {
         name: this.dataContext,
         isIndexHidden: true,
         position: "right",
-        dimensions: {
-          width: 1000,
-          height: 300
-        }
+        dimensions: this.dimensions
       }
     });
   }

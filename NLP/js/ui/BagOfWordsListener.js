@@ -1,5 +1,5 @@
 import CaseTable from '../codap/CaseTable.js';
-import CODAPConnect from '../codap/CODAPConnect.js';
+import DataContext from '../codap/DataContext.js';
 import PromptListener from './PromptListener.js';
 import UIListener from './UIListener.js';
 
@@ -21,8 +21,8 @@ export default class BagOfWordsListener extends UIListener {
       const codapAttributes = ["Word", "Count"].map(name => ({name, type: "nominal"}));
       const codapEntries = bagOfWords.map(([word, count]) => ({ values: { Word: word, Count: count }}));
       
-      await CODAPConnect.createDataContext("Bag of Words", codapAttributes);
-      await new CaseTable("Bag of Words", codapEntries).create();
+      await DataContext.create("Bag of Words", codapAttributes);
+      await new CaseTable("Bag of Words", codapEntries, { width: 180, height: 300 }).create();
     });
   }
 }

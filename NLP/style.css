@@ -1,26 +1,10 @@
-:root {
-  --sky: #9fd5ff;
-  --shadow: rgba(16, 82, 98, 0.25);
-  --iron: #ccc;
-  --stone: #555;
-  --codap: #2596be;
-}
-
 body {
   padding: 2px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h3 {
   margin-left: 5px;
   font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
 }
 
 p {
@@ -44,13 +28,6 @@ a {
 
 .leftSection {
   margin-top: 10px;
-}
-
-.card {
-	border: 1px solid #ddd;
-	border-radius: 12px;
-	padding: 10px;
-	margin-top: 20px;
 }
 
 .languageButtons {
@@ -103,27 +80,18 @@ textarea {
   margin-bottom: 2px;
   margin-left: 5px;
   width: 450px;
-  border: 2px solid var(--iron);
+  border: 2px solid var(--cloud);
   border-radius: 5px;
-  color: var(--stone);
+  color: var(--graphite);
   outline: none;
   transition: 0.3s ease-in-out;
   pointer-events: none;
-}
-
-input[type="checkbox"]:hover {
-  cursor: pointer;
 }
 
 .checkboxes {
   display: inline-flex;
   margin-top: 5px;
   margin-left: 4px;
-}
-
-input[type="checkbox"]:disabled {
-  cursor: default;
-  filter: invert(25%);
 }
 
 label {
@@ -214,12 +182,11 @@ label {
 button {
   font-size: 11px;
   padding: 1.5px;
-  background-color: var(--sky);
   border-radius: 10px;
-  border-color: var(--codap);
   height: 23px;
   margin-left: 5px;
   transition: 0.3s ease;
+  border: 2px solid var(--cloud);
 }
 
 #bagOfWordsButton {
@@ -230,11 +197,6 @@ button {
 #classificationButton {
   width: 40px;
   margin-top: 5px;
-}
-
-button:hover {
-  border-color: black;
-  cursor: pointer;
 }
 
 #logger {

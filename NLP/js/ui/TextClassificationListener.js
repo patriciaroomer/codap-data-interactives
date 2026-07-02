@@ -1,5 +1,5 @@
 import CaseTable from '../codap/CaseTable.js';
-import CODAPConnect from '../codap/CODAPConnect.js';
+import DataContext from '../codap/DataContext.js';
 import Logger from './Logger.js';
 import UIListener from './UIListener.js';
 
@@ -52,15 +52,16 @@ export default class TextClassificationListener extends UIListener {
 
     const codapAttributes = this.getLabelNames(results).map(name => ({ name, type: "nominal" }));
     const codapEntries = { values: this.getLabelValues(results) };
-    await CODAPConnect.createDataContext(title, codapAttributes);
-    await new CaseTable(title, codapEntries).create();
+
+    await DataContext.create(title, codapAttributes);
+    await new CaseTable(title, codapEntries, { width: 350, height: 100 }).create();
   }
 
   // --- Helper functions --- //
 
   async isApplicable(checkbox, title) {
     if (!document.getElementById(checkbox).checked) {
-      await CODAPConnect.removeDataContext(title);
+      await DataContext.delete(title);
       return false;
     }
     return true;
