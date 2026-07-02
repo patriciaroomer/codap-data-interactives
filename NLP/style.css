@@ -1,0 +1,217 @@
+body {
+  padding: 2px;
+}
+
+h3 {
+  margin-left: 5px;
+  font-size: 16px;
+}
+
+p {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+a {
+  font-weight: bold;
+  color: black;
+  text-underline-offset: 3px;
+}
+
+.main {
+  display: inline-flex;
+}
+
+.leftSection, .rightSection {
+  width: 50%;
+}
+
+.leftSection {
+  margin-top: 10px;
+}
+
+.languageButtons {
+  display: inline-flex;
+}
+
+.languageButtons:hover {
+  cursor: pointer;
+}
+
+.tableContainer {
+  position: relative;
+  width: 460px;
+  height: 860px;
+  overflow-y: scroll;
+}
+
+table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 10;
+}
+
+table.hidden {
+  opacity: 0;
+  z-index: -1;
+}
+
+td {
+  border: 2px solid var(--codap);
+  border-radius: 5px;
+  padding: 5px;
+  background-color: var(--sky);
+  transition: 0.3s;
+}
+
+td:hover {
+  cursor: pointer;
+  border: 2px solid black;
+}
+
+textarea {
+  margin-top: 10px;
+  margin-bottom: 2px;
+  margin-left: 5px;
+  width: 450px;
+  border: 2px solid var(--cloud);
+  border-radius: 5px;
+  color: var(--graphite);
+  outline: none;
+  transition: 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.checkboxes {
+  display: inline-flex;
+  margin-top: 5px;
+  margin-left: 4px;
+}
+
+label {
+  font-size: 12px;
+  padding-top: 8px;
+  margin-bottom: 9px;
+  margin-left: 3px;
+  margin-right: 5px;
+}
+
+#preprocessingCheckboxes label {
+  margin-left: 7px;
+}
+
+.info {
+  position: relative;
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 10px;
+  cursor: help;
+}
+
+.infoBubble {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--sky);
+  padding: 10px 15px;
+  width: 120px;
+  border-radius: 5px;
+  z-index: 10;
+  font-size: 12px;
+  border: 2px solid var(--codap);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.infoBubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border: 8px solid transparent;
+  border-top-color: var(--codap);
+}
+
+.infoBubbleRight {
+  position: absolute;
+  top: 50%;
+  left: 175%;
+  transform: translateY(-50%);
+  background: var(--sky);
+  padding: 10px 15px;
+  width: 225px;
+  border-radius: 5px;
+  z-index: 10;
+  font-size: 12px;
+  border: 2px solid var(--codap);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;  
+}
+
+.infoBubbleRight::after {
+  content: "";
+  position: absolute;
+  
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%) rotate(90deg);
+
+  border: 8px solid transparent;
+  border-top-color: var(--codap);
+}
+
+.info:hover .infoBubble, .infoBubble:hover,
+.info:hover .infoBubbleRight, .infoBubbleRight:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+button {
+  font-size: 11px;
+  padding: 1.5px;
+  border-radius: 10px;
+  height: 23px;
+  margin-left: 5px;
+  transition: 0.3s ease;
+  border: 2px solid var(--cloud);
+}
+
+#bagOfWordsButton {
+  width: 55px;
+  margin-bottom: 5px;
+}
+
+#classificationButton {
+  width: 40px;
+  margin-top: 5px;
+}
+
+#logger {
+  margin-top: 0;
+  font-weight: bold;
+}
+
+hr {
+  margin-left: 6px;
+  margin-right: 25px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #ddd;
+}
+
+.aiInfo {
+  margin-right: 20px;
+}
