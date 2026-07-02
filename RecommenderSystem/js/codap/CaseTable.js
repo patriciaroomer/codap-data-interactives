@@ -59,17 +59,11 @@ export default class CaseTable {
         return response?.success === true;
     }
 
-    static async hide(name) {
-        await CODAPConnect.sendRequest({
-            action: "update",
-            resource: `component[${name}]`,
-            values: {
-                isVisible: false
-            }
+    static toEntries(items, key = "name") {
+        return items.map(item => {
+            if (typeof item === "string") return { values: { [key]: item } };
+            if (item.values !== undefined) return item;  // already wrapped
+            return { values: item };
         });
-    }
-
-    static toEntries(entries) {
-        return entries.map(entry => ({ values: entry }));
     }
 }

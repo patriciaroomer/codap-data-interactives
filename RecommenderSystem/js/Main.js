@@ -1,11 +1,9 @@
 import App from "./App.js";
 import CODAPConnect from "./codap/CODAPConnect.js";
-import CSVParser from "./csv/CSVParser.js";
-import DataListener from "./ui/DataListener.js";
 
 const title = "Recommender System";
 const version = "v0.1";
-const dimensions = { width: 1000, height: 750 };
+const dimensions = { width: 1000, height: 1100};
 const preventBringToFront = false;
 
 async function createFrame() {

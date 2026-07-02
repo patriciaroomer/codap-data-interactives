@@ -1,23 +1,4 @@
-:root {
-    --snow: #f6f6f6;
-    --pearl: #f7f7f7;
-    --salt: #efefef;
-    --steam: #ddd;
-    --cloud: #ccc;
-    --graphite: #555;
-    --pebble: #333;
-    --sky: #9fd5ff;
-    --codap: #2596be;
-    --parakeet: #0a7;
-    --ginger: #b50;
-    --crimson: #b00;
-    --shadow: rgba(16, 82, 98, 0.25);
-}
-
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     padding: 10px;
     padding-right: 20px;
 }
@@ -26,9 +7,15 @@ main {
     display: flex;
 }
 
-.left, .right {
+.left {
     width: 50%;
-    margin: 0px 10px;
+    margin: 0px 10px 0px 0px;
+}
+
+.right {
+    width: 50%;
+    margin: 0px 0px 0px 10px;
+    
 }
 
 h1 {
@@ -47,12 +34,9 @@ p {
 }
 
 button {
-    border: 1px solid var(--cloud);
-    background: #fff;
     border-radius: 10px;
     margin: 10px 0px 0px 0px;
     padding: 8px;
-    cursor: pointer;
 }
 
 button:hover {
@@ -62,15 +46,6 @@ button:hover {
 
 input[type="checkbox"] {
     margin-top: 4px;
-}
-
-input[type="checkbox"]:hover {
-    cursor: pointer;
-}
-
-input[type="checkbox"]:disabled {
-    cursor: default;
-    filter: invert(25%);
 }
 
 input[type="file"] {
@@ -113,18 +88,7 @@ label {
 }
 
 .row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    align-items: flex-start;
     margin-bottom: 8px;
-}
-
-.card {
-    border: 1px solid var(--steam);
-    border-radius: 12px;
-    padding: 10px;
-    margin-top: 20px;
 }
 
 .card .input {
@@ -134,13 +98,21 @@ label {
     overflow-x: scroll;
 }
 
+.ratingsCard {
+    padding-bottom: 23px;
+}
+
+.recommendationsCard {
+    padding-bottom: 25px;
+}
+
 #ratingsTable {
     width: 235px;
 }
 
 #recommendTable {
     width: 185px;
-    margin-top: 20px;
+    margin-top: 48px;
 }
 
 tr {
@@ -176,7 +148,7 @@ th, td {
 .info {
   position: relative;
   display: inline-block;
-  margin: 1px 0px 0px 0px;
+  margin: 5px 0px 0px 0px;
   cursor: help;
 }
 
@@ -206,7 +178,7 @@ th, td {
   transform: translateX(-50%);
 
   border: 8px solid transparent;
-  border-top-color: var(--codap);
+  border-top-color: var(--cloud);
 }
 
 .info:hover .infoBubble, 
@@ -216,14 +188,14 @@ th, td {
   pointer-events: auto;
 }
 
-.ok {
-    color: var(--parakeet);
-}
-
-.warn {
-    color: var(--ginger);
-}
-
-.bad {
+.logger {
+    visibility: visible;
+    display: block;
     color: var(--crimson);
+    font-size: 12px;
+}
+
+.logger .hidden {
+    visibility: hidden;
+    display: none;
 }

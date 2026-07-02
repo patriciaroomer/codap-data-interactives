@@ -1,8 +1,8 @@
-import CODAPConnect from "../codap/CODAPConnect.js";
 import Recommender from "../recommender/Recommender.js";
 import InteractionMatrix from "../recommender/InteractionMatrix.js";
 import UserBasedRecommender from "../recommender/UserBasedRecommender.js";
 import ItemBasedRecommender from "../recommender/ItemBasedRecommender.js";
+import DataContext from "../codap/DataContext.js";
 
 export default class RecommendListener {
 
@@ -25,7 +25,7 @@ export default class RecommendListener {
     }
 
     static async recommend() {
-        const cases = await CODAPConnect.getCases("Data");
+        const cases = await DataContext.getCases("Data");
         if (!cases) return [];
         
         const subject = RecommendListener.subjectSelect.value;

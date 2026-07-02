@@ -29,26 +29,25 @@ export default class SociogramLayout {
 
     repulse() {
         const wall = 2000;
-
         for (const n1 of this.nodes) {
             for (const n2 of this.nodes) {
                 if (n1 === n2) continue;
-
                 const dx = n1.x - n2.x;
                 const dy = n1.y - n2.y;
-
                 const dist = Math.max(10, Math.hypot(dx, dy));
                 const force = 4000 / (dist * dist);
-
                 n1.vx += dx / dist * force;
                 n1.vy += dy / dist * force;
             }
+            const distLeft = Math.max(10, n1.x + 1);
+            const distRight = Math.max(10, this.width - n1.x + 1);
+            const distTop = Math.max(10, n1.y + 1);
+            const distBottom = Math.max(10, this.height - n1.y + 1);
 
-            n1.vx += wall / ((n1.x + 1) ** 2);
-            n1.vx -= wall / ((this.width - n1.x + 1) ** 2);
-        
-            n1.vy += wall / ((n1.y + 1) ** 2);
-            n1.vy -= wall / ((this.height - n1.y + 1) ** 2);
+            n1.vx += wall / (distLeft ** 2);
+            n1.vx -= wall / (distRight ** 2);
+            n1.vy += wall / (distTop ** 2);
+            n1.vy -= wall / (distBottom ** 2);
         }
     }
 
@@ -71,10 +70,15 @@ export default class SociogramLayout {
     }
 
     move() {
+        const maxSpeed = 50;
         for (const node of this.nodes) {
+            const speed = Math.hypot(node.vx, node.vy);
+            if (speed > maxSpeed) {
+                node.vx = (node.vx / speed) * maxSpeed;
+                node.vy = (node.vy / speed) * maxSpeed;
+            }
             node.x += node.vx;
             node.y += node.vy;
-
             node.vx *= 0.85;
             node.vy *= 0.85;
         }

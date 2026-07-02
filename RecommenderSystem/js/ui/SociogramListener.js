@@ -1,4 +1,4 @@
-import CODAPConnect from "../codap/CODAPConnect.js";
+import DataContext from "../codap/DataContext.js";
 import InteractionMatrix from "../recommender/InteractionMatrix.js";
 import CosineSimilarity from "../similarity/measures/CosineSimilarity.js";
 import EuclideanSimilarity from "../similarity/measures/EuclideanSimilarity.js";
@@ -22,7 +22,7 @@ export default class SociogramListener {
     }
 
     static async drawSociogram() {
-        const cases = await CODAPConnect.getCases("Data");
+        const cases = await DataContext.getCases("Data");
         if (!cases) return;
 
         const interactionMatrix = new InteractionMatrix(cases);

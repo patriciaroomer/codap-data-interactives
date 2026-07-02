@@ -1,11 +1,8 @@
 import CaseTable from "../codap/CaseTable.js";
-import CODAPConnect from "../codap/CODAPConnect.js";
+import DataContext from "../codap/DataContext.js";
 import CSVParser from "../csv/CSVParser.js";
-import InteractionMatrix from "../recommender/InteractionMatrix.js";
-import CosineSimilarity from "../similarity/measures/CosineSimilarity.js";
-import EuclideanSimilarity from "../similarity/measures/EuclideanSimilarity.js";
-import PearsonSimilarity from "../similarity/measures/PearsonSimilarity.js";
 import Sociogram from "../sociogram/Sociogram.js";
+import Logger from "./Logger.js";
 import RatingsListener from "./RatingsListener.js";
 import RecommendListener from "./RecommendListener.js";
 import SociogramListener from "./SociogramListener.js";
@@ -68,14 +65,22 @@ export default class DataListener {
     }
 
     async loadData(csv) {
+        Logger.hide();
+
         const parser = new CSVParser();
-        await parser.parse(csv);
+        try {
+            await parser.parse(csv);
+        } catch (error) {
+            Logger.log(error.message);
+            return;
+        }
+
 
         const attributes = parser.data.attributes;
         const entries = parser.data.entries;
         
-        await CODAPConnect.createDataContext("Data", attributes);
-        await new CaseTable("Data", entries, { width: 500, height: 300 }).create();
+        await DataContext.create("Data", attributes);
+        await new CaseTable("Data", entries, { width: 250, height: 1065 }).create();
 
         RatingsListener.data = parser.data;
         this.createUserSelects(parser.data.getUsers());
