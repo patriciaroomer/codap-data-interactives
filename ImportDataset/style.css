@@ -1,21 +1,7 @@
-:root {
-  --herbal: #25a18e;
-  --shadow: rgba(16, 82, 98, 0.25);
-  --iron: #ccc;
-  --stone: #555;
-}
-
 body {
-  padding-top: 20px;
-  padding-bottom: 30px;
-  padding-left: 20px;
-  padding-right: 30px;
+  padding: 20px 30xpx 30px 20px;
+  margin-left: 30px;
   width: 450px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 p {
@@ -32,7 +18,7 @@ input {
   border: 2px solid #ddd;
   border-radius: 8px;
   font-size: 14px;
-  color: var(--stone);
+  color: var(--graphite);
   outline: none;
   width: 350px;
   transition: 0.3s ease;
@@ -45,14 +31,8 @@ input:focus {
 
 button {
 	padding: 5px 10px; 
-	border: 2px solid #ccc; 
-	background: #fff; 
+	border: 2px solid var(--cloud);  
 	border-radius: 8px;
-	cursor: pointer;
-}
-
-button:hover {
-  cursor: pointer;
 }
 
 #urlBlock {
@@ -104,9 +84,6 @@ a:hover {
 }
 
 .card {
-	border: 2px solid #ddd;
-	border-radius: 12px;
-	padding: 10px;
-	margin-top: 20px;
+	border: 2px solid var(--steam);
   width: 410px;
 }

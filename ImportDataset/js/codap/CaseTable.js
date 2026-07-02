@@ -1,54 +1,72 @@
-import CODAPConnect from './CODAPConnect.js';
+import CODAPConnect from "./CODAPConnect.js";
+import DataContext from "./DataContext.js";
 
 export default class CaseTable {
-  constructor(dataContext, entries) {
-    this.dataContext = dataContext;
-    this.entries = entries;
-  }
 
-  get resource() {
-    return `dataContext[${this.dataContext}].collection[${this.dataContext}].case`;
-  }
+    constructor(dataContext, entries) {
+        this.dataContext = dataContext;
+        this.entries = CaseTable.toEntries(entries);
+        this.dimensions = { height: 300, width: 1000 };
+    }
 
-  async create() {
-    await this.clearExistingCases();
-    await this.writeEntries();
-    await this.createComponent();
-  }
+    get resource() {
+        return `dataContext[${this.dataContext}].collection[${this.dataContext}].case`;
+    }
 
-  async clearExistingCases() {
-    await CODAPConnect.sendRequest({
-      action: "delete",
-      resource: `dataContext[${this.dataContext}].case`
-    });
-  }
+    async create(name, dataContext) {
+        await this.clear();
+        await this.write();
+        await this.createComponent();
+    }
 
-  async writeEntries() {
-    const response = await CODAPConnect.sendRequest({
-      action: "create",
-      resource: this.resource,
-      values: this.entries
-    });
+    async clear() {
+        const exists = await DataContext.exists(this.dataContext);
+        if (!exists) return;
 
-    return response?.success === true;
-  }
+        const response = await CODAPConnect.sendRequest({
+            action: "delete",
+            resource: `dataContext[${this.dataContext}].collection[${this.dataContext}].allCases`,
+        });
+        return response;
+    }
 
-  async createComponent() {
-    const response = await CODAPConnect.sendRequest({
-      action: "create",
-      resource: "component",
-      values: {
-        type: "caseTable",
-        name: this.dataContext,
-        dataContext: this.dataContext,
-        isVisible: true,
-        dimensions: {
-          width: 1000,
-          height: 300
-        }
-      }
-    });
+    async write() {
+        const response = await CODAPConnect.sendRequest({
+            action: "create",
+            resource: this.resource,
+            values: this.entries
+        });
+        return response;
+    }
 
-    return response?.success === true;
-  }
+    async createComponent() {
+        const response = await CODAPConnect.sendRequest({
+            action: "create",
+            resource: "component",
+            values: {
+                type: "caseTable",
+                name: this.dataContext,
+                dataContext: this.dataContext,
+                isVisible: true,
+                dimensions: this.dimensions
+            }
+        });
+        return response;
+    }
+
+    static async exists(name) {
+        const response = await CODAPConnect.sendRequest({
+            action: "get",
+            resource: `component[${name}]`
+        });
+        return response?.success;
+    }
+
+    static toEntries(items, key = "name") {
+        return items.map(item => {
+            if (typeof item === "string") return { values: { [key]: item } };
+            if (item.values !== undefined) return item;  // already wrapped
+            return { values: item };
+        });
+    }
 }

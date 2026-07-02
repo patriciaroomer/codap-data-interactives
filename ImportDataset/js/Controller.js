@@ -1,6 +1,18 @@
+import DataPublicImporter from "./importers/DataPublicImporter.js";
+import HuggingFaceImporter from "./importers/HuggingFaceImporter.js";
+import KaggleImporter from "./importers/KaggleImporter.js";
+import OECDImporter from "./importers/OECDImporter.js";
+import WorldBankImporter from "./importers/WorldBankImporter.js";
+
 export default class Controller {
-  constructor(importers) {
-    this.importers = importers;
+  constructor() {
+    this.importers = [
+      new HuggingFaceImporter(),
+      new KaggleImporter(),
+      new OECDImporter(),
+      new WorldBankImporter(),
+      new DataPublicImporter()
+    ];
     this.urlField = document.getElementById("urlUploader");
     this.urlButton = document.getElementById("urlButton");
 

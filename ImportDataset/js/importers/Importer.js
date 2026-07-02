@@ -1,6 +1,6 @@
 import CaseTable from '../codap/CaseTable.js';
-import CODAPConnect from '../codap/CODAPConnect.js';
-import Controller from '../codap/Controller.js';
+import DataContext from '../codap/DataContext.js';
+import Controller from '../Controller.js';
 import CSVParser from '../parsers/CSVParser.js';
 import JSONParser from '../parsers/JSONParser.js';
 
@@ -25,8 +25,8 @@ export default class Importer {
     }
 
     this.url = "";
-    this.formats = [".csv", ".json"];
-    this.format = this.formats[0] // Default
+    this.formats = [".csv"];
+    this.format = ".csv"; // Default
     this.attributes = [];
     this.entries = [];
     this.maxEntries = 1000;
@@ -37,7 +37,7 @@ export default class Importer {
   }
 
   async handleInput() {
-    if (await CODAPConnect.anyDataContextExists()) {
+    if (await DataContext.anyExists()) {
       if (!confirm("Importing a dataset will overwrite the current one. All changes to the dataset will be lost.")) {
         return;
       }
@@ -57,15 +57,16 @@ export default class Importer {
     this.datasetName = this.getDatasetName();
     this.api = this.constructApiCall();
 
-    const exists = await CODAPConnect.dataContextExists(this.datasetName);
+    const exists = await DataContext.exists(this.datasetName);
 
     const parsed = await this.parse();
     if (!parsed) {
       return;
     }
 
-    await CODAPConnect.createDataContext(this.datasetName, this.attributes);
+    await DataContext.create(this.datasetName, this.attributes);
     await new CaseTable(this.datasetName, this.entries, exists).create();
+    
     if (this.format === ".json") {
       Controller.displayWarning("JSON file might potentially be displayed incorrectly.");
       return;
@@ -99,7 +100,7 @@ export default class Importer {
     console.log("Fetching file...");
     let resource = await this.getResource(response);
     if (!resource) {
-      Controller.displayError("Could not parse any of the files provided by this dataset, please try another one.");
+      Controller.displayError("Please try a dataset with a CSV file");
       return;
     }
 
@@ -145,12 +146,8 @@ export default class Importer {
       case ".csv":
         parser = new CSVParser();
         break;
-      case ".json":
-        parser = new JSONParser();
-        Controller.displayWarning("JSON file might potentially be displayed incorrectly");
-        break;
       default:
-        Controller.displayError("No CSV or tabular JSON file found");
+        Controller.displayError("Please try a dataset with a CSV file");
         return;
     }
     return parser;
@@ -177,7 +174,8 @@ export default class Importer {
 
     return fetch(url, { signal: controller.signal })
       .then(response => {
-        if (!response.ok) throw new Error("Network error");
+        if (!response.ok) Controller.displayError("Something went wrong, please try again later.");
+        if (response.status === 422) Controller.displayError("Please try a dataset with a CSV file");
         return response;
       })
       .finally(() => clearTimeout(timeout));

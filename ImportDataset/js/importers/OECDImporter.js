@@ -1,4 +1,4 @@
-import Controller from '../codap/Controller.js';
+import Controller from '../Controller.js';
 import Importer from './Importer.js';
 
 export default class OECDImporter extends Importer {

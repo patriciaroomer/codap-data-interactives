@@ -5,6 +5,7 @@
   <script src="../Common/js/iframe-phone.js" language="javascript"></script>
   <script src="../Common/js/CodapInterface.js"></script>
   <title>Import a dataset</title>
+  <link rel="stylesheet" href="../../../common.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -17,7 +18,7 @@
   <p id="logs" class="inline-child"></p>
 
   <div id="infoBlock">
-    <p>Find a dataset through one of the <b>following websites</b> and paste the URL here. Supported file formats are <b>CSV</b> <br> and <b>JSON</b> (beta).</p>
+    <p>Find a dataset with a <b>CSV</b> file through one of the <b>following websites</b> and paste the URL here.</p>
   </div>
   <div class="card">
     <a href="https://huggingface.co/datasets" target="_blank">Hugging Face</a><br>
@@ -29,22 +30,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-  <script type="module" src="./js/codap/CODAPConnect.js"></script>
-  <script type="module" src="./js/codap/CaseTable.js"></script>
-  <script type="module" src="./js/codap/Controller.js"></script>
-
-  <script type="module" src="./js/parsers/Parser.js"></script>
-  <script type="module" src="./js/parsers/CSVParser.js"></script>
-  <script type="module" src="./js/parsers/JSONParser.js"></script>
-
-  <script type="module" src="./js/importers/Importer.js"></script>
-  <script type="module" src="./js/importers/HuggingFaceImporter.js"></script>
-  <script type="module" src="./js/importers/KaggleImporter.js"></script>
-  <script type="module" src="./js/importers/OECDImporter.js"></script>
-  <script type="module" src="./js/importers/WorldBankImporter.js"></script>
-  <script type="module" src="./js/importers/DataPublicImporter.js"></script>
-
   <script type="module" src="./js/Main.js"></script>
 </body>
 </html>

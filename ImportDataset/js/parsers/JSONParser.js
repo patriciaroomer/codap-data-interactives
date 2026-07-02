@@ -1,4 +1,4 @@
-import Controller from '../codap/Controller.js';
+import Controller from '../Controller.js';
 import Parser from './Parser.js';
 import Importer from '../importers/Importer.js';
 
