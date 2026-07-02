@@ -1,6 +1,8 @@
 import Clustering from './clustering/Clustering.js';
 import CaseTable from './codap/CaseTable.js';
 import CODAPConnect from './codap/CODAPConnect.js';
+import DataContext from './codap/DataContext.js';
+import Graph from './codap/Graph.js';
 import Slider from './codap/Slider.js';
 import ControlPanel from './ui/ControlPanel.js';
 import GraphDrawer from './ui/GraphDrawer.js';
@@ -17,8 +19,8 @@ async function init() {
 
   ControlPanel.update();
 
-  await CODAPConnect.createDefaultDataContext();
-  await CODAPConnect.createGraphComponent();
+  await DataContext.createDefault();
+  await Graph.create();
   await Slider.create();
   
   ControlPanel.sliderIteration = 0;

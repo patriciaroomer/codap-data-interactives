@@ -1,6 +1,5 @@
 import Clustering from '../clustering/Clustering.js';
 import CaseTable from '../codap/CaseTable.js';
-import CODAPConnect from '../codap/CODAPConnect.js';
 import Slider from '../codap/Slider.js';
 import State from './State.js';
 

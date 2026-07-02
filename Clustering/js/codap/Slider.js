@@ -10,6 +10,8 @@ export default class Slider {
 	static sliderReadScheduled = false;
 	static sliderUpdateScheduled = false;
 
+	static NAME = "iterSlider";
+
 	static async create() {
 		const lower = 1;
 		const upper = State.maxIter;
@@ -17,35 +19,40 @@ export default class Slider {
 
 		// Create global object
 		await CODAPConnect.sendRequest({
-      action: "create",
-      resource: "global",
-      values: { name: CODAPConnect.SLIDER, value: start }
-    });
+			action: "create",
+			resource: "global",
+			values: { name: Slider.NAME, value: start }
+		});
 
 		// Create slider component
-    await CODAPConnect.sendRequest({
-      action: "create",
-      resource: "component",
-      values: {
-        title: "Iteration",
-        type: "slider",
-        globalValueName: CODAPConnect.SLIDER,
-        lowerBound: lower,
-        upperBound: upper,
-        dimensions: {
-          width: CODAPConnect.WIDGET_WIDTH,
-          height: 95
-        }
-      }
-    });
+		await CODAPConnect.sendRequest({
+		action: "create",
+		resource: "component",
+		values: {
+			title: "Iteration",
+			type: "slider",
+			globalValueName: Slider.NAME,
+			lowerBound: lower,
+			upperBound: upper,
+			dimensions: {
+				width: CODAPConnect.WIDGET_WIDTH,
+				height: 95
+			}
+		}
+		});
+	}
+
+	static handle(request) {
+		if (!Slider.sliderChanged(request)) return;
+		Slider.queueSliderRead();
 	}
 
 	static sliderChanged(request) {
-    return request.action === "notify" &&
-           request.resource === "component" &&
-           request.values?.operation === "change slider value" &&
-           request.values?.type === "DG.SliderView";                                                                                                        
-  }
+		return request.action === "notify" &&
+			request.resource === "component" &&
+			request.values?.operation === "change slider value" &&
+			request.values?.type === "DG.SliderView";                                                                                                        
+	}
 
 	static async queueSliderRead() {
 		if (Slider.sliderReadScheduled) return;
@@ -60,8 +67,8 @@ export default class Slider {
 
 	static async getSliderValue() {
 		const response = await CODAPConnect.sendRequest({
-		action: "get",
-		resource: `global[${CODAPConnect.SLIDER}]`
+			action: "get",
+			resource: `global[${Slider.NAME}]`
 		});
 		let value = response?.values?.value;
 			return Slider.roundSliderValue(value);
@@ -80,7 +87,7 @@ export default class Slider {
 	static async setSliderValue(iteration) {
 		await CODAPConnect.sendRequest({
 			action: "update",
-			resource: `global[${CODAPConnect.SLIDER}]`,
+			resource: `global[${Slider.NAME}]`,
 			values: {
 				value: iteration
 			}

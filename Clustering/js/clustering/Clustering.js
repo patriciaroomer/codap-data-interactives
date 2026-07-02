@@ -1,5 +1,4 @@
 import CaseTable from '../codap/CaseTable.js';
-import CODAPConnect from '../codap/CODAPConnect.js';
 import Slider from '../codap/Slider.js';
 import ControlPanel from '../ui/ControlPanel.js';
 import GraphDrawer from '../ui/GraphDrawer.js';

@@ -1,3 +1,4 @@
+import DataContext from "./DataContext.js";
 import CODAPConnect from "./CODAPConnect.js";
 
 export default class CaseTable {
@@ -9,7 +10,7 @@ export default class CaseTable {
       values: {
         type: "caseTable",
         name: "k-means Demo",
-        dataContext: CODAPConnect.DATACONTEXT,
+        dataContext: DataContext.DATACONTEXT,
         isVisible: true,
         dimensions: {
           width: CODAPConnect.WIDGET_WIDTH,
@@ -45,7 +46,7 @@ export default class CaseTable {
 	static async createCases(cases) {
 		await CODAPConnect.sendRequest({
 			action: "create",
-			resource: `dataContext[${CODAPConnect.DATACONTEXT}].collection[${CODAPConnect.COLLECTION}].case`,
+			resource: `dataContext[${DataContext.DATACONTEXT}].collection[${DataContext.COLLECTION}].case`,
 			values: cases
 		});
 	}
@@ -53,7 +54,7 @@ export default class CaseTable {
 	static async deleteAllCases() {
     await CODAPConnect.sendRequest({
       action: "delete",
-      resource: `dataContext[${CODAPConnect.DATACONTEXT}].collection[${CODAPConnect.COLLECTION}].allCases`
+      resource: `dataContext[${DataContext.DATACONTEXT}].collection[${DataContext.COLLECTION}].allCases`
     });
   }
 
