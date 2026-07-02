@@ -1,15 +1,12 @@
-import CODAPConnect from "./codap/CODAPConnect.js";
 import ID3 from "./decision-tree/ID3.js";
 import CardController from "./ui/CardController.js";
-import Logger from "./ui/Logger.js";
-import TrainingData from "./data/TrainingData.js";
-import TreeLayout from "./decision-tree/TreeLayout.js";
 import TreeRenderer from "./decision-tree/TreeRenderer.js";
-import Data from "./data/Data.js";
+import TrainingData from "./data/TrainingData.js";
 import TestingData from "./data/TestingData.js";
 import CaseTable from "./codap/CaseTable.js";
 import State from "./codap/State.js";
 import UI from "./constants/UI.js";
+import Global from "./codap/Global.js";
 
 export default class App {
   constructor() {
@@ -72,7 +69,7 @@ export default class App {
     // For this, we store a CODAP global value,
     // 1 meaning the tree was trained and should be rendered again,
     // 0 meaning the tree was not trained yet.
-    const trained = await CODAPConnect.getGlobal("TRAINED");
+    const trained = await Global.get("TRAINED");
     if (trained === 1) {
       await this.handleTraining();
     }
@@ -164,7 +161,7 @@ export default class App {
     ID3.assignIds(this.tree);
     this.renderer.render(this.tree);
     this.cardController.handleTraining();
-    await CODAPConnect.updateGlobal("TRAINED", 1);
+    await Global.update("TRAINED", 1);
   }
   
   async handleTesting() {

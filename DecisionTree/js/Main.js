@@ -1,5 +1,6 @@
 import App from "./App.js";
 import CODAPConnect from "./codap/CODAPConnect.js";
+import Global from "./codap/Global.js";
 import State from "./codap/State.js";
 
 const title = "Decision Tree";
@@ -21,8 +22,8 @@ async function createFrame() {
 }
 
 async function reloadState() {
-	const globalExists = await CODAPConnect.globalExists("TRAINED");
-	if (!globalExists) await CODAPConnect.createGlobal("TRAINED", 0);
+	const globalExists = await Global.exists("TRAINED");
+	if (!globalExists) await Global.create("TRAINED", 0);
 	await State.reload();
 }
 

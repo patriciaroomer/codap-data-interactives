@@ -1,5 +1,5 @@
 import CaseTable from "../codap/CaseTable.js";
-import CODAPConnect from "../codap/CODAPConnect.js";
+import DataContext from "../codap/DataContext.js";
 import Codap from "../constants/Codap.js";
 
 export default class Parameters {
@@ -17,10 +17,10 @@ export default class Parameters {
     }
 
     async persist() {
-        const dimensions = { width: 150, height: 300 };
+        const dimensions = { width: 150, height: 150 };
 
-        await CODAPConnect.createDataContext(Codap.DC_CLASSES, ["name"]);
-        await CODAPConnect.createDataContext(Codap.DC_ATTRS, ["name"]);
+        await DataContext.create(Codap.DC_CLASSES, ["name"]);
+        await DataContext.create(Codap.DC_ATTRS, ["name"]);
         await new CaseTable(Codap.DC_CLASSES, this.classes, dimensions).create();
         await new CaseTable(Codap.DC_ATTRS, this.attributes, dimensions).create();
     }

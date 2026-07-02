@@ -1,4 +1,5 @@
 import CODAPConnect from "./CODAPConnect.js";
+import DataContext from "./DataContext.js";
 
 
 // Reloads the plugin state when importing as a .codap file
@@ -19,11 +20,11 @@ export default class State {
     }
 
     static async determineState() {
-        const classesExist = await CODAPConnect.dataContextExists("Classes");
-        const attributesExist = await CODAPConnect.dataContextExists("Attributes");
-        const trainingDataExists = await CODAPConnect.dataContextExists("Training data");
-        const trained = await CODAPConnect.getGlobal("TRAINED");
-        const testingDataExists = await CODAPConnect.dataContextExists("Testing data");
+        const classesExist = await DataContext.exists("Classes");
+        const attributesExist = await DataContext.exists("Attributes");
+        const trainingDataExists = await DataContext.exists("Training data");
+        const trained = await DataContext.exists("TRAINED");
+        const testingDataExists = await DataContext.exists("Testing data");
 
         if (!classesExist && !attributesExist) {
             State.state = "UNINITIALIZED";
@@ -42,7 +43,7 @@ export default class State {
     }
 
     static async reloadClasses() {
-        const response = await CODAPConnect.getCases("Classes");
+        const response = await DataContext.getCases("Classes");
         if (!response) return;
 
         const classes = [];
@@ -55,7 +56,7 @@ export default class State {
     }
     
     static async reloadAttributes() {
-        const response = await CODAPConnect.getCases("Attributes");
+        const response = await DataContext.getCases("Attributes");
         if (!response) return;
 
         const attributes = [];
@@ -68,7 +69,7 @@ export default class State {
     }
 
     static async reloadTrainingData() {
-        const response = await CODAPConnect.getCases("Training data");
+        const response = await DataContext.getCases("Training data");
         if (!response) return;
         
         const data = [];
@@ -81,7 +82,7 @@ export default class State {
     }
 
     static async reloadTestingData() {
-        const response = await CODAPConnect.getCases("Testing data");
+        const response = await DataContext.getCases("Testing data");
         if (!response) return;
 
         const data = [];

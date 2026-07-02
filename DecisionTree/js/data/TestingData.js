@@ -1,5 +1,5 @@
 import CaseTable from "../codap/CaseTable.js";
-import CODAPConnect from "../codap/CODAPConnect.js";
+import DataContext from "../codap/DataContext.js";
 import Codap from "../constants/Codap.js";
 import UI from "../constants/UI.js";
 import Data from "./Data.js";
@@ -27,7 +27,7 @@ export default class TestingData extends Data {
 
         const dimensions = { width: Codap.CT_DATA_WIDTH, height: Codap.CT_DATA_HEIGHT };
 
-        await CODAPConnect.createDataContext(Codap.DC_TEST, attributes);
+        await DataContext.create(Codap.DC_TEST, attributes);
         await new CaseTable(Codap.DC_TEST, this.data, dimensions).create();
     }
 
