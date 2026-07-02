@@ -1,0 +1,89 @@
+body {
+  padding: 20px 30xpx 30px 20px;
+  margin-left: 30px;
+  width: 450px;
+}
+
+p {
+  font-size: 15px;
+}
+
+#title {
+  margin: 0;
+}
+
+input {
+  padding: 3px;
+  margin-right: 5px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--graphite);
+  outline: none;
+  width: 350px;
+  transition: 0.3s ease;
+}
+
+input:focus {
+  border-color: var(--ocean);
+  box-shadow: 0 0 0 0.2rem var(--shadow);
+}
+
+button {
+	padding: 5px 10px; 
+	border: 2px solid var(--cloud);  
+	border-radius: 8px;
+}
+
+#urlBlock {
+  position: relative;
+  margin-top: 20px;
+}
+
+#logs {
+  position: absolute;
+  top: 43px;
+  padding-left: 2px;
+  font-size: 12px;
+}
+
+#logs.error {
+  color: red;
+}
+
+#logs.warning {
+  color: orangered;
+}
+
+#logs.message {
+  color: black;
+}
+
+.inline-child {
+  display: inline-block;
+}
+
+#infoBlock {
+  margin-top: 20px;
+}
+
+a {
+  font-size: 13px;
+  color: black;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+a:visited {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.card {
+	border: 2px solid var(--steam);
+  width: 410px;
+}

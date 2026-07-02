@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="../Common/js/iframe-phone.js" language="javascript"></script>
+  <script src="../Common/js/CodapInterface.js"></script>
+  <title>Import a dataset</title>
+  <link rel="stylesheet" href="../../../common.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div id="urlBlock">
+    <input placeholder="Enter a URL..." type="url" id="urlUploader">
+    <button id="urlButton" class="inline-child">Import</button>
+  </div>
+  <p id="logs" class="inline-child"></p>
+
+  <div id="infoBlock">
+    <p>Find a dataset with a <b>CSV</b> file through one of the <b>following websites</b> and paste the URL here.</p>
+  </div>
+  <div class="card">
+    <a href="https://huggingface.co/datasets" target="_blank">Hugging Face</a><br>
+    <a href="https://www.kaggle.com/datasets" target="_blank">Kaggle</a><br>
+    <a href="https://data.public.lu/en/datasets/" target="_blank">Luxembourgish Open Data Platform</a><br>
+    <a href="https://data-explorer.oecd.org/" target="_blank">OECD Data Explorer</a><br>
+    <a href="https://data360.worldbank.org/en/search" target="_blank">World Bank Open Data</a><br>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script type="module" src="./js/Main.js"></script>
+</body>
+</html>
