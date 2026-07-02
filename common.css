@@ -1,0 +1,80 @@
+:root {
+    --snow: #f6f6f6;
+    --pearl: #f7f7f7;
+    --salt: #efefef;
+    --steam: #ddd;
+    --cloud: #ccc;
+    --graphite: #555;
+    --pebble: #333;
+    --sky: #9fd5ff;
+    --codap: #2596be;
+    --parakeet: #0a7;
+    --ginger: #b50;
+    --crimson: #b00;
+    --shadow: rgba(16, 82, 98, 0.25);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+    font-size: 16px;
+    margin: 0 0 6px 0;
+}
+
+button {
+    border: 1px solid var(--cloud);
+    background: #fff;
+}
+
+button:hover {
+    background: var(--snow);
+    cursor: pointer;
+}
+
+input[type="checkbox"]:hover {
+    cursor: pointer;
+}
+
+input[type="checkbox"]:disabled {
+    cursor: default;
+    filter: invert(25%);
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.card {
+    border: 1px solid var(--steam);
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.pill {
+    display: inline-block;
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid var(--steam);
+    border-radius: 999px;
+    margin-left: 10px;
+}
+
+.ok {
+    color: var(--parakeet);
+}
+
+.warn {
+    color: var(--ginger);
+}
+
+.bad {
+    color: var(--crimson);
+}
