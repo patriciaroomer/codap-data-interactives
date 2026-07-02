@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="../Common/js/iframe-phone.js" language="javascript"></script>
+    <script src="../Common/js/CodapInterface.js"></script>
+    <title>Clustering</title>
+    <link rel="stylesheet" href="../../../common.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <h3>k-means Clustering</h3>
+
+    <div class="row">
+      <div class="card">
+        <b>Control Panel</b>
+
+        <label>k (2–10)
+          <input id="k" type="number" min="2" max="10" value="3">
+        </label>
+
+        <label>Number of data points (5–400)
+          <input id="n" type="number" min="5" max="400" value="60">
+        </label>
+
+        <label>Seed (optional)
+          <input id="seed" type="text" placeholder="e.g. 42">
+        </label>
+
+        <label>Max iterations (1–200)
+          <input id="maxIter" type="number" min="1" max="200" value="25">
+        </label>
+
+        <label>
+          <input id="toggleLines" type="checkbox">
+          Show lines towards center
+        </label>
+
+        <div class="actions">
+          <button id="btnReset" type="button">Reset (new)</button>
+          <button id="btnStart" type="button">Start</button>
+          <button id="btnPause" type="button">Pause</button>
+          <button id="btnStep" type="button">Step</button>
+          <button id="btnRestart" type="button">Restart</button>
+        </div>
+
+        <div class="status">
+          <div><b>Iteration:</b> <span id="iter">0</span></div>
+          <div><b>Phase:</b> <span id="phase">—</span></div>
+          <div><b>Converged:</b> <span id="conv">No</span></div>
+          <div class="small" id="msg"></div>
+          </div>
+      </div>
+
+      <div class="card">
+        <b>Visualization</b>
+        <canvas id="cv" width="720" height="520"></canvas>
+      </div>
+
+    </div>
+
+    <script type="module" src="./js/Main.js"></script>
+
+    <script>console.log("HTML parsed")</script>
+  </body>
+</html>
