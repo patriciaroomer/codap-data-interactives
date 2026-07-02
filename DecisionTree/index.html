@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="../Common/js/iframe-phone.js" language="javascript"></script>
+    <script src="../Common/js/CodapInterface.js"></script>
+    <title>Decision Tree</title>
+    <link rel="stylesheet" href="../../../common.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <h1>Decision Tree<span class="pill">CODAP Plugin</span></h1>
+    </header>
+
+    <main>
+    
+        <div>
+        <div class="card">
+            <svg id="treeSvg" width="100%" viewBox="0 0 920 320" style="display:block;"></svg>
+            <div id="treeInfo" class="hint" style="margin-top:6px;"></div>
+        </div>
+        </div>
+
+        <button id="resetButton">Reset</button>
+
+        <div class="grid">
+        <div>
+        <div><h1>Training</h1></div>
+
+        <div class="card" id="paramCard">
+            <div class="taskTitle">◌ Parameters</div>
+            
+            <div class="row" style="margin-bottom:8px">
+                <label id="classLabel" style="min-width:110px;">Class</label>
+                <input id="classInput" style="min-width:220px;">
+                
+                <button id="classButton">Add</button>
+                <div class="classList"></div>
+            </div>
+        
+            <div class="row" style="margin-bottom:8px;">
+                <label id="attrLabel" style="min-width:110px;">Attribute</label>
+                <input id="attrInput" style="min-width:220px;">
+                
+                <button id="attrButton">Add</button>
+                <div class="attrList"></div>
+            </div>
+
+            <div class="row">
+                <button id="lockButton" class="locked">Lock</button>
+            </div>
+        </div>
+
+
+        <div class="card locked" id="trainCard">
+            <div class="taskTitle">🔒 Training data</div>
+
+            <div class="row" style="margin-bottom:8px;">
+                <label class="dataLabel" style="min-width:110px;">Name</label>
+                <input class="dataName" id="trainInput" style="min-width:220px;">
+                
+                <div id="classDropdown">
+                    <label id="classLabel" style="min-width:110px;">Class</label>
+                    <select id="classSelect" class="locked" tabIndex = -1></select>
+                </div>
+            </div>
+            
+            <div id="trainForm" class="form" style="margin-bottom:8px;"></div>
+            
+            <div class="row">
+                <button class="locked" id="addTrainButton">Add</button>
+                <button class="locked" id="resetTrainButton">Reset</button>
+            </div>
+        </div>
+        <div class="row">
+            <button class="locked" id="trainButton">Train</button>
+        </div>
+        </div>
+        
+        <div>
+        <div><h1>Testing</h1></div>
+
+        <div class="card locked" id="testCard">
+        <div class="taskTitle">🔒 Testing data</div>
+
+            <div class="row" style="margin-bottom:8px;">
+                <label class="dataLabel" style="min-width:110px;">Name</label>
+                <input class="dataName" id="testInput" style="min-width:220px;">
+            </div>
+
+            <div id="testForm" class="form" style="margin-bottom:8px;"></div>
+
+            <div class="row">
+                <button class="locked" id="testButton">Test</button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <pre id="log">Starte… (warte auf CODAP-Verbindung)</pre>
+</main>
+
+    <script type="module" src="./js/Main.js"></script>
+  </body>
+</html>
