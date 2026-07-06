@@ -20,7 +20,7 @@ BUILD_DIR="$WORKING/plugins"
 ZIP_FILENAME=codap-data-interactives-${BUILD_NUM}.zip
 
 STATIC_PLUGIN_DIRS="TP-Sampler DrawTool Importer NOAA-weather sdlc/plugin eepsmedia/plugins/Choosy Sonify
-eepsmedia/plugins/scrambler eepsmedia/plugins/testimate eepsmedia/plugins/simmer data-science-worlds/nhanes"
+eepsmedia/plugins/scrambler eepsmedia/plugins/testimate eepsmedia/plugins/simmer data-science-worlds/nhanes ImportDataset"
 HIDDEN_DIRS="Common eepsmedia/common"
 BUILT_PLUGIN_DIRS="onboarding
                    ../codap-transformers
@@ -80,7 +80,7 @@ function buildPlugins() {
 function copyStaticPlugins() {
   for t in "$@"; do
     mkdir -p "${BUILD_DIR}/${t}"
-    rsync -av --exclude=node_modules/ --exclude=.idea/ "${t}/" "${BUILD_DIR}/${t}"
+    cp -r "${t}/." "${BUILD_DIR}/${t}"
   done
 }
 

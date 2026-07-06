@@ -977,6 +977,18 @@
         "Portals",
         "Partners"
       ]
+    },
+    {
+      "title": "Dataset Importer",
+      "description": "Import a dataset",
+      "width": 500,
+      "height": 330,
+      "path": "/ImportDataset/",
+      "visible": "true",
+      "categories": [
+        "Utilities",
+        "Tools"
+      ]
     }
   ]
 }
