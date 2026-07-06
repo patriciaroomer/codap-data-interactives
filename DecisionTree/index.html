@@ -5,7 +5,7 @@
     <script src="../Common/js/iframe-phone.js" language="javascript"></script>
     <script src="../Common/js/CodapInterface.js"></script>
     <title>Decision Tree</title>
-    <link rel="stylesheet" href="../../../common.css">
+    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
   </head>
 
@@ -14,7 +14,7 @@
     </header>
 
     <main>
-    
+
         <div>
         <div class="card">
             <svg id="treeSvg" width="100%" viewBox="0 0 920 320" style="display:block;"></svg>
@@ -30,19 +30,19 @@
 
         <div class="card" id="paramCard">
             <div class="taskTitle">◌ Parameters</div>
-            
+
             <div class="row" style="margin-bottom:8px">
                 <label id="classLabel" style="min-width:110px;">Class</label>
                 <input id="classInput" style="min-width:220px;">
-                
+
                 <button id="classButton">Add</button>
                 <div class="classList"></div>
             </div>
-        
+
             <div class="row" style="margin-bottom:8px;">
                 <label id="attrLabel" style="min-width:110px;">Attribute</label>
                 <input id="attrInput" style="min-width:220px;">
-                
+
                 <button id="attrButton">Add</button>
                 <div class="attrList"></div>
             </div>
@@ -59,15 +59,15 @@
             <div class="row" style="margin-bottom:8px;">
                 <label class="dataLabel" style="min-width:110px;">Name</label>
                 <input class="dataName" id="trainInput" style="min-width:220px;">
-                
+
                 <div id="classDropdown">
                     <label id="classLabel" style="min-width:110px;">Class</label>
                     <select id="classSelect" class="locked" tabIndex = -1></select>
                 </div>
             </div>
-            
+
             <div id="trainForm" class="form" style="margin-bottom:8px;"></div>
-            
+
             <div class="row">
                 <button class="locked" id="addTrainButton">Add</button>
                 <button class="locked" id="resetTrainButton">Reset</button>
@@ -77,7 +77,7 @@
             <button class="locked" id="trainButton">Train</button>
         </div>
         </div>
-        
+
         <div>
         <div><h1>Testing</h1></div>
 
